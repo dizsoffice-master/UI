@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Dashboard Sample</title>
+  <link rel="stylesheet" href="../assets/site-columns.css">
+  <link rel="stylesheet" href="../assets/master.css">
+  <script src="../assets/page-settings.js"></script>
+  <script src="../assets/site-partials.js"></script>
+  <style>
+    html,
+    body {
+      background: var(--page-bg);
+      width: 100%;
+      min-height: 100%;
+      overflow: hidden;
+    }
+
+    .dashboard-page {
+      width: 100%;
+      min-height: 100vh;
+      background: var(--page-bg);
+      overflow: hidden;
+    }
+
+    .dashboard-layout {
+      background: var(--case);
+      padding: 28px;
+      min-height: calc(100vh - 330px);
+      overflow: hidden;
+    }
+
+    .dashboard-private {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--blue-soft), #ffffff);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .dashboard-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .dashboard-heading h1 {
+      color: var(--blue-dark);
+      font-size: clamp(30px, 3vw, 40px);
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .private-badge {
+      padding: 10px 16px;
+      border-radius: 50px;
+      background: var(--green);
+      color: white;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .dashboard-profile {
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) minmax(420px, 1fr);
+      gap: 20px;
+      align-items: center;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 24px;
+    }
+
+    .profile-photo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px;
+      background: var(--blue-soft);
+      border-radius: 16px;
+      border: 1px solid var(--line);
+    }
+
+    .profile-photo {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      font-weight: 900;
+      border: 4px solid white;
+      box-shadow: var(--shadow);
+    }
+
+    .profile-details {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .profile-kicker {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .profile-details h2 {
+      color: var(--blue-dark);
+      font-size: clamp(30px, 3vw, 36px);
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .profile-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(130px, auto));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .meta-card {
+      background: var(--blue-soft);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .meta-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .meta-card strong {
+      color: var(--blue-dark);
+      font-size: 15px;
+      display: block;
+    }
+
+    .feature-grid-section {
+      margin-top: 20px;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 24px;
+    }
+
+    .feature-grid-title {
+      color: var(--blue-dark);
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+    }
+
+    .feature-card {
+      background: var(--blue-soft);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--blue-dark);
+      transition: transform 260ms ease, box-shadow 260ms ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .feature-card .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--blue-dark);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .feature-card .feature-name {
+      font-size: 14px;
+      color: var(--blue-dark);
+      font-weight: 900;
+    }
+
+    .feature-card .feature-status {
+      font-size: 11px;
+      color: var(--green);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 800px) {
+      .dashboard-profile {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-meta {
+        grid-template-columns: 1fr;
+      }
+    }
+    </style>
+</head>
+<body>
+  <script>
+    const dashboardSessionKey = 'karauli_dashboard_session';
+    const validSession = sessionStorage.getItem(dashboardSessionKey) === 'active';
+
+    if (!validSession) {
+      window.location.href = 'login-required.html';
+    }
+
+    function logoutDashboard() {
+      sessionStorage.removeItem(dashboardSessionKey);
+      window.location.href = 'login-required.html';
+    }
+  </script>
+
+  <div class="dashboard-page">
+    <div id="siteHeader"></div>
+
+    <main class="dashboard-layout">
+      <section class="dashboard-private">
+        <section class="dashboard-heading">
+          <h1>Private Dashboard</h1>
+          <span class="private-badge">Login Protected</span>
+          <button class="logout-button" onclick="logoutDashboard()">Logout</button>
+        </section>
+
+        <section class="dashboard-profile">
+          <div class="profile-photo-wrap">
+            <div class="profile-photo">SS</div>
+          </div>
+
+          <section class="profile-details">
+            <span class="profile-kicker">User Basic Information</span>
+            <h2>Sundar Sharma</h2>
+
+            <div class="profile-meta">
+              <div class="meta-card">
+                <span>Date of Birth</span>
+                <strong>17 Sep 1999</strong>
+              </div>
+              <div class="meta-card">
+                <span>School</span>
+                <strong>Karauli Public School</strong>
+              </div>
+              <div class="meta-card">
+                <span>Portal</span>
+                <strong>Student Tools</strong>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section class="feature-grid-section">
+          <div class="feature-grid-title">Allotted Features</div>
+          <div class="feature-grid">
+            <a class="feature-card" href="sql-syntax-formatter-online-free-tool.html">
+              <span class="feature-icon">SQL</span>
+              <span class="feature-name">SQL Formatter</span>
+              <span class="feature-status">Assigned</span>
+            </a>
+            <a class="feature-card" href="json-formatter-editor-convertor-free-tool.html">
+              <span class="feature-icon">JSON</span>
+              <span class="feature-name">JSON Formatter</span>
+              <span class="feature-status">Assigned</span>
+            </a>
+            <a class="feature-card" href="#">
+              <span class="feature-icon">TXT</span>
+              <span class="feature-name">Text Tools</span>
+              <span class="feature-status">Assigned</span>
+            </a>
+            <a class="feature-card" href="#">
+              <span class="feature-icon">API</span>
+              <span class="feature-name">Developer API</span>
+              <span class="feature-status">Assigned</span>
+            </a>
+            <a class="feature-card" href="#">
+              <span class="feature-icon">URL</span>
+              <span class="feature-name">URL Encoder</span>
+              <span class="feature-status">Assigned</span>
+            </a>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div id="siteFooter"></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Syntax Formatter Online Free Tool</title>
+  <link rel="stylesheet" href="../assets/master.css">
+  <script src="../assets/page-settings.js"></script>
+  <script src="../assets/site-partials.js"></script>
+  <style>
+    body {
+      background: var(--page-bg);
+    }
+
+    .tool-page-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: var(--case);
+      box-shadow: var(--shadow);
+    }
+
+    .tool-header {
+      background: var(--blue-dark);
+      color: white;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 90px;
+    }
+
+    .tool-header .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tool-header .logo-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 22px;
+    }
+
+    .tool-header .logo-title {
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .tool-header .logo-subtitle {
+      font-size: 12px;
+      color: #b9c7d9;
+    }
+
+    .tool-nav {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .tool-nav a {
+      color: white;
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      padding: 8px 10px;
+    }
+
+    .tool-nav .login {
+      background: var(--green);
+      border-radius: 8px;
+      padding: 10px 16px;
+    }
+
+    .tool-strip {
+      background: var(--blue-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 28px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .tool-strip a {
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      background: white;
+      color: var(--blue-dark);
+      font-weight: 800;
+      font-size: 13px;
+      border: 1px solid var(--line);
+      text-decoration: none;
+    }
+
+    .tool-layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 260px) minmax(540px, 1fr) minmax(180px, 250px);
+      gap: 20px;
+      padding: 24px 28px;
+      background: var(--case);
+    }
+
+    .left-panel,
+    .right-panel {
+      background: var(--blue-soft);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .left-panel .panel-title,
+    .right-panel .panel-title {
+      font-size: 14px;
+      color: var(--blue-dark);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .left-panel ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .left-panel li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .left-panel li:last-child {
+      border-bottom: none;
+    }
+
+    .left-panel a {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .tool-content {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 26px;
+      min-height: 480px;
+    }
+
+    .tool-content .page-title {
+      color: var(--blue-dark);
+      font-size: clamp(30px, 3vw, 40px);
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .tool-content .page-subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 260px;
+      resize: vertical;
+      background: #f8fafc;
+      color: var(--text);
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      outline: none;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 14px 0 16px;
+    }
+
+    .button-row button {
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--blue);
+      color: white;
+    }
+
+    .button-row button.secondary {
+      background: var(--blue-dark);
+    }
+
+    .output-box {
+      background: #071b3d;
+      color: #d9fedc;
+      padding: 16px;
+      min-height: 160px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      white-space: pre-wrap;
+      font-family: "Courier New", monospace;
+    }
+
+    .ad-block {
+      background: #fffdf2;
+      border: 1px dashed var(--orange);
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue-dark);
+      font-weight: 800;
+      border-radius: 10px;
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .all-tools {
+      background: var(--blue-soft);
+      padding: 22px 28px;
+      border-top: 1px solid var(--line);
+    }
+
+    .all-tools-title {
+      color: var(--blue-dark);
+      font-weight: 900;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    .all-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .all-tools-grid a {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    @media (max-width: 900px) {
+      .tool-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .tool-strip,
+      .all-tools-grid {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="tool-page-wrap">
+    <div id="siteHeader"></div>
+    <div id="headerServicesLayer"></div>
+
+      <main class="tool-content">
+         <div class="ad-block">Google AdSense Banner</div>
+        <div class="page-title">SQL Syntax Formatter Online Free Tool</div>
+        <p class="page-subtitle">Beautify SQL statements and align your database query writing.</p>
+
+        <textarea id="sqlInput">SELECT * FROM temples WHERE category = 'darshan' ORDER BY created_at DESC;</textarea>
+        <div class="button-row">
+          <button onclick="formatSql()">Format SQL</button>
+          <button class="secondary" onclick="clearSql()">Clear</button>
+        </div>
+        <div class="output-box" id="sqlOutput">Formatted SQL output appears here.</div>
+
+        <div class="ad-block">Google AdSense Banner</div>
+      </main>
+
+    <div id="footerServicesLayer"></div>
+    <div id="siteFooter"></div>
+  </div>
+
+  <script>
+    function formatSql() {
+      const sql = document.getElementById('sqlInput').value.trim();
+      const output = sql
+        .replace(/SELECT/g, '\nSELECT')
+        .replace(/FROM/g, '\nFROM')
+        .replace(/WHERE/g, '\nWHERE')
+        .replace(/ORDER BY/g, '\nORDER BY')
+        .replace(/;/g, ';\n');
+      document.getElementById('sqlOutput').textContent = output;
+    }
+
+    function clearSql() {
+      document.getElementById('sqlInput').value = '';
+      document.getElementById('sqlOutput').textContent = '';
+    }
+  </script>
+</body>
+</html>

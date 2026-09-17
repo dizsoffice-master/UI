@@ -1,0 +1,1702 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>JSON Formatter and Viewer Free Tool</title>
+
+  <link rel="stylesheet" href="../assets/site-columns.css">
+  <link rel="stylesheet" href="../assets/master.css">
+
+  <script src="../assets/page-settings.js"></script>
+  <script src="../assets/site-partials.js"></script>
+
+  <style>
+
+    body {
+      background: var(--page-bg);
+    }
+
+    .tool-page-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: var(--case);
+      box-shadow: var(--shadow);
+    }
+
+    /* =========================================================
+       MAIN CONTENT
+       ========================================================= */
+
+    .tool-content {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 26px;
+      min-height: 480px;
+    }
+
+    .tool-content .page-title {
+      color: var(--blue-dark);
+      font-size: clamp(30px, 3vw, 40px);
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .tool-content .page-subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    /* =========================================================
+       JSON EDITOR
+       DESKTOP:
+       INPUT 45% | TRACE 10% | OUTPUT 45%
+       ========================================================= */
+
+    .json-editor-area {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 4.5fr)
+        minmax(110px, 1fr)
+        minmax(0, 4.5fr);
+
+      gap: 12px;
+      width: 100%;
+      align-items: start;
+    }
+
+    .json-editor-panel {
+      min-width: 0;
+    }
+
+    .json-editor-panel-title {
+      color: var(--blue-dark);
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    /* =========================================================
+       INPUT
+       ========================================================= */
+
+    #jsonInput {
+      width: 100%;
+      min-height: 520px;
+      resize: vertical;
+
+      display: block;
+
+      background: #f8fafc;
+      color: var(--text);
+
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.55;
+
+      padding: 16px;
+
+      border-radius: 10px;
+      border: 1px solid var(--line);
+
+      outline: none;
+
+      tab-size: 2;
+      white-space: pre;
+      overflow: auto;
+    }
+
+    #jsonInput:focus {
+      border-color: var(--blue);
+    }
+
+    /* =========================================================
+       TRACE PANEL
+       ========================================================= */
+
+    .json-trace-panel {
+      min-width: 0;
+
+      background: var(--blue-soft);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      height: auto;
+      overflow: hidden;
+    }
+
+    .json-trace-header {
+      background: var(--blue-dark);
+      color: white;
+
+      padding: 10px;
+
+      font-size: 11px;
+      font-weight: 900;
+
+      text-align: center;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .json-trace {
+      max-height: 520px;
+      overflow: auto;
+      padding: 0px;
+    }
+
+    /* =========================================================
+       TRACE NODE
+       ========================================================= */
+
+    .trace-node {
+      position: relative;
+
+      margin: 2px 0;
+    }
+
+    .trace-node-row {
+      display: flex;
+      align-items: center;
+
+      min-height: 28px;
+
+      border-radius: 5px;
+
+      cursor: pointer;
+
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+
+      color: var(--text);
+
+      padding: 4px 5px;
+
+      user-select: none;
+    }
+
+    .trace-node-row:hover {
+      background: white;
+    }
+
+    .trace-node-row.selected {
+      background: var(--blue);
+      color: white;
+      font-weight: 800;
+    }
+
+    .trace-expand {
+      width: 16px;
+      flex: 0 0 16px;
+
+      font-size: 10px;
+
+      text-align: center;
+    }
+
+    .trace-label {
+      flex: 1;
+
+      min-width: 0;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .trace-type {
+      opacity: 0.6;
+      font-size: 9px;
+      margin-left: 3px;
+    }
+
+    .trace-children {
+      margin-left: 10px;
+      border-left: 1px solid var(--line);
+      padding-left: 3px;
+    }
+
+    .trace-children.collapsed {
+      display: none;
+    }
+
+    /* =========================================================
+       SMALL COPY BUTTON
+       ========================================================= */
+
+    .trace-copy {
+      display: none;
+
+      border: none;
+      border-radius: 4px;
+
+      background: white;
+      color: var(--blue-dark);
+
+      font-size: 9px;
+      font-weight: 900;
+
+      padding: 3px 5px;
+
+      cursor: pointer;
+
+      margin-left: 3px;
+    }
+
+    .trace-node-row.selected .trace-copy {
+      display: block;
+    }
+
+    .trace-copy:hover {
+      background: #eef5ff;
+    }
+
+    /* =========================================================
+       OUTPUT
+       ========================================================= */
+
+    .output-wrapper {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .output-box {
+      width: 100%;
+      height: 520px;
+      min-height: 520px;
+
+      background: #071b3d;
+      color: #d9fedc;
+
+      padding: 16px;
+
+      border-radius: 10px;
+      border: 1px solid var(--line);
+
+      white-space: pre;
+      word-break: normal;
+
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.55;
+
+      /* IMPORTANT */
+      overflow-x: auto;
+      overflow-y: auto;
+
+      /* Prevent the grid from expanding */
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    @media (max-width: 900px) {
+
+  .json-editor-area {
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+    grid-template-areas:
+      "input input"
+      "trace output";
+
+    gap: 10px;
+  }
+
+  .json-editor-area
+  .json-editor-panel:nth-child(1) {
+    grid-area: input;
+  }
+
+  .json-editor-area
+  .json-editor-panel:nth-child(2) {
+    grid-area: trace;
+  }
+
+  .json-editor-area
+  .json-editor-panel:nth-child(3) {
+    grid-area: output;
+  }
+
+  #jsonInput {
+    min-height: 300px;
+  }
+
+  .json-trace {
+    height: 300px;
+    max-height: 300px;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+
+  .json-editor-panel .output-box {
+    height: 300px;
+    min-height: 300px;
+
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .json-editor-area {
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(0, 1fr);
+
+    grid-template-areas:
+      "input input"
+      "trace output";
+
+    gap: 6px;
+  }
+
+  #jsonInput {
+    min-height: 300px;
+    font-size: 11px;
+  }
+
+  .json-trace {
+    height: 280px;
+    max-height: 280px;
+
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+
+  .json-editor-panel .output-box {
+    height: 280px;
+    min-height: 280px;
+
+    overflow-x: auto;
+    overflow-y: auto;
+
+    font-size: 11px;
+    padding: 10px;
+  }
+
+}
+
+    /* =========================================================
+       BUTTONS
+       ========================================================= */
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0 0;
+    }
+
+    .button-row button {
+      min-height: 40px;
+
+      padding: 8px 14px;
+
+      border-radius: 8px;
+      border: none;
+
+      font-weight: 800;
+
+      cursor: pointer;
+
+      background: var(--blue);
+      color: white;
+    }
+
+    .button-row button.secondary {
+      background: var(--blue-dark);
+    }
+
+    .button-row button.copy-all {
+      background: var(--green);
+    }
+
+    /* =========================================================
+       OUTPUT COPY BUTTON
+       ========================================================= */
+
+    .output-copy-row {
+      display: flex;
+      justify-content: flex-end;
+
+      margin-top: 8px;
+    }
+
+    #copySelectedBtn {
+      display: none;
+
+      border: none;
+      border-radius: 7px;
+
+      padding: 7px 12px;
+
+      background: var(--green);
+      color: white;
+
+      font-size: 12px;
+      font-weight: 900;
+
+      cursor: pointer;
+    }
+
+    #copySelectedBtn.visible {
+      display: inline-block;
+    }
+
+    /* =========================================================
+       ERROR
+       ========================================================= */
+
+    .json-error {
+      display: none;
+
+      margin-top: 10px;
+
+      padding: 10px 12px;
+
+      background: #fff2f2;
+      color: #a40000;
+
+      border: 1px solid #e3aaaa;
+      border-radius: 8px;
+
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+
+      white-space: pre-wrap;
+    }
+
+    .json-error.visible {
+      display: block;
+    }
+
+ 
+    /* =========================================================
+       ADS
+       ========================================================= */
+
+    .ad-block {
+      background: #fffdf2;
+
+      border: 1px dashed var(--orange);
+
+      min-height: 140px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: var(--blue-dark);
+
+      font-weight: 800;
+
+      border-radius: 10px;
+
+      margin-top: 16px;
+
+      text-align: center;
+    }
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @media (max-width: 900px) {
+
+      .json-editor-area {
+        grid-template-columns: 1fr;
+      }
+
+      .json-trace {
+        max-height: 350px;
+      }
+
+      #jsonInput,
+      .output-box {
+        min-height: 350px;
+      }
+
+    }
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 600px) {
+
+      .tool-content {
+        padding: 14px;
+      }
+
+      .tool-content .page-title {
+        font-size: 27px;
+      }
+
+      .json-editor-area {
+        gap: 14px;
+      }
+
+      #jsonInput,
+      .output-box {
+        min-height: 300px;
+      }
+
+      .json-trace {
+        max-height: 280px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="tool-page-wrap">
+
+    <div id="siteHeader"></div>
+    <div id="headerServicesLayer"></div>
+
+
+    <main class="tool-content">
+
+      <div class="ad-block">
+        Google AdSense Banner
+      </div>
+
+
+      <div class="page-title">
+        JSON Formatter Editor Convertor Free Tool
+      </div>
+
+
+      <p class="page-subtitle">
+        Format, validate, and convert JSON for API, web, and developer use cases.
+      </p>
+
+
+      <!-- =====================================================
+           JSON EDITOR
+           ===================================================== -->
+
+      <div class="json-editor-area">
+
+
+        <!-- ===================================================
+             INPUT
+             =================================================== -->
+
+        <div class="json-editor-panel">
+
+          <div class="json-editor-panel-title">
+            JSON INPUT
+          </div>
+
+          <textarea id="jsonInput">{"name":"Karauli","service":"Darshan","items":[{"type":"Tour"},{"type":"Guide"}],"location":{"city":"Kanpur","state":"Uttar Pradesh"}}</textarea>
+
+
+
+
+          <div
+            id="jsonError"
+            class="json-error">
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             TRACE
+             =================================================== -->
+
+        <div class="json-editor-panel">
+
+          <div class="json-trace-panel">
+
+            <div class="json-trace-header">
+              JSON TRACE
+            </div>
+
+            <div
+              id="jsonTrace"
+              class="json-trace">
+
+              Enter JSON and click Format.
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             OUTPUT
+             =================================================== -->
+
+        <div class="json-editor-panel">
+
+          <div class="json-editor-panel-title">
+            FORMATTED OUTPUT
+          </div>
+
+
+          <div class="output-wrapper">
+
+            <div
+              class="output-box"
+              id="jsonOutput">
+              Formatted JSON appears here.
+            </div>
+
+
+            <div class="output-copy-row">
+
+              <button
+                id="copySelectedBtn"
+                onclick="copySelectedJson()">
+
+                Copy Selected
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+     
+<div class="button-row"
+     style="
+        display:grid !important;
+        grid-template-columns:repeat(auto-fit,minmax(220px,1fr)) !important;
+        gap:6px !important;
+        width:100% !important;
+        max-width:100% !important;
+        min-width:0 !important;
+        box-sizing:border-box !important;
+        overflow:hidden !important;
+    ">
+
+    <!-- =====================================================
+         CARD 1 : FORMATTER
+         ===================================================== -->
+    <div style="
+        display:grid !important;
+        grid-template-columns:repeat(auto-fit,minmax(90px,1fr)) !important;
+        gap:4px !important;
+
+        min-width:0 !important;
+        padding:5px !important;
+
+        border:1px solid #ddd !important;
+        border-radius:6px !important;
+        background:#f8f8f8 !important;
+
+        box-sizing:border-box !important;
+    ">
+
+        <button
+            type="button"
+            onclick="formatJson()"
+            style="
+                width:100% !important;
+                min-width:0 !important;
+                box-sizing:border-box !important;
+                white-space:nowrap !important;
+                overflow:hidden !important;
+                text-overflow:ellipsis !important;
+                font-size:clamp(7px,1.1vw,14px) !important;
+            "
+        >
+            Format JSON
+        </button>
+
+        <button
+            type="button"
+            class="secondary"
+            onclick="minifyJson()"
+            style="
+                width:100% !important;
+                min-width:0 !important;
+                box-sizing:border-box !important;
+                white-space:nowrap !important;
+                overflow:hidden !important;
+                text-overflow:ellipsis !important;
+                font-size:clamp(7px,1.1vw,14px) !important;
+            "
+        >
+            Minify
+        </button>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         CARD 3 : EXPAND / COPY
+         ===================================================== -->
+    <div style="
+        display:grid !important;
+        grid-template-columns:repeat(auto-fit,minmax(90px,1fr)) !important;
+        gap:4px !important;
+
+        min-width:0 !important;
+        padding:5px !important;
+
+        border:1px solid #ddd !important;
+        border-radius:6px !important;
+        background:#f8f8f8 !important;
+
+        box-sizing:border-box !important;
+    ">
+
+        <button
+            type="button"
+            id="expandBtn"
+            data-expanded="false"
+            onclick="expandJson()"
+            style="
+                width:100% !important;
+                min-width:0 !important;
+                box-sizing:border-box !important;
+                white-space:nowrap !important;
+                overflow:hidden !important;
+                text-overflow:ellipsis !important;
+                font-size:clamp(7px,1.1vw,14px) !important;
+            "
+        >
+            Expand
+        </button>
+
+        <button
+            type="button"
+            class="copy-all"
+            onclick="copyAllJson()"
+            style="
+                width:100% !important;
+                min-width:0 !important;
+                box-sizing:border-box !important;
+                white-space:nowrap !important;
+                overflow:hidden !important;
+                text-overflow:ellipsis !important;
+                font-size:clamp(7px,1.1vw,14px) !important;
+            "
+        >
+            Copy All
+        </button>
+
+    </div>
+
+</div>
+      <div class="ad-block">
+        Google AdSense Banner
+      </div>
+
+    </main>
+
+
+    <div id="footerServicesLayer"></div>
+    <div id="siteFooter"></div>
+
+  </div>
+  <div id="renameModal" class="rename-modal">
+
+
+</div>
+  
+  <script>
+
+    /* =========================================================
+       GLOBAL STATE
+       ========================================================= */
+
+    let parsedJson = null;
+
+    let selectedNode = null;
+
+    let selectedJsonText = '';
+
+    let traceNodeId = 0;
+
+
+    /* =========================================================
+       FORMAT JSON
+       ========================================================= */
+
+    function formatJson() {
+
+      const input =
+        document.getElementById('jsonInput');
+
+      const output =
+        document.getElementById('jsonOutput');
+
+      const errorBox =
+        document.getElementById('jsonError');
+
+      const trace =
+        document.getElementById('jsonTrace');
+
+
+      const text = input.value;
+
+
+      // Clear previous error
+
+      errorBox.classList.remove('visible');
+      errorBox.textContent = '';
+
+
+      try {
+
+        parsedJson = JSON.parse(text);
+
+
+        // Complete formatted JSON
+
+        selectedJsonText =
+          JSON.stringify(
+            parsedJson,
+            null,
+            2
+          );
+
+
+        output.textContent =
+          selectedJsonText;
+
+
+        // Show full trace
+
+        buildTraceTree(
+          parsedJson
+        );
+
+
+        selectedNode = null;
+
+        document
+          .getElementById('copySelectedBtn')
+          .classList.remove('visible');
+
+
+      } catch (e) {
+
+        parsedJson = null;
+
+        trace.innerHTML =
+          'Invalid JSON';
+
+        output.textContent =
+          'Invalid JSON';
+
+
+        showJsonError(
+          e,
+          text
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       expandJson
+    ========================================================= */
+
+function expandJson() {
+
+  const button =
+    document.getElementById(
+      'expandBtn'
+    );
+
+  const expanded =
+    button.dataset.expanded === 'true';
+
+  document.querySelector('.tool-content')
+    .style.minHeight =
+      expanded ? '480px' : '960px';
+
+  document.querySelector('#jsonInput')
+    .style.minHeight =
+      expanded ? '520px' : '900px';
+
+  document.querySelector('.json-trace')
+    .style.maxHeight =
+      expanded ? '520px' : '900px';
+
+  document.querySelector('.output-box')
+    .style.height =
+      expanded ? '520px' : '900px';
+
+  document.querySelector('.output-box')
+    .style.minHeight =
+      expanded ? '520px' : '900px';
+
+  button.dataset.expanded =
+    !expanded;
+
+  button.textContent =
+    expanded
+      ? 'Expand'
+      : 'Collapse';
+
+}
+/* =========================================================
+       MINIFY
+       ========================================================= */
+
+    function minifyJson() {
+
+      const input =
+        document.getElementById('jsonInput');
+
+      const output =
+        document.getElementById('jsonOutput');
+
+      const errorBox =
+        document.getElementById('jsonError');
+
+
+      const text = input.value;
+
+
+      errorBox.classList.remove('visible');
+
+
+      try {
+
+        parsedJson =
+          JSON.parse(text);
+
+
+        output.textContent =
+          JSON.stringify(parsedJson);
+
+
+        buildTraceTree(
+          parsedJson
+        );
+
+
+      } catch (e) {
+
+        output.textContent =
+          'Invalid JSON';
+
+        showJsonError(
+          e,
+          text
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       BUILD TRACE TREE
+       ========================================================= */
+
+    function buildTraceTree(data) {
+
+      const container =
+        document.getElementById('jsonTrace');
+
+      container.innerHTML = '';
+
+      traceNodeId = 0;
+
+      const root =
+        createTraceNode(
+          data,
+          'ROOT',
+          '$'
+        );
+
+      container.appendChild(root);
+
+    }
+
+
+    /* =========================================================
+       CREATE TRACE NODE
+       ========================================================= */
+
+    function createTraceNode(
+      value,
+      label,
+      path
+    ) {
+
+      const node =
+        document.createElement('div');
+
+      node.className =
+        'trace-node';
+
+
+      const row =
+        document.createElement('div');
+
+      row.className =
+        'trace-node-row';
+
+
+      const expand =
+        document.createElement('span');
+
+      expand.className =
+        'trace-expand';
+
+
+      const children =
+        document.createElement('div');
+
+      children.className =
+        'trace-children';
+
+
+      const isObject =
+        value !== null &&
+        typeof value === 'object';
+
+
+      const type =
+        Array.isArray(value)
+          ? 'array'
+          : value === null
+            ? 'null'
+            : typeof value;
+
+
+      /* =======================================================
+         EXPAND ICON
+         ======================================================= */
+
+      if (isObject) {
+
+        expand.textContent = '▼';
+
+        expand.onclick = function(event) {
+
+          event.stopPropagation();
+
+          const collapsed =
+            children.classList.toggle(
+              'collapsed'
+            );
+
+          expand.textContent =
+            collapsed
+              ? '▶'
+              : '▼';
+
+        };
+
+      } else {
+
+        expand.textContent = '•';
+
+      }
+
+
+      /* =======================================================
+         LABEL
+         ======================================================= */
+
+      const labelElement =
+        document.createElement('span');
+
+      labelElement.className =
+        'trace-label';
+
+      labelElement.textContent =
+        label;
+
+
+      /* =======================================================
+         TYPE
+         ======================================================= */
+
+      const typeElement =
+        document.createElement('span');
+
+      typeElement.className =
+        'trace-type';
+
+      typeElement.textContent =
+        type;
+
+
+      /* =======================================================
+         COPY BUTTON
+         ======================================================= */
+
+      const copyButton =
+        document.createElement('button');
+
+      copyButton.className =
+        'trace-copy';
+
+      copyButton.textContent =
+        'Copy';
+
+
+      copyButton.onclick =
+        function(event) {
+
+          event.stopPropagation();
+
+          copyNodeValue(
+            value
+          );
+
+        };
+
+
+      /* =======================================================
+         CLICK NODE
+         ======================================================= */
+
+      row.onclick =
+        function() {
+
+          selectTraceNode(
+            row,
+            value,
+            label,
+            path
+          );
+
+        };
+
+
+      row.appendChild(expand);
+      row.appendChild(labelElement);
+      row.appendChild(typeElement);
+
+      if (isObject) {
+
+        row.appendChild(copyButton);
+
+      }
+
+
+      node.appendChild(row);
+
+
+      /* =======================================================
+         CHILDREN
+         ======================================================= */
+
+      if (isObject) {
+
+        if (Array.isArray(value)) {
+
+          value.forEach(
+            (item, index) => {
+
+              const child =
+                createTraceNode(
+                  item,
+                  `[${index}]`,
+                  `${path}[${index}]`
+                );
+
+              children.appendChild(
+                child
+              );
+
+            }
+          );
+
+        } else {
+
+          Object.keys(value).forEach(
+            key => {
+
+              const child =
+                createTraceNode(
+                  value[key],
+                  key,
+                  `${path}.${key}`
+                );
+
+              children.appendChild(
+                child
+              );
+
+            }
+          );
+
+        }
+
+        node.appendChild(
+          children
+        );
+
+      }
+
+
+      return node;
+
+    }
+
+
+    /* =========================================================
+       SELECT TRACE NODE
+       ========================================================= */
+
+    function selectTraceNode(
+      row,
+      value,
+      label,
+      path
+    ) {
+
+      document
+        .querySelectorAll(
+          '.trace-node-row.selected'
+        )
+        .forEach(
+          element => {
+
+            element.classList.remove(
+              'selected'
+            );
+
+          }
+        );
+
+
+      row.classList.add(
+        'selected'
+      );
+
+
+      selectedNode = value;
+
+
+      selectedJsonText =
+        JSON.stringify(
+          value,
+          null,
+          2
+        );
+
+
+      document
+        .getElementById('jsonOutput')
+        .textContent =
+        selectedJsonText;
+
+
+      document
+        .getElementById('copySelectedBtn')
+        .classList.add(
+          'visible'
+        );
+
+    }
+
+
+    /* =========================================================
+       COPY SELECTED NODE
+       ========================================================= */
+
+    function copySelectedJson() {
+
+      if (
+        selectedJsonText === ''
+      ) {
+
+        return;
+
+      }
+
+
+      copyText(
+        selectedJsonText
+      );
+
+    }
+
+
+    /* =========================================================
+       COPY NODE
+       ========================================================= */
+
+    function copyNodeValue(
+      value
+    ) {
+
+      const text =
+        JSON.stringify(
+          value,
+          null,
+          2
+        );
+
+
+      copyText(
+        text
+      );
+
+    }
+
+
+    /* =========================================================
+       COPY ALL
+       ========================================================= */
+
+    function copyAllJson() {
+
+      if (
+        parsedJson === null
+      ) {
+
+        return;
+
+      }
+
+
+      const text =
+        JSON.stringify(
+          parsedJson,
+          null,
+          2
+        );
+
+
+      copyText(
+        text
+      );
+
+    }
+
+
+    /* =========================================================
+       COPY HELPER
+       ========================================================= */
+
+    function copyText(
+      text
+    ) {
+
+      navigator.clipboard
+        .writeText(text)
+        .then(
+          () => {
+
+            console.log(
+              'JSON copied successfully'
+            );
+
+          }
+        )
+        .catch(
+          () => {
+
+            // Fallback
+
+            const temp =
+              document.createElement(
+                'textarea'
+              );
+
+            temp.value =
+              text;
+
+            document.body.appendChild(
+              temp
+            );
+
+            temp.select();
+
+            document.execCommand(
+              'copy'
+            );
+
+            temp.remove();
+
+          }
+        );
+
+    }
+
+
+    /* =========================================================
+       JSON ERROR
+       ========================================================= */
+
+    function showJsonError(
+      error,
+      text
+    ) {
+
+      const errorBox =
+        document.getElementById(
+          'jsonError'
+        );
+
+
+      let position =
+        getJsonErrorPosition(
+          error
+        );
+
+
+      if (
+        position < 0
+      ) {
+
+        position = 0;
+
+      }
+
+
+      const lineInfo =
+        getLineInformation(
+          text,
+          position
+        );
+
+
+      errorBox.textContent =
+        'JSON Error\n' +
+        error.message +
+        '\n\n' +
+        'Line: ' +
+        lineInfo.line +
+        '   Column: ' +
+        lineInfo.column;
+
+
+      errorBox.classList.add(
+        'visible'
+      );
+
+
+      highlightJsonError(
+        position,
+        text
+      );
+
+    }
+
+
+    /* =========================================================
+       GET ERROR POSITION
+       ========================================================= */
+
+    function getJsonErrorPosition(
+      error
+    ) {
+
+      const message =
+        String(
+          error.message || ''
+        );
+
+
+      /*
+       * Chrome / Edge / modern browsers:
+       *
+       * Unexpected token } in JSON at position 123
+       */
+
+      let match =
+        message.match(
+          /position\s+(\d+)/i
+        );
+
+
+      if (match) {
+
+        return Number(
+          match[1]
+        );
+
+      }
+
+
+      /*
+       * Some browsers:
+       *
+       * line 2 column 15
+       */
+
+      match =
+        message.match(
+          /line\s+(\d+).*column\s+(\d+)/i
+        );
+
+
+      if (match) {
+
+        return -1;
+
+      }
+
+
+      return -1;
+
+    }
+
+
+    /* =========================================================
+       LINE INFORMATION
+       ========================================================= */
+
+    function getLineInformation(
+      text,
+      position
+    ) {
+
+      const before =
+        text.substring(
+          0,
+          position
+        );
+
+
+      const line =
+        before.split(
+          '\n'
+        ).length;
+
+
+      const lastNewLine =
+        before.lastIndexOf(
+          '\n'
+        );
+
+
+      const column =
+        position -
+        lastNewLine;
+
+
+      return {
+        line,
+        column
+      };
+
+    }
+
+
+    /* =========================================================
+       HIGHLIGHT ERROR
+       ========================================================= */
+
+    function highlightJsonError(
+      position,
+      text
+    ) {
+
+      const input =
+        document.getElementById(
+          'jsonInput'
+        );
+
+
+      /*
+       * Select the error character.
+       */
+
+      input.focus();
+
+
+      const safePosition =
+        Math.min(
+          Math.max(
+            position,
+            0
+          ),
+          text.length
+        );
+
+
+      input.setSelectionRange(
+        safePosition,
+        Math.min(
+          safePosition + 1,
+          text.length
+        )
+      );
+
+
+      /*
+       * Scroll textarea so error
+       * position becomes visible.
+       */
+
+      const lineStart =
+        text.lastIndexOf(
+          '\n',
+          safePosition - 1
+        ) + 1;
+
+
+      const lineNumber =
+        text.substring(
+          0,
+          safePosition
+        ).split(
+          '\n'
+        ).length;
+
+
+      const lineHeight =
+        parseFloat(
+          getComputedStyle(
+            input
+          ).lineHeight
+        ) || 22;
+
+
+      input.scrollTop =
+        Math.max(
+          0,
+          (lineNumber - 3) *
+          lineHeight
+        );
+
+    }
+
+
+    /* =========================================================
+       INITIAL FORMAT
+       ========================================================= */
+
+    window.addEventListener(
+      'DOMContentLoaded',
+      function() {
+
+        formatJson();
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>

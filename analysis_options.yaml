@@ -1,0 +1,22 @@
+# This file contains configuration options for the Dart analyzer, specifying rules and guidelines for code quality and style.
+analyzer:
+  errors:
+    unused_import: warning
+    dead_code: warning
+    missing_return: error
+    unnecessary_this: warning
+  exclude:
+    - build/**
+    - web/**
+  linter:
+    rules:
+      - avoid_print
+      - prefer_const_constructors
+      - prefer_final_fields
+      - unnecessary_new
+      - always_specify_types
+      - prefer_single_quotes
+      - curly_braces_in_flow_control_structures
+      - public_member_api_docs
+      - lines_longer_than_80_chars
+      - type_annotate_public_apis

@@ -1,0 +1,1193 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>JSON Formatter Editor Convertor Free Tool</title>
+
+  <link rel="stylesheet" href="../assets/site-columns.css">
+  <link rel="stylesheet" href="../assets/master.css">
+
+  <script src="../assets/page-settings.js"></script>
+  <script src="../assets/site-partials.js"></script>
+
+  <style>
+
+    body {
+      background: var(--page-bg);
+    }
+
+    .tool-page-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: var(--case);
+      box-shadow: var(--shadow);
+    }
+
+    /* =========================================================
+       MAIN CONTENT
+       ========================================================= */
+
+    .tool-content {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 26px;
+      min-height: 480px;
+    }
+
+    .tool-content .page-title {
+      color: var(--blue-dark);
+      font-size: clamp(30px, 3vw, 40px);
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .tool-content .page-subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    /* =========================================================
+       JSON EDITOR
+      DESKTOP: INPUT | OUTPUT
+       ========================================================= */
+
+    .json-editor-area {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      gap: 12px;
+      width: 100%;
+      align-items: start;
+    }
+
+    .json-editor-panel {
+      min-width: 0;
+    }
+
+    .json-editor-panel-title {
+      color: var(--blue-dark);
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    /* =========================================================
+       INPUT
+       ========================================================= */
+
+    #jsonInput {
+      width: 100%;
+      min-height: 520px;
+      resize: vertical;
+
+      display: block;
+
+      background: #f8fafc;
+      color: var(--text);
+
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.55;
+
+      padding: 16px;
+
+      border-radius: 10px;
+      border: 1px solid var(--line);
+
+      outline: none;
+
+      tab-size: 2;
+      white-space: pre;
+      overflow: auto;
+    }
+
+    #jsonInput:focus {
+      border-color: var(--blue);
+    }
+
+    /* =========================================================
+       OUTPUT
+       ========================================================= */
+
+    .output-wrapper {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .output-box {
+      width: 100%;
+      height: 520px;
+      min-height: 520px;
+
+      background: #071b3d;
+      color: #d9fedc;
+
+      padding: 16px;
+
+      border-radius: 10px;
+      border: 1px solid var(--line);
+
+      white-space: pre;
+      word-break: normal;
+
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.55;
+
+      /* IMPORTANT */
+      overflow-x: auto;
+      overflow-y: auto;
+
+      /* Prevent the grid from expanding */
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    @media (max-width: 900px) {
+
+  .json-editor-area {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+  }
+
+  #jsonInput {
+    min-height: 300px;
+  }
+
+  .json-editor-panel .output-box {
+    height: 300px;
+    min-height: 300px;
+
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .json-editor-area {
+    grid-template-columns: 1fr;
+
+    gap: 6px;
+  }
+
+  #jsonInput {
+    min-height: 300px;
+    font-size: 11px;
+  }
+
+  .json-editor-panel .output-box {
+    height: 280px;
+    min-height: 280px;
+
+    overflow-x: auto;
+    overflow-y: auto;
+
+    font-size: 11px;
+    padding: 10px;
+  }
+
+}
+
+    /* =========================================================
+       BUTTONS
+       ========================================================= */
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 8px;
+      margin: 12px 0 0;
+    }
+
+    @media (max-width: 900px) {
+      .button-row {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .button-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .button-row button {
+      min-height: 40px;
+
+      padding: 8px 14px;
+
+      border-radius: 8px;
+      border: none;
+
+      font-weight: 800;
+
+      cursor: pointer;
+
+      background: var(--blue);
+      color: white;
+    }
+
+    .button-row button.secondary {
+      background: var(--blue-dark);
+    }
+
+    .button-row button.copy-all {
+      background: var(--green);
+    }
+
+    /* =========================================================
+       ERROR
+       ========================================================= */
+
+    .json-error {
+      display: none;
+
+      margin-top: 10px;
+
+      padding: 10px 12px;
+
+      background: #fff2f2;
+      color: #a40000;
+
+      border: 1px solid #e3aaaa;
+      border-radius: 8px;
+
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+
+      white-space: pre-wrap;
+    }
+
+    .json-error.visible {
+      display: block;
+    }
+
+ 
+    /* =========================================================
+       ADS
+       ========================================================= */
+
+    .ad-block {
+      background: #fffdf2;
+
+      border: 1px dashed var(--orange);
+
+      min-height: 140px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: var(--blue-dark);
+
+      font-weight: 800;
+
+      border-radius: 10px;
+
+      margin-top: 16px;
+
+      text-align: center;
+    }
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @media (max-width: 900px) {
+
+      .json-editor-area {
+        grid-template-columns: 1fr;
+      }
+
+      #jsonInput,
+      .output-box {
+        min-height: 350px;
+      }
+
+    }
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 600px) {
+
+      .tool-content {
+        padding: 14px;
+      }
+
+      .tool-content .page-title {
+        font-size: 27px;
+      }
+
+      .json-editor-area {
+        gap: 14px;
+      }
+
+      #jsonInput,
+      .output-box {
+        min-height: 300px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="tool-page-wrap">
+
+    <div id="siteHeader"></div>
+    <div id="headerServicesLayer"></div>
+
+
+    <main class="tool-content">
+
+      <div class="ad-block">
+        Google AdSense Banner
+      </div>
+
+
+      <div class="page-title">
+        JSON Formatter Editor Convertor Free Tool
+      </div>
+
+
+      <p class="page-subtitle">
+        Format, validate, and convert JSON for API, web, and developer use cases.
+      </p>
+
+
+      <!-- =====================================================
+           JSON EDITOR
+           ===================================================== -->
+
+      <div class="json-editor-area">
+
+
+        <!-- ===================================================
+             INPUT
+             =================================================== -->
+
+        <div class="json-editor-panel">
+
+          <div class="json-editor-panel-title">
+            JSON INPUT
+          </div>
+
+          <textarea id="jsonInput">{"name":"Karauli","service":"Darshan","items":[{"type":"Tour"},{"type":"Guide"}],"location":{"city":"Kanpur","state":"Uttar Pradesh"}}</textarea>
+
+
+
+
+          <div
+            id="jsonError"
+            class="json-error">
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             OUTPUT
+             =================================================== -->
+
+        <div class="json-editor-panel">
+
+          <div class="json-editor-panel-title">
+            FORMATTED OUTPUT
+          </div>
+
+
+          <div class="output-wrapper">
+
+            <div
+              class="output-box"
+              id="jsonOutput">
+              Formatted JSON appears here.
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+     
+<div class="button-row">
+
+    <!-- =====================================================
+         CARD 1 : FORMATTER
+         ===================================================== -->
+        <button
+            type="button"
+            onclick="formatJson()"
+            style="
+                width:100% !important;
+                min-width:0 !important;
+                box-sizing:border-box !important;
+                white-space:nowrap !important;
+                overflow:hidden !important;
+                text-overflow:ellipsis !important;
+                font-size:clamp(7px,1.1vw,14px) !important;
+            "
+        >
+            Format JSON
+        </button>
+   
+        <button
+            type="button"
+            class="secondary"
+            onclick="renameKey()"
+            style="
+                width:100% !important;
+                min-width:0 !important;
+                box-sizing:border-box !important;
+                white-space:nowrap !important;
+                overflow:hidden !important;
+                text-overflow:ellipsis !important;
+                font-size:clamp(7px,1vw,14px) !important;
+            "
+        >
+            Rename Key
+        </button>
+
+        <button
+            type="button"
+            class="tertiary"
+            onclick="replaceValue()"
+            style="
+                width:100% !important;
+                min-width:0 !important;
+                box-sizing:border-box !important;
+                white-space:nowrap !important;
+                overflow:hidden !important;
+                text-overflow:ellipsis !important;
+                font-size:clamp(7px,1vw,14px) !important;
+            "
+        >
+            Replace Value
+        </button>
+
+        <button
+            type="button"
+            class="secondary"
+            onclick="addKeyValueJson()"
+            style="
+                width:100% !important;
+                min-width:0 !important;
+                box-sizing:border-box !important;
+                white-space:nowrap !important;
+                overflow:hidden !important;
+                text-overflow:ellipsis !important;
+                font-size:clamp(7px,1vw,14px) !important;
+            "
+        >
+            Add Key-value
+        </button>
+
+        <button
+            type="button"
+            class="tertiary"
+            onclick="removeKeyValueJson()"
+            style="
+                width:100% !important;
+                min-width:0 !important;
+                box-sizing:border-box !important;
+                white-space:nowrap !important;
+                overflow:hidden !important;
+                text-overflow:ellipsis !important;
+                font-size:clamp(7px,1vw,14px) !important;
+            "
+        >
+            Remove Key-value
+        </button>
+        <button
+            type="button"
+            class="copy-all"
+            onclick="copyAllJson()"
+            style="
+                width:100% !important;
+                min-width:0 !important;
+                box-sizing:border-box !important;
+                white-space:nowrap !important;
+                overflow:hidden !important;
+                text-overflow:ellipsis !important;
+                font-size:clamp(7px,1.1vw,14px) !important;
+            "
+        >
+            Copy All
+        </button>
+
+</div>
+      <div class="ad-block">
+        Google AdSense Banner
+      </div>
+
+    </main>
+
+
+    <div id="footerServicesLayer"></div>
+    <div id="siteFooter"></div>
+
+  </div>
+  <div id="renameModal" class="rename-modal">
+
+
+</div>
+  
+
+
+  <script>
+
+    /* =========================================================
+       GLOBAL STATE
+       ========================================================= */
+
+    let parsedJson = null;
+
+    let selectedJsonText = '';
+
+
+    /* =========================================================
+       FORMAT JSON
+       ========================================================= */
+
+    function formatJson() {
+
+      const input =
+        document.getElementById('jsonInput');
+
+      const output =
+        document.getElementById('jsonOutput');
+
+      const errorBox =
+        document.getElementById('jsonError');
+
+      const text = input.value;
+
+
+      // Clear previous error
+
+      errorBox.classList.remove('visible');
+      errorBox.textContent = '';
+
+
+      try {
+
+        parsedJson = JSON.parse(text);
+
+
+        // Complete formatted JSON
+
+        selectedJsonText =
+          JSON.stringify(
+            parsedJson,
+            null,
+            2
+          );
+
+
+        output.textContent =
+          selectedJsonText;
+
+
+      } catch (e) {
+
+        parsedJson = null;
+
+        output.textContent =
+          'Invalid JSON';
+
+
+        showJsonError(
+          e,
+          text
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       expandJson
+    ========================================================= */
+
+function renameKey() {
+
+  const existing =
+    document.getElementById(
+      'renameKeyPopup'
+    );
+
+  if (existing) {
+    existing.remove();
+  }
+
+  const popup =
+    document.createElement('div');
+
+  popup.id =
+    'renameKeyPopup';
+
+  popup.innerHTML = `
+    <style>
+      #renameKeyPopup {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+      }
+
+      #renameKeyPopup .popup-card {
+        width: 420px;
+        max-width: 95vw;
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        display: grid;
+        gap: 10px;
+      }
+
+      #renameKeyPopup input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+      }
+
+      #renameKeyPopup .popup-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      #renameKeyPopup button {
+        flex: 1;
+      }
+    </style>
+
+    <div class="popup-card">
+
+      <h3>Rename Key</h3>
+
+      <input
+        id="renameObjectName"
+        placeholder="Object Name (optional)"
+      >
+
+      <input
+        id="renameOldKey"
+        placeholder="Key Name"
+      >
+
+      <input
+        id="renameNewKey"
+        placeholder="New Key Name"
+      >
+
+      <div class="popup-actions">
+
+        <button
+          onclick="renameKeyConfirm()">
+          Rename
+        </button>
+
+        <button
+          onclick="document.getElementById('renameKeyPopup').remove()">
+          Cancel
+        </button>
+
+      </div>
+
+    </div>
+  `;
+
+  document.body.appendChild(
+    popup
+  );
+
+}
+
+
+function renameKeyConfirm() {
+
+  const oldKey = document.getElementById('renameOldKey').value.trim();
+  const newKey = document.getElementById('renameNewKey').value.trim();
+
+  if (!oldKey || !newKey) {
+    alert('Enter Key Name and New Key Name');
+    return;
+  }
+
+  try {
+    const input = document.getElementById('jsonInput');
+    const json = JSON.parse(input.value);
+    let renameCount = 0;
+
+    function processNode(node) {
+      if (!node || typeof node !== 'object') return;
+      if (Array.isArray(node)) {
+        node.forEach(processNode);
+        return;
+      }
+      if (Object.prototype.hasOwnProperty.call(node, oldKey) &&
+          !Object.prototype.hasOwnProperty.call(node, newKey)) {
+        node[newKey] = node[oldKey];
+        delete node[oldKey];
+        renameCount++;
+      }
+      Object.values(node).forEach(processNode);
+    }
+
+    processNode(json);
+    input.value = JSON.stringify(json, null, 2);
+    formatJson();
+    alert(`${renameCount} key(s) renamed`);
+    document.getElementById('renameKeyPopup')?.remove();
+  } catch (error) {
+    alert('Invalid JSON');
+  }
+}
+
+
+function replaceValue() {
+
+  const oldValue = prompt('Value to replace');
+  const newValue = prompt('New value');
+
+  if (oldValue === null || newValue === null) return;
+
+  try {
+    const input = document.getElementById('jsonInput');
+    const json = JSON.parse(input.value);
+
+    function replaceNode(node) {
+      if (!node || typeof node !== 'object') return;
+      Object.keys(node).forEach(key => {
+        if (node[key] !== null && typeof node[key] === 'object') {
+          replaceNode(node[key]);
+        } else if (String(node[key]) === oldValue) {
+          node[key] = newValue;
+        }
+      });
+    }
+
+    replaceNode(json);
+    input.value = JSON.stringify(json, null, 2);
+    formatJson();
+  } catch (error) {
+    alert('Invalid JSON');
+  }
+}
+
+
+function addKeyValueJson() {
+
+  const key = prompt('Key name');
+  const value = prompt('Value');
+
+  if (!key || value === null) return;
+
+  try {
+    const input = document.getElementById('jsonInput');
+    const json = JSON.parse(input.value);
+    const parsedValue = value.trim() === '' ? '' : JSON.parse(value);
+
+    if (Array.isArray(json)) {
+      json.push({ [key]: parsedValue });
+    } else if (json && typeof json === 'object') {
+      json[key] = parsedValue;
+    }
+
+    input.value = JSON.stringify(json, null, 2);
+    formatJson();
+  } catch (error) {
+    alert('Enter a valid JSON value');
+  }
+}
+
+
+function removeKeyValueJson() {
+
+  const key = prompt('Key name to remove');
+
+  if (!key) return;
+
+  try {
+    const input = document.getElementById('jsonInput');
+    const json = JSON.parse(input.value);
+
+    function removeNode(node) {
+      if (!node || typeof node !== 'object') return;
+      if (Array.isArray(node)) {
+        node.forEach(removeNode);
+        return;
+      }
+      delete node[key];
+      Object.values(node).forEach(removeNode);
+    }
+
+    removeNode(json);
+    input.value = JSON.stringify(json, null, 2);
+    formatJson();
+  } catch (error) {
+    alert('Invalid JSON');
+  }
+}
+
+
+    /* =========================================================
+       COPY ALL
+       ========================================================= */
+
+    function copyAllJson() {
+
+      if (
+        parsedJson === null
+      ) {
+
+        return;
+
+      }
+
+
+      const text =
+        JSON.stringify(
+          parsedJson,
+          null,
+          2
+        );
+
+
+      copyText(
+        text
+      );
+
+    }
+
+
+    /* =========================================================
+       COPY HELPER
+       ========================================================= */
+
+    function copyText(
+      text
+    ) {
+
+      navigator.clipboard
+        .writeText(text)
+        .then(
+          () => {
+
+            console.log(
+              'JSON copied successfully'
+            );
+
+          }
+        )
+        .catch(
+          () => {
+
+            // Fallback
+
+            const temp =
+              document.createElement(
+                'textarea'
+              );
+
+            temp.value =
+              text;
+
+            document.body.appendChild(
+              temp
+            );
+
+            temp.select();
+
+            document.execCommand(
+              'copy'
+            );
+
+            temp.remove();
+
+          }
+        );
+
+    }
+
+
+    /* =========================================================
+       JSON ERROR
+       ========================================================= */
+
+    function showJsonError(
+      error,
+      text
+    ) {
+
+      const errorBox =
+        document.getElementById(
+          'jsonError'
+        );
+
+
+      let position =
+        getJsonErrorPosition(
+          error
+        );
+
+
+      if (
+        position < 0
+      ) {
+
+        position = 0;
+
+      }
+
+
+      const lineInfo =
+        getLineInformation(
+          text,
+          position
+        );
+
+
+      errorBox.textContent =
+        'JSON Error\n' +
+        error.message +
+        '\n\n' +
+        'Line: ' +
+        lineInfo.line +
+        '   Column: ' +
+        lineInfo.column;
+
+
+      errorBox.classList.add(
+        'visible'
+      );
+
+
+      highlightJsonError(
+        position,
+        text
+      );
+
+    }
+
+
+    /* =========================================================
+       GET ERROR POSITION
+       ========================================================= */
+
+    function getJsonErrorPosition(
+      error
+    ) {
+
+      const message =
+        String(
+          error.message || ''
+        );
+
+
+      /*
+       * Chrome / Edge / modern browsers:
+       *
+       * Unexpected token } in JSON at position 123
+       */
+
+      let match =
+        message.match(
+          /position\s+(\d+)/i
+        );
+
+
+      if (match) {
+
+        return Number(
+          match[1]
+        );
+
+      }
+
+
+      /*
+       * Some browsers:
+       *
+       * line 2 column 15
+       */
+
+      match =
+        message.match(
+          /line\s+(\d+).*column\s+(\d+)/i
+        );
+
+
+      if (match) {
+
+        return -1;
+
+      }
+
+
+      return -1;
+
+    }
+
+
+    /* =========================================================
+       LINE INFORMATION
+       ========================================================= */
+
+    function getLineInformation(
+      text,
+      position
+    ) {
+
+      const before =
+        text.substring(
+          0,
+          position
+        );
+
+
+      const line =
+        before.split(
+          '\n'
+        ).length;
+
+
+      const lastNewLine =
+        before.lastIndexOf(
+          '\n'
+        );
+
+
+      const column =
+        position -
+        lastNewLine;
+
+
+      return {
+        line,
+        column
+      };
+
+    }
+
+
+    /* =========================================================
+       HIGHLIGHT ERROR
+       ========================================================= */
+
+    function highlightJsonError(
+      position,
+      text
+    ) {
+
+      const input =
+        document.getElementById(
+          'jsonInput'
+        );
+
+
+      /*
+       * Select the error character.
+       */
+
+      input.focus();
+
+
+      const safePosition =
+        Math.min(
+          Math.max(
+            position,
+            0
+          ),
+          text.length
+        );
+
+
+      input.setSelectionRange(
+        safePosition,
+        Math.min(
+          safePosition + 1,
+          text.length
+        )
+      );
+
+
+      /*
+       * Scroll textarea so error
+       * position becomes visible.
+       */
+
+      const lineStart =
+        text.lastIndexOf(
+          '\n',
+          safePosition - 1
+        ) + 1;
+
+
+      const lineNumber =
+        text.substring(
+          0,
+          safePosition
+        ).split(
+          '\n'
+        ).length;
+
+
+      const lineHeight =
+        parseFloat(
+          getComputedStyle(
+            input
+          ).lineHeight
+        ) || 22;
+
+
+      input.scrollTop =
+        Math.max(
+          0,
+          (lineNumber - 3) *
+          lineHeight
+        );
+
+    }
+
+
+    /* =========================================================
+       INITIAL FORMAT
+       ========================================================= */
+
+    window.addEventListener(
+      'DOMContentLoaded',
+      function() {
+
+        formatJson();
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
