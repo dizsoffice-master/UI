@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter_ui_app/screens/login_page.dart';
 import 'package:flutter_ui_app/screens/signup_page.dart';
 import 'package:flutter_ui_app/services/app_logger.dart';
@@ -21,6 +22,21 @@ class _IndexPageState extends State<IndexPage> {
     super.dispose();
   }
 
+  Future<void> _requestAreaFilter() async {
+    final permission = await Geolocator.requestPermission();
+    if (!mounted) return;
+
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location permission was not granted.')),
+      );
+      return;
+    }
+
+    setState(() => _areaFilterEnabled = true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final offers = _offers
@@ -28,6 +44,9 @@ class _IndexPageState extends State<IndexPage> {
             offer.offer.toLowerCase().contains(_offerSearch) ||
             offer.location.toLowerCase().contains(_offerSearch))
         .toList();
+      final visibleOffers = _areaFilterEnabled
+        ? offers.where((offer) => offer.isLocal).toList()
+        : offers;
     final page = Scaffold(
       appBar: AppBar(
         title: const Text('Karauli Shankar Mahadev'),
@@ -110,21 +129,12 @@ class _IndexPageState extends State<IndexPage> {
                 const SizedBox(height: 24),
                 _OffersSection(
                   searchController: _offerSearchController,
-                  offers: offers,
+                  offers: visibleOffers,
                   areaFilterEnabled: _areaFilterEnabled,
                   onSearchChanged: (value) {
                     setState(() => _offerSearch = value.trim().toLowerCase());
                   },
-                  onAreaFilterPressed: () {
-                    setState(() => _areaFilterEnabled = true);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Area offers filter enabled. Location is never stored.',
-                        ),
-                      ),
-                    );
-                  },
+                  onAreaFilterPressed: _requestAreaFilter,
                   onClearPressed: () {
                     _offerSearchController.clear();
                     setState(() {
@@ -354,12 +364,14 @@ class _Offer {
   final String offer;
   final String location;
   final String address;
+  final bool isLocal;
 
   const _Offer({
     required this.shopName,
     required this.offer,
     required this.location,
     required this.address,
+    required this.isLocal,
   });
 }
 
@@ -377,17 +389,20 @@ const _offers = [
     offer: '10% off on pooja essentials',
     location: 'Karauli',
     address: 'Temple Road, Karauli, Rajasthan',
+    isLocal: true,
   ),
   _Offer(
     shopName: 'Shankar Bhojanalaya',
     offer: 'Free chaas with every thali',
     location: 'Karauli',
     address: 'Main Bazaar, near the temple',
+    isLocal: true,
   ),
   _Offer(
     shopName: 'Yatra Guest House',
     offer: '15% off on two-night stays',
     location: 'Hindaun',
     address: 'Pilgrim Lane, Hindaun City',
+    isLocal: false,
   ),
 ];
