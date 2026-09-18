@@ -21,6 +21,12 @@ window.toolPageSettings = [
     file: 'json-difference-checker.html',
     label: 'JSON Difference Checker',
     previous: 'json-viewer-formatter.html',
+    next: 'excel-csv-difference-checker.html'
+  },
+  {
+    file: 'excel-csv-difference-checker.html',
+    label: 'Excel CSV Difference Checker',
+    previous: 'json-difference-checker.html',
     next: 'json-editor.html'
   },
   {

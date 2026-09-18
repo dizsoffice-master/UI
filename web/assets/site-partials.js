@@ -65,6 +65,10 @@ function headerServicesLayerMarkup() {
         <img class="service-card-icon" src="${rootPath}assets/icons/json-difference.svg" alt="">
         <span class="service-card-text">JSON Difference Checker</span>
       </a>
+      <a class="service-layer-card" href="${rootPath}pages/excel-csv-difference-checker.html">
+        <img class="service-card-icon" src="${rootPath}assets/icons/excel-difference.svg" alt="">
+        <span class="service-card-text">Excel CSV Difference Checker</span>
+      </a>
       <a class="service-layer-card" href="${rootPath}pages/json-editor.html">
         <img class="service-card-icon" src="${rootPath}assets/icons/json-editor.svg" alt="">
         <span class="service-card-text">JSON Editor</span>
