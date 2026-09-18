@@ -53,6 +53,10 @@ function headerServicesLayerMarkup() {
         <span class="service-card-icon">SQL</span>
         <span class="service-card-text">SQL Formatter</span>
       </a>
+      <a class="service-layer-card" href="${rootPath}pages/sql-insert-query-builder-from-json-excel-csv.html">
+        <span class="service-card-icon">SQL</span>
+        <span class="service-card-text">SQL INSERT Builder</span>
+      </a>
       <a class="service-layer-card" href="${rootPath}pages/json-viewer-formatter.html">
         <span class="service-card-icon">JSON</span>
         <span class="service-card-text">JSON Viewer Formatter</span>

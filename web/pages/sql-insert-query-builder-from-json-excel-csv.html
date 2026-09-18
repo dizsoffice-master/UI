@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Syntax Formatter Online Free Tool</title>
+  <link rel="stylesheet" href="../assets/site-columns.css">
+  <link rel="stylesheet" href="../assets/master.css">
+  <script src="../assets/page-settings.js"></script>
+  <script src="../assets/site-partials.js"></script>
+  <script src="../assets/adsense.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <style>
+    body {
+      background: var(--page-bg);
+    }
+
+    .tool-page-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: var(--case);
+      box-shadow: var(--shadow);
+    }
+
+    .tool-header {
+      background: var(--blue-dark);
+      color: white;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 90px;
+    }
+
+    .tool-header .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tool-header .logo-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 22px;
+    }
+
+    .tool-header .logo-title {
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .tool-header .logo-subtitle {
+      font-size: 12px;
+      color: #b9c7d9;
+    }
+
+    .tool-nav {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .tool-nav a {
+      color: white;
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      padding: 8px 10px;
+    }
+
+    .tool-nav .login {
+      background: var(--green);
+      border-radius: 8px;
+      padding: 10px 16px;
+    }
+
+    .tool-strip {
+      background: var(--blue-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 28px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .tool-strip a {
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      background: white;
+      color: var(--blue-dark);
+      font-weight: 800;
+      font-size: 13px;
+      border: 1px solid var(--line);
+      text-decoration: none;
+    }
+
+    .tool-layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 260px) minmax(540px, 1fr) minmax(180px, 250px);
+      gap: 20px;
+      padding: 24px 28px;
+      background: var(--case);
+    }
+
+    .left-panel,
+    .right-panel {
+      background: var(--blue-soft);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .left-panel .panel-title,
+    .right-panel .panel-title {
+      font-size: 14px;
+      color: var(--blue-dark);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .left-panel ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .left-panel li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .left-panel li:last-child {
+      border-bottom: none;
+    }
+
+    .left-panel a {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .tool-content {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 26px;
+      min-height: 480px;
+    }
+
+    .tool-content .page-title {
+      color: var(--blue-dark);
+      font-size: clamp(30px, 3vw, 40px);
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .tool-content .page-subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 260px;
+      resize: vertical;
+      background: #f8fafc;
+      color: var(--text);
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      outline: none;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 14px 0 16px;
+    }
+
+    .button-row button {
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--blue);
+      color: white;
+    }
+
+    .button-row button.secondary {
+      background: var(--blue-dark);
+    }
+
+    .output-box {
+      background: #071b3d;
+      color: #d9fedc;
+      padding: 16px;
+      min-height: 160px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      white-space: pre-wrap;
+      font-family: "Courier New", monospace;
+    }
+
+    .builder-steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .step-pill {
+      padding: 12px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .step-pill.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: white;
+    }
+
+    .builder-step {
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .builder-step.active {
+      display: block;
+    }
+
+    .step-heading {
+      margin: 0 0 6px;
+      color: var(--blue-dark);
+      font-size: 20px;
+    }
+
+    .step-help {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field-grid label,
+    .mapping-row label {
+      display: grid;
+      gap: 6px;
+      color: var(--blue-dark);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      color: var(--text);
+    }
+
+    .column-inputs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .column-inputs input {
+      min-width: 0;
+    }
+
+    .mapping-list {
+      display: grid;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .mapping-row {
+      display: grid;
+      grid-template-columns: 54px minmax(120px, 1fr) minmax(180px, 1fr);
+      gap: 10px;
+      align-items: end;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fafc;
+    }
+
+    .seq-badge {
+      display: grid;
+      place-items: center;
+      min-height: 42px;
+      border-radius: 8px;
+      background: var(--blue-dark);
+      color: white;
+      font-weight: 900;
+    }
+
+    .mapping-row small {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(7, 27, 61, .65);
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .mapping-modal {
+      width: min(720px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      padding: 22px;
+      border-radius: 12px;
+      background: white;
+      box-shadow: var(--shadow);
+    }
+
+    .output-tabs {
+      display: flex;
+      gap: 8px;
+      margin: 18px 0 10px;
+    }
+
+    .output-tabs button.active {
+      background: var(--green);
+    }
+
+    .output-panel {
+      display: none;
+    }
+
+    .output-panel.active {
+      display: block;
+    }
+
+    .output-panel .output-box {
+      min-height: 260px;
+      max-height: 520px;
+      overflow: auto;
+    }
+
+    .status-message {
+      min-height: 22px;
+      margin: 10px 0;
+      color: #a40000;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .ad-block {
+      background: #fffdf2;
+      border: 1px dashed var(--orange);
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue-dark);
+      font-weight: 800;
+      border-radius: 10px;
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .all-tools {
+      background: var(--blue-soft);
+      padding: 22px 28px;
+      border-top: 1px solid var(--line);
+    }
+
+    .all-tools-title {
+      color: var(--blue-dark);
+      font-weight: 900;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    .all-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .all-tools-grid a {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    @media (max-width: 900px) {
+      .tool-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .tool-strip,
+      .all-tools-grid {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+      }
+
+      .builder-steps,
+      .field-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .column-inputs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .builder-steps,
+      .field-grid,
+      .column-inputs {
+        grid-template-columns: 1fr;
+      }
+
+      .mapping-row {
+        grid-template-columns: 44px 1fr;
+      }
+
+      .mapping-row label:last-child {
+        grid-column: 2;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="tool-page-wrap">
+    <div id="siteHeader"></div>
+    <div id="headerServicesLayer"></div>
+
+    <main class="tool-content">
+      <div class="ad-block">PostgreSQL INSERT Query Builder</div>
+      <div class="page-title">SQL INSERT Query Builder</div>
+      <p class="page-subtitle">Define a table, import JSON, CSV, or Excel data, confirm column mapping, then generate PostgreSQL-ready INSERT queries.</p>
+
+      <div class="builder-steps" aria-label="Builder steps">
+        <div class="step-pill active" data-step-pill="1">1. Table</div>
+        <div class="step-pill" data-step-pill="2">2. Import</div>
+        <div class="step-pill" data-step-pill="3">3. Mapping</div>
+        <div class="step-pill" data-step-pill="4">4. Output</div>
+      </div>
+
+      <section class="builder-step active" data-step="1">
+        <h2 class="step-heading">Step 1 of 4: Define the table</h2>
+        <p class="step-help">Paste the table definition copied from your SQL editor. The table name and column order will be read automatically.</p>
+        <textarea id="tableDefinition" spellcheck="false">CREATE TABLE public.temples (
+  id integer,
+  name text,
+  city text,
+  created_at timestamp
+);</textarea>
+        <div class="button-row">
+          <button type="button" onclick="readTableDefinition()">Read table definition</button>
+          <button type="button" class="secondary" onclick="goToStep(2)">Next: Import data</button>
+        </div>
+        <div id="tableStatus" class="status-message"></div>
+      </section>
+
+      <section class="builder-step" data-step="2">
+        <h2 class="step-heading">Step 2 of 4: Enter data</h2>
+        <p class="step-help">For JSON, use an array of objects and only object keys are read. CSV and Excel use the first row as source columns.</p>
+        <div class="field-grid">
+          <label>Source type
+            <select id="sourceType" onchange="toggleSourceInput()">
+              <option value="json">JSON</option>
+              <option value="csv">CSV</option>
+              <option value="excel">Excel (.xlsx/.xls)</option>
+            </select>
+          </label>
+          <label id="fileInputLabel" hidden>Excel file <input id="excelFile" type="file" accept=".xlsx,.xls"></label>
+        </div>
+        <textarea id="dataInput" placeholder='[{"id":1,"name":"Temple"}]'>[{"id":1,"name":"Temple","city":"Karauli"},{"id":2,"name":"Mahadev","city":"Kanpur"}]</textarea>
+        <div class="button-row">
+          <button type="button" onclick="readSourceData()">Read source data</button>
+          <button type="button" class="secondary" onclick="goToStep(1)">Back</button>
+          <button type="button" class="secondary" onclick="openMapping()">Next: Map columns</button>
+        </div>
+        <div id="sourceStatus" class="status-message"></div>
+      </section>
+
+      <section class="builder-step" data-step="3">
+        <h2 class="step-heading">Step 3 of 4: Confirm column mapping</h2>
+        <p class="step-help">Table sequence IDs are shown on the left. Choose the source sequence for each table column, or select Skip.</p>
+        <div id="mappingSummary" class="mapping-list"></div>
+        <div class="button-row">
+          <button type="button" onclick="openMapping()">Open mapping popup</button>
+          <button type="button" class="secondary" onclick="goToStep(2)">Back</button>
+          <button type="button" class="secondary" onclick="confirmMapping()">Confirm mapping</button>
+        </div>
+        <div id="mappingStatus" class="status-message"></div>
+      </section>
+
+      <section class="builder-step" data-step="4">
+        <h2 class="step-heading">Step 4 of 4: PostgreSQL output</h2>
+        <p class="step-help">Both outputs use PostgreSQL-compatible quoted identifiers and escaped values.</p>
+        <div class="output-tabs">
+          <button type="button" class="active" data-output-tab="single" onclick="showOutput('single')">Single INSERT</button>
+          <button type="button" data-output-tab="bulk" onclick="showOutput('bulk')">Bulk INSERT</button>
+        </div>
+        <div class="output-panel active" data-output-panel="single">
+          <div class="button-row"><button type="button" onclick="copyOutput('single')">Copy single query</button></div>
+          <div class="output-box" id="singleOutput">Generate the mapping first.</div>
+        </div>
+        <div class="output-panel" data-output-panel="bulk">
+          <div class="button-row"><button type="button" onclick="copyOutput('bulk')">Copy bulk query</button></div>
+          <div class="output-box" id="bulkOutput">Generate the mapping first.</div>
+        </div>
+        <div class="button-row"><button type="button" class="secondary" onclick="goToStep(3)">Back to mapping</button></div>
+      </section>
+
+      <div class="ad-block">PostgreSQL query output is generated locally in your browser.</div>
+    </main>
+
+    <div id="mappingModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="mappingModalTitle">
+      <div class="mapping-modal">
+        <h2 id="mappingModalTitle" class="step-heading">Column mapping</h2>
+        <p class="step-help">Assign each table column to a source field. Sequence IDs make the mapping explicit.</p>
+        <div id="mappingRows" class="mapping-list"></div>
+        <div class="button-row">
+          <button type="button" onclick="saveMappingPopup()">Save mapping</button>
+          <button type="button" class="secondary" onclick="closeMapping()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="footerServicesLayer"></div>
+    <div id="siteFooter"></div>
+  </div>
+
+  <script>
+    const builderState = {
+      tableName: '',
+      columns: [],
+      sourceHeaders: [],
+      rows: [],
+      mapping: [],
+      sourceType: 'json'
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      toggleSourceInput();
+    });
+
+    function setStatus(id, message) {
+      document.getElementById(id).textContent = message;
+    }
+
+    function readTableDefinition() {
+      try {
+        const definition = document.getElementById('tableDefinition').value.trim();
+        const match = definition.match(/create\s+table\s+(?:if\s+not\s+exists\s+)?([\w."`]+)\s*\(([\s\S]*)\)\s*;?$/i);
+        if (!match) throw new Error('Paste a complete CREATE TABLE definition.');
+
+        const tableName = match[1].replaceAll('"', '').replaceAll('`', '');
+        const entries = splitSqlList(match[2]);
+        const columns = entries
+          .filter(entry => !/^\s*(constraint|primary\s+key|unique|foreign\s+key|check|exclude)\b/i.test(entry))
+          .map(entry => {
+            const columnMatch = entry.trim().match(/^(?:"([^"]+)"|`([^`]+)`|([\w]+))/);
+            return columnMatch && (columnMatch[1] || columnMatch[2] || columnMatch[3]);
+          })
+          .filter(Boolean);
+
+        if (!tableName || !columns.length) throw new Error('No table columns were found.');
+        if (new Set(columns.map(column => column.toLowerCase())).size !== columns.length) throw new Error('Table columns must be unique.');
+
+        builderState.tableName = tableName;
+        builderState.columns = columns;
+        setStatus('tableStatus', `${tableName}: ${columns.length} table column(s) read in SQL order.`);
+        return true;
+      } catch (error) {
+        setStatus('tableStatus', error.message);
+        return false;
+      }
+    }
+
+    function splitSqlList(text) {
+      const entries = [];
+      let entry = '', depth = 0, quote = '';
+      for (const character of text) {
+        if (quote) {
+          entry += character;
+          if (character === quote) quote = '';
+        } else if (character === '"' || character === "'") {
+          quote = character;
+          entry += character;
+        } else if (character === '(') {
+          depth++;
+          entry += character;
+        } else if (character === ')') {
+          depth--;
+          entry += character;
+        } else if (character === ',' && depth === 0) {
+          entries.push(entry);
+          entry = '';
+        } else {
+          entry += character;
+        }
+      }
+      if (entry.trim()) entries.push(entry);
+      return entries;
+    }
+
+    function toggleSourceInput() {
+      const type = document.getElementById('sourceType').value;
+      document.getElementById('fileInputLabel').hidden = type !== 'excel';
+      document.getElementById('dataInput').hidden = type === 'excel';
+      builderState.sourceType = type;
+    }
+
+    async function readSourceData() {
+      try {
+        const type = document.getElementById('sourceType').value;
+        let parsed;
+        if (type === 'json') {
+          parsed = parseJsonSource(document.getElementById('dataInput').value);
+        } else if (type === 'csv') {
+          parsed = parseCsvSource(document.getElementById('dataInput').value);
+        } else {
+          const file = document.getElementById('excelFile').files[0];
+          if (!file || !window.XLSX) throw new Error('Choose an Excel file.');
+          const workbook = XLSX.read(await file.arrayBuffer(), { type: 'array' });
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          parsed = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+          parsed = rowsFromMatrix(parsed);
+        }
+        builderState.sourceHeaders = parsed.headers;
+        builderState.rows = parsed.rows;
+        builderState.sourceType = type;
+        setStatus('sourceStatus', `${parsed.rows.length} data row(s) read and ${parsed.headers.length} source column(s) found.`);
+        return true;
+      } catch (error) {
+        setStatus('sourceStatus', error.message || 'Unable to read source data.');
+        return false;
+      }
+    }
+
+    function parseJsonSource(text) {
+      const value = JSON.parse(text);
+      if (!Array.isArray(value) || !value.length || value.some(item => !item || Array.isArray(item) || typeof item !== 'object')) {
+        throw new Error('JSON must be a non-empty array of objects.');
+      }
+      const headers = [...new Set(value.flatMap(item => Object.keys(item)))];
+      return { headers, rows: value.map(item => headers.map(header => item[header] ?? null)) };
+    }
+
+    function parseCsvSource(text) {
+      const matrix = text.trim().split(/\r?\n/).filter(Boolean).map(line => parseCsvLine(line));
+      return rowsFromMatrix(matrix);
+    }
+
+    function parseCsvLine(line) {
+      const cells = [];
+      let cell = '', quoted = false;
+      for (let index = 0; index < line.length; index++) {
+        const char = line[index];
+        if (char === '"' && line[index + 1] === '"' && quoted) { cell += '"'; index++; }
+        else if (char === '"') quoted = !quoted;
+        else if (char === ',' && !quoted) { cells.push(cell.trim()); cell = ''; }
+        else cell += char;
+      }
+      cells.push(cell.trim());
+      return cells;
+    }
+
+    function rowsFromMatrix(matrix) {
+      if (!matrix.length || !matrix[0].length) throw new Error('The source must include a header row.');
+      const headers = matrix[0].map((value, index) => String(value).trim() || `source_${index + 1}`);
+      const rows = matrix.slice(1).filter(row => row.some(value => String(value).trim() !== '')).map(row => headers.map((_, index) => row[index] ?? null));
+      return { headers, rows };
+    }
+
+    function openMapping() {
+      if (!readTableDefinition()) return;
+      if (!builderState.rows.length || !builderState.sourceHeaders.length) {
+        setStatus('sourceStatus', 'Read source data before opening the mapping.');
+        goToStep(2);
+        return;
+      }
+      const oldMapping = builderState.mapping.length ? builderState.mapping : builderState.columns.map(column => builderState.sourceHeaders.findIndex(header => header.toLowerCase() === column.toLowerCase()));
+      document.getElementById('mappingRows').innerHTML = builderState.columns.map((column, index) => {
+        const selected = oldMapping[index] ?? -1;
+        const options = `<option value="-1">Skip this column</option>` + builderState.sourceHeaders.map((header, sourceIndex) => `<option value="${sourceIndex}" ${sourceIndex === selected ? 'selected' : ''}>${sourceIndex + 1}. ${escapeHtml(header)}</option>`).join('');
+        return `<div class="mapping-row"><span class="seq-badge">T${index + 1}</span><label>Table column<small>${escapeHtml(column)}</small></label><label>Source field<select data-map-index="${index}">${options}</select></label></div>`;
+      }).join('');
+      document.getElementById('mappingModal').classList.add('open');
+    }
+
+    function saveMappingPopup() {
+      builderState.mapping = [...document.querySelectorAll('[data-map-index]')].map(select => Number(select.value));
+      closeMapping();
+      renderMappingSummary();
+      goToStep(3);
+    }
+
+    function closeMapping() {
+      document.getElementById('mappingModal').classList.remove('open');
+    }
+
+    function renderMappingSummary() {
+      document.getElementById('mappingSummary').innerHTML = builderState.columns.map((column, index) => {
+        const sourceIndex = builderState.mapping[index];
+        return `<div class="mapping-row"><span class="seq-badge">T${index + 1}</span><label>Table column<small>${escapeHtml(column)}</small></label><label>Source field<small>${sourceIndex < 0 ? 'Skipped' : `S${sourceIndex + 1}: ${escapeHtml(builderState.sourceHeaders[sourceIndex])}`}</small></label></div>`;
+      }).join('');
+    }
+
+    function confirmMapping() {
+      if (!builderState.mapping.length) { setStatus('mappingStatus', 'Open and save the mapping first.'); return; }
+      if (builderState.mapping.every(index => index < 0)) { setStatus('mappingStatus', 'Select at least one source field.'); return; }
+      generateQueries();
+      setStatus('mappingStatus', 'Mapping confirmed. PostgreSQL queries are ready.');
+      goToStep(4);
+    }
+
+    function generateQueries() {
+      const active = builderState.columns.map((column, index) => ({ column, source: builderState.mapping[index] })).filter(item => item.source >= 0);
+      const table = quoteIdentifier(builderState.tableName);
+      const columns = active.map(item => quoteIdentifier(item.column)).join(', ');
+      const values = builderState.rows.map(row => `(${active.map(item => quoteLiteral(row[item.source])).join(', ')})`);
+      const single = values.map(value => `INSERT INTO ${table} (${columns}) VALUES ${value};`).join('\n');
+      const bulk = `INSERT INTO ${table} (${columns}) VALUES\n${values.join(',\n')};`;
+      document.getElementById('singleOutput').textContent = single;
+      document.getElementById('bulkOutput').textContent = bulk;
+    }
+
+    function quoteIdentifier(value) {
+      return value.split('.').map(part => `"${part.replaceAll('"', '""')}"`).join('.');
+    }
+
+    function quoteLiteral(value) {
+      if (value === null || value === undefined || String(value).trim().toLowerCase() === 'null') return 'NULL';
+      if (typeof value === 'boolean' || String(value).trim().toLowerCase() === 'true' || String(value).trim().toLowerCase() === 'false') return String(value).trim().toUpperCase();
+      if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+      return `'${String(value).replaceAll("'", "''")}'`;
+    }
+
+    function showOutput(type) {
+      document.querySelectorAll('[data-output-tab]').forEach(button => button.classList.toggle('active', button.dataset.outputTab === type));
+      document.querySelectorAll('[data-output-panel]').forEach(panel => panel.classList.toggle('active', panel.dataset.outputPanel === type));
+    }
+
+    async function copyOutput(type) {
+      await navigator.clipboard.writeText(document.getElementById(`${type}Output`).textContent);
+    }
+
+    function goToStep(step) {
+      if (step === 2 && !readTableDefinition()) return;
+      document.querySelectorAll('[data-step]').forEach(section => section.classList.toggle('active', Number(section.dataset.step) === step));
+      document.querySelectorAll('[data-step-pill]').forEach(pill => pill.classList.toggle('active', Number(pill.dataset.stepPill) === step));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+    }
+  </script>
+</body>
+</html>
