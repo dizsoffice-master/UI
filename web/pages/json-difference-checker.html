@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JSON Difference Checker</title>
+  <link rel="stylesheet" href="../assets/master.css">
+  <script src="../assets/page-settings.js"></script>
+  <script src="../assets/site-partials.js"></script>
+  <script src="../assets/adsense.js"></script>
+  <style>
+    :root {
+      --json-diff-ink: #24324a;
+      --json-diff-muted: #667085;
+      --json-diff-paper: #eef3f8;
+      --json-diff-panel: #fff;
+      --json-diff-line: #d9e2ec;
+      --json-diff-accent: #f6a700;
+      --json-diff-blue: #1355a4;
+      --json-diff-dark: #071b3d;
+      --json-diff-red: #b63338;
+      --json-diff-red-bg: #fff0f0;
+      --json-diff-green: #25a56f;
+      --json-diff-green-bg: #edf9f2;
+      --json-diff-yellow: #8a6500;
+      --json-diff-yellow-bg: #fff8d9;
+      --json-diff-shadow: 0 14px 36px rgba(0, 0, 0, .08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--json-diff-ink); background: var(--json-diff-paper); font: 15px/1.45 "Segoe UI", Arial, sans-serif; }
+    button, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .tool-page-wrap { width: 100%; max-width: none; min-height: 100vh; margin: 0; background: var(--case, #fdfdfd); box-shadow: var(--shadow, 0 14px 36px rgba(0,0,0,.08)); }
+    #json-diff-wrapper { width: 100%; max-width: none; margin: 0; padding: clamp(18px, 3vw, 32px); }
+    #json-diff-header { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid var(--json-diff-line); }
+    #json-diff-header h1 { margin: 0; color: var(--json-diff-dark); font-size: clamp(2rem, 3vw, 3rem); line-height: 1.05; letter-spacing: 0; }
+    #json-diff-header p { max-width: 540px; margin: 0; color: var(--json-diff-muted); }
+    #json-diff-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 220px; gap: 14px; align-items: start; }
+    .json-diff-panel, #json-diff-sidebar, #json-diff-summary { background: var(--json-diff-panel); border: 1px solid var(--json-diff-line); border-radius: 8px; box-shadow: var(--json-diff-shadow); }
+    .json-diff-panel { min-width: 0; overflow: hidden; }
+    .json-diff-panel-header { padding: 14px 16px 12px; color: #fff; background: var(--json-diff-dark); border-bottom: 1px solid var(--json-diff-line); }
+    .json-diff-panel-header h2 { margin: 0 0 10px; color: #fff; font-size: 1rem; letter-spacing: .08em; }
+    .json-diff-toolbar, #json-diff-main-controls { display: flex; flex-wrap: wrap; gap: 7px; }
+    .json-diff-button { border: 1px solid var(--json-diff-line); border-radius: 8px; padding: 8px 11px; color: var(--json-diff-ink); background: #fff; font-size: 13px; font-weight: 700; }
+    .json-diff-button:hover { border-color: var(--json-diff-blue); color: var(--json-diff-blue); }
+    .json-diff-button.primary { background: var(--json-diff-blue); color: #fff; border-color: var(--json-diff-blue); }
+    .json-diff-panel-header .json-diff-button { color: var(--json-diff-dark); }
+    .json-diff-status { min-height: 22px; padding-top: 8px; color: #cbd8ec; font-size: 13px; }
+    .json-diff-status.invalid { color: var(--json-diff-red); }
+    .json-diff-editor-wrap { position: relative; min-height: 520px; background: #fbfcff; }
+    .json-diff-line-markers { position: absolute; inset: 0 auto 0 0; width: 7px; pointer-events: none; z-index: 2; }
+    .json-diff-line-markers span { display: block; height: 1.45em; }
+    .json-diff-line-markers .missing { background: var(--json-diff-red); }
+    .json-diff-line-markers .added { background: var(--json-diff-green); }
+    .json-diff-line-markers .changed { background: var(--json-diff-accent); }
+    .json-diff-editor { display: block; width: 100%; min-height: 520px; resize: vertical; border: 0; outline: 0; padding: 18px 18px 18px 25px; color: #233746; background: transparent; font: 14px/1.45 Consolas, "SFMono-Regular", monospace; tab-size: 2; white-space: pre; overflow: auto; }
+    #json-diff-sidebar { padding: 16px; position: sticky; top: 16px; border-top: 4px solid var(--json-diff-blue); }
+    #json-diff-sidebar h2 { margin: 0 0 14px; color: var(--json-diff-dark); font-size: 1rem; }
+    .json-diff-control-group { padding: 12px 0; border-top: 1px solid var(--json-diff-line); }
+    .json-diff-control-group strong { display: block; margin-bottom: 8px; font-size: 13px; }
+    .json-diff-control-group label { display: flex; gap: 7px; align-items: center; margin: 8px 0; color: var(--json-diff-muted); font-size: 13px; }
+    #json-diff-summary { margin-top: 14px; padding: 18px; }
+    #json-diff-main-controls { margin-bottom: 14px; }
+    #json-diff-summary h2 { margin: 0 0 10px; font-size: 1rem; }
+    .json-diff-counts { display: flex; flex-wrap: wrap; gap: 16px; color: var(--json-diff-muted); }
+    .json-diff-counts strong { color: var(--json-diff-ink); }
+    #json-diff-list { display: grid; gap: 7px; margin-top: 14px; }
+    .json-diff-item { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 9px 11px; border-radius: 6px; font: 13px Consolas, monospace; }
+    .json-diff-item.missing { color: var(--json-diff-red); background: var(--json-diff-red-bg); }
+    .json-diff-item.added { color: var(--json-diff-green); background: var(--json-diff-green-bg); }
+    .json-diff-item.changed { color: var(--json-diff-yellow); background: var(--json-diff-yellow-bg); }
+    .json-diff-item code { overflow-wrap: anywhere; }
+    .json-diff-empty { color: var(--json-diff-green); }
+    @media (max-width: 1100px) { #json-diff-main { grid-template-columns: 1fr 1fr; } #json-diff-sidebar { grid-column: 1 / -1; position: static; } }
+    @media (max-width: 700px) { #json-diff-wrapper { padding: 12px; } #json-diff-header { display: block; } #json-diff-header p { margin-top: 14px; } #json-diff-main { grid-template-columns: 1fr; } .json-diff-editor-wrap, .json-diff-editor { min-height: 360px; } }
+  </style>
+</head>
+<body>
+  <div class="tool-page-wrap">
+    <div id="siteHeader"></div>
+    <div id="headerServicesLayer"></div>
+
+    <main id="json-diff-wrapper">
+    <header id="json-diff-header">
+      <h1>JSON Difference Checker</h1>
+      <p>Compare JSON values and structure without treating whitespace, formatting, or object key order as a difference.</p>
+    </header>
+
+    <div id="json-diff-main-controls">
+      <button class="json-diff-button primary" id="json-diff-compare" type="button">Compare</button>
+      <label class="json-diff-button"><input id="json-diff-auto-compare" type="checkbox" checked> Auto Compare</label>
+    </div>
+
+    <section id="json-diff-main">
+      <article class="json-diff-panel">
+        <div class="json-diff-panel-header"><h2>LEFT JSON</h2><div class="json-diff-toolbar"><button class="json-diff-button" id="json-diff-format-left" type="button">Format</button><button class="json-diff-button" id="json-diff-sort-left" type="button">Sort JSON</button><button class="json-diff-button" id="json-diff-copy-left" type="button">Copy</button></div><div class="json-diff-status" id="json-diff-status-left" aria-live="polite"></div></div>
+        <div class="json-diff-editor-wrap"><div class="json-diff-line-markers" id="json-diff-markers-left" aria-hidden="true"></div><textarea class="json-diff-editor" id="json-diff-left" spellcheck="false" aria-label="Left JSON">{
+  "name": "John",
+  "age": 25,
+  "city": "Delhi"
+}</textarea></div>
+      </article>
+      <article class="json-diff-panel">
+        <div class="json-diff-panel-header"><h2>RIGHT JSON</h2><div class="json-diff-toolbar"><button class="json-diff-button" id="json-diff-format-right" type="button">Format</button><button class="json-diff-button" id="json-diff-align-right" type="button">Auto Sort Based on Left</button><button class="json-diff-button" id="json-diff-copy-right" type="button">Copy</button></div><div class="json-diff-status" id="json-diff-status-right" aria-live="polite"></div></div>
+        <div class="json-diff-editor-wrap"><div class="json-diff-line-markers" id="json-diff-markers-right" aria-hidden="true"></div><textarea class="json-diff-editor" id="json-diff-right" spellcheck="false" aria-label="Right JSON">{
+  "city": "Delhi",
+  "name": "Rahul",
+  "age": 25
+}</textarea></div>
+      </article>
+      <aside id="json-diff-sidebar">
+        <h2>Comparison Controls</h2>
+        <div class="json-diff-control-group"><strong>Right JSON Alignment</strong><button class="json-diff-button" id="json-diff-align-right-side" type="button">Align Structure</button></div>
+        <div class="json-diff-control-group"><strong>Display</strong><label><input type="radio" name="json-diff-display" value="all" checked> Show All</label><label><input type="radio" name="json-diff-display" value="missing"> Show Missing</label><label><input type="radio" name="json-diff-display" value="added"> Show Added</label><label><input type="radio" name="json-diff-display" value="changed"> Show Changed</label></div>
+      </aside>
+    </section>
+
+    <section id="json-diff-summary">
+      <h2>Difference Summary</h2>
+      <div class="json-diff-counts"><span>Total Differences: <strong id="json-diff-total">0</strong></span><span>Missing: <strong id="json-diff-missing-count">0</strong></span><span>Added: <strong id="json-diff-added-count">0</strong></span><span>Changed: <strong id="json-diff-changed-count">0</strong></span></div>
+      <div id="json-diff-list"><p class="json-diff-empty">No differences found.</p></div>
+    </section>
+    </main>
+
+    <div id="footerServicesLayer"></div>
+    <div id="siteFooter"></div>
+  </div>
+  <script>
+    (() => {
+      const left = document.querySelector('#json-diff-left');
+      const right = document.querySelector('#json-diff-right');
+      const state = { differences: [], display: 'all', syncing: false, timer: null };
+      const byId = id => document.querySelector(`#${id}`);
+      const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+      const pathLabel = path => path || '$';
+      const jsonValue = value => JSON.stringify(value);
+
+      function compareValues(leftValue, rightValue, path, differences) {
+        if (isObject(leftValue) && isObject(rightValue)) {
+          const keys = new Set([...Object.keys(leftValue), ...Object.keys(rightValue)]);
+          keys.forEach(key => {
+            const childPath = `${path}.${key}`;
+            if (!(key in rightValue)) differences.push({ type: 'missing', path: childPath, value: leftValue[key] });
+            else if (!(key in leftValue)) differences.push({ type: 'added', path: childPath, value: rightValue[key] });
+            else compareValues(leftValue[key], rightValue[key], childPath, differences);
+          });
+          return;
+        }
+        if (Array.isArray(leftValue) && Array.isArray(rightValue)) {
+          const length = Math.max(leftValue.length, rightValue.length);
+          for (let index = 0; index < length; index += 1) {
+            const childPath = `${path}[${index}]`;
+            if (index >= rightValue.length) differences.push({ type: 'missing', path: childPath, value: leftValue[index] });
+            else if (index >= leftValue.length) differences.push({ type: 'added', path: childPath, value: rightValue[index] });
+            else compareValues(leftValue[index], rightValue[index], childPath, differences);
+          }
+          return;
+        }
+        if (jsonValue(leftValue) !== jsonValue(rightValue)) differences.push({ type: 'changed', path, left: leftValue, right: rightValue });
+      }
+
+      function parseEditor(editor, statusId, side) {
+        try {
+          const parsed = JSON.parse(editor.value);
+          const status = byId(statusId);
+          status.className = 'json-diff-status';
+          status.textContent = `${side} JSON is valid`;
+          return parsed;
+        } catch (error) {
+          const status = byId(statusId);
+          const match = error.message.match(/position (\d+)/i);
+          const position = match ? Number(match[1]) : 0;
+          const before = editor.value.slice(0, position);
+          const line = before.split('\n').length;
+          const column = position - before.lastIndexOf('\n');
+          status.className = 'json-diff-status invalid';
+          status.textContent = `Invalid JSON on ${side} (line ${line}, column ${column}): ${error.message}`;
+          return null;
+        }
+      }
+
+      function sortedByReference(value, reference) {
+        if (Array.isArray(value)) return value.map((item, index) => sortedByReference(item, reference && reference[index]));
+        if (!isObject(value)) return value;
+        const referenceKeys = isObject(reference) ? Object.keys(reference) : [];
+        const keys = [...referenceKeys, ...Object.keys(value).filter(key => !referenceKeys.includes(key))];
+        return Object.fromEntries(keys.filter(key => key in value).map(key => [key, sortedByReference(value[key], reference && reference[key])]));
+      }
+
+      function sortKeys(value) {
+        if (Array.isArray(value)) return value.map(sortKeys);
+        if (!isObject(value)) return value;
+        return Object.fromEntries(Object.keys(value).sort().map(key => [key, sortKeys(value[key])]));
+      }
+
+      function formatEditor(editor, statusId, side, sorter = value => value) {
+        const parsed = parseEditor(editor, statusId, side);
+        if (parsed !== null) editor.value = JSON.stringify(sorter(parsed), null, 2);
+        compare();
+      }
+
+      function lineNumbersForPaths(editor, differences, side) {
+        const lines = editor.value.split('\n');
+        const markers = byId(`json-diff-markers-${side}`);
+        markers.innerHTML = '';
+        lines.forEach((line, index) => {
+          const marker = document.createElement('span');
+          const lineKey = side === 'left' ? 'leftLine' : 'rightLine';
+          const hit = differences.find(item => item[lineKey] === index + 1);
+          if (hit) marker.className = hit.type;
+          markers.appendChild(marker);
+        });
+      }
+
+      function lineForPath(editor, path) {
+        const keyMatch = path.match(/\.([^.[\]]+)$|\[(\d+)\]$/);
+        if (!keyMatch) return 1;
+        const token = keyMatch[1] || keyMatch[2];
+        const lines = editor.value.split('\n');
+        const pattern = keyMatch[1] ? new RegExp(`["']${token}["']\\s*:`) : new RegExp(`^\\s*\\[?\\s*${token}[,\\]:]`);
+        const index = lines.findIndex(line => pattern.test(line));
+        return index < 0 ? 1 : index + 1;
+      }
+
+      function updateSummary() {
+        const shown = state.differences.filter(item => state.display === 'all' || item.type === state.display);
+        byId('json-diff-total').textContent = state.differences.length;
+        byId('json-diff-missing-count').textContent = state.differences.filter(item => item.type === 'missing').length;
+        byId('json-diff-added-count').textContent = state.differences.filter(item => item.type === 'added').length;
+        byId('json-diff-changed-count').textContent = state.differences.filter(item => item.type === 'changed').length;
+        const list = byId('json-diff-list');
+        list.innerHTML = shown.length ? shown.map(item => `<div class="json-diff-item ${item.type}" title="${item.type.toUpperCase()}"><code>${item.path}</code><span>${item.type.toUpperCase()}</span></div>`).join('') : '<p class="json-diff-empty">No differences match this filter.</p>';
+      }
+
+      function compare() {
+        const leftValue = parseEditor(left, 'json-diff-status-left', 'Left');
+        const rightValue = parseEditor(right, 'json-diff-status-right', 'Right');
+        if (leftValue === null || rightValue === null) { state.differences = []; updateSummary(); return; }
+        const differences = [];
+        compareValues(leftValue, rightValue, '$', differences);
+        differences.forEach(item => {
+          if (item.type === 'missing' || item.type === 'changed') {
+            item.leftLine = lineForPath(left, item.path);
+          }
+          if (item.type === 'added' || item.type === 'changed') {
+            item.rightLine = lineForPath(right, item.path);
+          }
+        });
+        state.differences = differences;
+        lineNumbersForPaths(left, differences, 'left');
+        lineNumbersForPaths(right, differences, 'right');
+        updateSummary();
+      }
+
+      function scheduleCompare() {
+        clearTimeout(state.timer);
+        state.timer = setTimeout(() => { if (byId('json-diff-auto-compare').checked) compare(); }, 220);
+      }
+
+      function syncScroll(source, target) {
+        if (state.syncing) return;
+        state.syncing = true;
+        target.scrollTop = source.scrollTop;
+        target.scrollLeft = source.scrollLeft;
+        requestAnimationFrame(() => { state.syncing = false; });
+      }
+
+      function copyEditor(editor, button) {
+        navigator.clipboard.writeText(editor.value).then(() => { const label = button.textContent; button.textContent = 'Copied!'; setTimeout(() => { button.textContent = label; }, 1200); });
+      }
+
+      left.addEventListener('input', scheduleCompare); right.addEventListener('input', scheduleCompare);
+      left.addEventListener('scroll', () => syncScroll(left, right)); right.addEventListener('scroll', () => syncScroll(right, left));
+      byId('json-diff-compare').addEventListener('click', compare);
+      byId('json-diff-format-left').addEventListener('click', () => formatEditor(left, 'json-diff-status-left', 'Left'));
+      byId('json-diff-format-right').addEventListener('click', () => formatEditor(right, 'json-diff-status-right', 'Right'));
+      byId('json-diff-sort-left').addEventListener('click', () => formatEditor(left, 'json-diff-status-left', 'Left', sortKeys));
+      const alignRight = () => { const leftValue = parseEditor(left, 'json-diff-status-left', 'Left'); const rightValue = parseEditor(right, 'json-diff-status-right', 'Right'); if (leftValue !== null && rightValue !== null) right.value = JSON.stringify(sortedByReference(rightValue, leftValue), null, 2); compare(); };
+      byId('json-diff-align-right').addEventListener('click', alignRight); byId('json-diff-align-right-side').addEventListener('click', alignRight);
+      byId('json-diff-copy-left').addEventListener('click', event => copyEditor(left, event.currentTarget)); byId('json-diff-copy-right').addEventListener('click', event => copyEditor(right, event.currentTarget));
+      document.querySelectorAll('input[name="json-diff-display"]').forEach(input => input.addEventListener('change', event => { state.display = event.target.value; updateSummary(); }));
+      compare();
+    })();
+  </script>
+</body>
+</html>

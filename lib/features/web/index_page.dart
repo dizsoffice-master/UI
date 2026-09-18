@@ -10,7 +10,7 @@ class IndexPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final page = Scaffold(
       appBar: AppBar(
-        title: const Text('Karauli Shankar Mahadev'),
+        title: const Text('DIZS Software Services Pvt. Ltd.'),
         actions: [
           TextButton(
             onPressed: () {

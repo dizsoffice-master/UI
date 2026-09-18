@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     final isWeb = kIsWeb;
 
     final app = MaterialApp(
-      title: 'Karauli Shankar Mahadev',
+      title: 'DIZS Software Services Pvt. Ltd.',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff102a43)),

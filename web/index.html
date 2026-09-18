@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DIZS Services</title>
+  <title>DIZS Software Services Pvt. Ltd.</title>
   <link rel="stylesheet" href="assets/site-columns.css">
   <link rel="stylesheet" href="assets/master.css">
   <script src="assets/site-partials.js"></script>
@@ -197,6 +197,19 @@
       margin-top: 24px;
     }
 
+    .service-icon {
+      display: inline-flex;
+      width: 42px;
+      height: 42px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--blue-dark);
+      color: white;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
     @media (max-width: 900px) {
       .hero {
         grid-template-columns: 1fr;
@@ -226,24 +239,34 @@
         <h2 class="section-title">Our Services</h2>
         <div class="service-grid" id="services">
           <article class="service-card">
-            <div class="service-icon">Fee</div>
-            <h3>School Fee Management Software</h3>
-            <p>Complete solution for managing school fees and payments.</p>
+            <img class="service-icon" src="assets/icons/school-fee.svg" alt="School fee software icon">
+            <h3>School Fee Software</h3>
+            <p>Manage school fees, payments, receipts, and dues.</p>
           </article>
           <article class="service-card">
-            <div class="service-icon">Attendance</div>
-            <h3>Attendance Management</h3>
-            <p>Efficiently track and manage student attendance records.</p>
+            <img class="service-icon" src="assets/icons/attendance.svg" alt="Attendance and report card icon">
+            <h3>School Attendance and Report Card System</h3>
+            <p>Track attendance and create clear student report cards.</p>
           </article>
           <article class="service-card">
-            <div class="service-icon">Transport</div>
-            <h3>Transport Management</h3>
-            <p>Efficiently manage and track school transportation services.</p>
+            <img class="service-icon" src="assets/icons/transport.svg" alt="School transport icon">
+            <h3>School Transport Management System</h3>
+            <p>Coordinate routes, vehicles, drivers, and student transport.</p>
           </article>
           <article class="service-card">
-            <div class="service-icon">Exam</div>
-            <h3>Exam Management</h3>
-            <p>Efficiently manage and schedule school examinations.</p>
+            <img class="service-icon" src="assets/icons/paper-designer.svg" alt="Paper designer icon">
+            <h3>Paper Designer System</h3>
+            <p>Design, organize, and prepare school papers efficiently.</p>
+          </article>
+          <article class="service-card">
+            <img class="service-icon" src="assets/icons/website-builder.svg" alt="Website builder icon">
+            <h3>Website Builder Services</h3>
+            <p>Build practical websites for schools and businesses.</p>
+          </article>
+          <article class="service-card">
+            <img class="service-icon" src="assets/icons/app-builder.svg" alt="App builder icon">
+            <h3>App Builder Services</h3>
+            <p>Create mobile apps for connected school communities.</p>
           </article>
         </div>
       </section>

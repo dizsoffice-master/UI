@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Text(
-                                  'Karauli Shankar Mahadev',
+                                  'DIZS Software Services Pvt. Ltd.',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,

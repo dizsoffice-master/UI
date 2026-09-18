@@ -16,7 +16,7 @@ function headerMarkupIndex() {
     <div class="site-logo">
       <div class="site-logo-mark">SM</div>
       <div class="site-logo-copy">
-        <strong>DiZS Services</strong>
+        <strong>DIZS Software Services Pvt. Ltd.</strong>
       </div>
     </div>
     <nav class="site-nav">
@@ -34,7 +34,7 @@ function headerMarkup() {
     <div class="site-logo">
       <div class="site-logo-mark">SM</div>
       <div class="site-logo-copy">
-        <strong>DiZS Services</strong>
+        <strong>DIZS Software Services Pvt. Ltd.</strong>
       </div>
     </div>
     <nav class="site-nav">
@@ -50,20 +50,23 @@ function headerServicesLayerMarkup() {
     <div class="service-layer-title">Featured Tools</div>
     <div class="service-layer-grid">
       <a class="service-layer-card" href="${rootPath}pages/sql-syntax-formatter-online-free-tool.html">
-        <span class="service-card-icon">SQL</span>
+        <img class="service-card-icon" src="${rootPath}assets/icons/sql-formatter.svg" alt="">
         <span class="service-card-text">SQL Formatter</span>
       </a>
       <a class="service-layer-card" href="${rootPath}pages/sql-insert-query-builder-from-json-excel-csv.html">
-        <span class="service-card-icon">SQL</span>
+        <img class="service-card-icon" src="${rootPath}assets/icons/sql-builder.svg" alt="">
         <span class="service-card-text">SQL INSERT Builder</span>
       </a>
       <a class="service-layer-card" href="${rootPath}pages/json-viewer-formatter.html">
-        <span class="service-card-icon">JSON</span>
+        <img class="service-card-icon" src="${rootPath}assets/icons/json-viewer.svg" alt="">
         <span class="service-card-text">JSON Viewer Formatter</span>
       </a>
-      
+      <a class="service-layer-card" href="${rootPath}pages/json-difference-checker.html">
+        <img class="service-card-icon" src="${rootPath}assets/icons/json-difference.svg" alt="">
+        <span class="service-card-text">JSON Difference Checker</span>
+      </a>
       <a class="service-layer-card" href="${rootPath}pages/json-editor.html">
-        <span class="service-card-icon">JSON</span>
+        <img class="service-card-icon" src="${rootPath}assets/icons/json-editor.svg" alt="">
         <span class="service-card-text">JSON Editor</span>
       </a>
       <!--
@@ -135,8 +138,8 @@ function footerMarkup() {
   return `<footer class="site-footer">
     <div class="site-footer-grid">
       <div class="footer-col">
-        <h4>Karauli Shankar Mahadev</h4>
-        <p>Free online developer tools and devotional utility portal.</p>
+        <h4>DIZS Software Services Pvt. Ltd.</h4>
+        <p>Software, website, app, and school management services.</p>
       </div>
       <div class="footer-col">
         <h4>Useful Links</h4>
@@ -151,8 +154,8 @@ function footerMarkup() {
         <h4>Contact</h4>
         <ul>
           <li>Phone: +91 90000 00000</li>
-          <li>Email: info@karauli-mahadev.org</li>
-          <li>Address: Karauli, Rajasthan</li>
+          <li>Email: info@dizsservices.com</li>
+          <li>Address: India</li>
         </ul>
       </div>
       <div class="footer-col">
@@ -166,7 +169,7 @@ function footerMarkup() {
       </div>
     </div>
     <div class="footer-bottom">
-      © 2026 Karauli Shankar Mahadev Tools. All rights reserved.
+      © 2026 DIZS Software Services Pvt. Ltd. All rights reserved.
     </div>
   </footer>`;
 }

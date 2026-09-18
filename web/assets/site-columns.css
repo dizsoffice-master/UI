@@ -146,6 +146,12 @@ body {
   font-weight: 900;
 }
 
+.site-service-layer img.service-card-icon {
+  display: block;
+  background: transparent;
+  object-fit: cover;
+}
+
 .site-service-layer .service-card-text {
   font-size: 13px;
   font-weight: 800;

@@ -15,6 +15,12 @@ window.toolPageSettings = [
     file: 'json-viewer-formatter.html',
     label: 'JSON Viewer Formatter Free Tool',
     previous: 'sql-syntax-formatter-online-free-tool.html',
+    next: 'json-difference-checker.html'
+  },
+  {
+    file: 'json-difference-checker.html',
+    label: 'JSON Difference Checker',
+    previous: 'json-viewer-formatter.html',
     next: 'json-editor.html'
   },
   {
