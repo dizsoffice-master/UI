@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_app/features/auth/login_page.dart';
-import 'package:flutter_ui_app/features/web/index_page.dart';
+import 'package:flutter_ui_app/screens/index_page.dart';
 import 'package:flutter_ui_app/services/app_logger.dart';
 
 class MyApp extends StatelessWidget {
