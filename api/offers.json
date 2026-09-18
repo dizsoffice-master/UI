@@ -1,0 +1,22 @@
+[
+  {"id": 1, "shop_name": "Ganga Pooja Store", "offer": "10% off on pooja essentials", "city": "Haridwar", "address": "Har Ki Pauri Road, Haridwar, Uttarakhand", "phone": "+91 98765 10001", "verified": true},
+  {"id": 2, "shop_name": "Haridwar Handicrafts", "offer": "Free local delivery above Rs 999", "city": "Haridwar", "address": "Upper Road Market, Haridwar, Uttarakhand", "phone": "+91 98765 10002", "verified": true},
+  {"id": 3, "shop_name": "Maa Ganga Sweets", "offer": "Buy 2 boxes, get 1 box at 50% off", "city": "Haridwar", "address": "Kankhal Main Bazaar, Haridwar, Uttarakhand", "phone": "+91 98765 10003", "verified": true},
+  {"id": 4, "shop_name": "Shivam Guest House", "offer": "15% off on two-night stays", "city": "Haridwar", "address": "Bhupatwala, Haridwar, Uttarakhand", "phone": "+91 98765 10004", "verified": true},
+  {"id": 5, "shop_name": "Rishikesh Yoga House", "offer": "First class free for new visitors", "city": "Rishikesh", "address": "Tapovan Main Road, Rishikesh, Uttarakhand", "phone": "+91 98765 10005", "verified": true},
+  {"id": 6, "shop_name": "Ram Jhula Cafe", "offer": "Free chai with every breakfast", "city": "Rishikesh", "address": "Swargashram Road, Rishikesh, Uttarakhand", "phone": "+91 98765 10006", "verified": true},
+  {"id": 7, "shop_name": "Himalayan Trek Gear", "offer": "20% off on trekking accessories", "city": "Rishikesh", "address": "Laxman Jhula Market, Rishikesh, Uttarakhand", "phone": "+91 98765 10007", "verified": true},
+  {"id": 8, "shop_name": "Neelkanth Taxi Service", "offer": "Fixed fare for temple transfers", "city": "Rishikesh", "address": "ISBT Road, Rishikesh, Uttarakhand", "phone": "+91 98765 10008", "verified": true},
+  {"id": 9, "shop_name": "Doon Organic Basket", "offer": "Free delivery on weekend orders", "city": "Dehradun", "address": "Rajpur Road, Dehradun, Uttarakhand", "phone": "+91 98765 10009", "verified": true},
+  {"id": 10, "shop_name": "Paltan Bazaar Textiles", "offer": "Extra 10% off on festive wear", "city": "Dehradun", "address": "Paltan Bazaar, Dehradun, Uttarakhand", "phone": "+91 98765 10010", "verified": true},
+  {"id": 11, "shop_name": "Doon Computer Care", "offer": "Free diagnosis for laptop repairs", "city": "Dehradun", "address": "Nehru Colony, Dehradun, Uttarakhand", "phone": "+91 98765 10011", "verified": true},
+  {"id": 12, "shop_name": "Forest View Homestay", "offer": "Complimentary breakfast for two", "city": "Dehradun", "address": "Sahastradhara Road, Dehradun, Uttarakhand", "phone": "+91 98765 10012", "verified": true},
+  {"id": 13, "shop_name": "Roorkee Stationery Hub", "offer": "Buy 5 notebooks, get 1 free", "city": "Roorkee", "address": "Civil Lines, Roorkee, Uttarakhand", "phone": "+91 98765 10013", "verified": true},
+  {"id": 14, "shop_name": "IIT Road Cafe", "offer": "Student combo from Rs 99", "city": "Roorkee", "address": "IIT Roorkee Road, Roorkee, Uttarakhand", "phone": "+91 98765 10014", "verified": true},
+  {"id": 15, "shop_name": "Ganga Electronics", "offer": "Free installation on selected appliances", "city": "Roorkee", "address": "Delhi Road Market, Roorkee, Uttarakhand", "phone": "+91 98765 10015", "verified": true},
+  {"id": 16, "shop_name": "Saraswati Boutique", "offer": "15% off on wedding collection", "city": "Roorkee", "address": "B.T. Ganj, Roorkee, Uttarakhand", "phone": "+91 98765 10016", "verified": true},
+  {"id": 17, "shop_name": "Kankhal Ayurveda Centre", "offer": "Free wellness consultation", "city": "Haridwar", "address": "Jwalapur Road, Haridwar, Uttarakhand", "phone": "+91 98765 10017", "verified": true},
+  {"id": 18, "shop_name": "Beatles Walk Tours", "offer": "Second walking tour at half price", "city": "Rishikesh", "address": "Muni Ki Reti, Rishikesh, Uttarakhand", "phone": "+91 98765 10018", "verified": true},
+  {"id": 19, "shop_name": "Doon Web Studio", "offer": "Free consultation for small businesses", "city": "Dehradun", "address": "IT Park Road, Dehradun, Uttarakhand", "phone": "+91 98765 10019", "verified": true},
+  {"id": 20, "shop_name": "Roorkee Mobile Point", "offer": "Free screen guard with every phone", "city": "Roorkee", "address": "Railway Road, Roorkee, Uttarakhand", "phone": "+91 98765 10020", "verified": true}
+]

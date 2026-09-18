@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local Business Offers | Haridwar Region</title>
+  <style>
+    :root { --ink:#19324a; --muted:#627487; --paper:#f4f7f6; --card:#fff; --accent:#d66f3d; --line:#d9e2e5; }
+    * { box-sizing: border-box; }
+    body { margin:0; color:var(--ink); background:linear-gradient(135deg,#edf5f2,#fdf8f1); font:16px/1.5 Georgia,serif; }
+    header, main { max-width:1180px; margin:auto; padding:28px 22px; }
+    header { display:flex; justify-content:space-between; align-items:end; gap:20px; }
+    h1 { margin:0; font-size:clamp(2rem,5vw,4rem); line-height:1; }
+    .intro { max-width:620px; color:var(--muted); }
+    .controls { display:flex; flex-wrap:wrap; gap:10px; padding:18px; background:rgba(255,255,255,.72); border:1px solid var(--line); }
+    input, select { min-height:44px; padding:9px 12px; border:1px solid var(--line); background:white; font:inherit; }
+    input { flex:1 1 260px; } select { flex:0 1 190px; }
+    .privacy { color:var(--muted); font-size:.9rem; margin:14px 0 22px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; }
+    article { background:var(--card); border:1px solid var(--line); padding:18px; min-height:210px; box-shadow:0 10px 28px rgba(25,50,74,.06); }
+    article h2 { margin:0 0 7px; font-size:1.25rem; }
+    .offer { color:var(--accent); font-weight:bold; }
+    .location { color:var(--muted); font-size:.92rem; }
+    .actions { display:flex; gap:8px; margin-top:16px; }
+    a.button { padding:8px 11px; color:white; background:var(--ink); text-decoration:none; font:14px Arial,sans-serif; }
+    .verified { float:right; color:#237a57; font:13px Arial,sans-serif; }
+    @media (max-width:600px) { header { display:block; } .intro { margin-top:18px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div><p>LOCAL BUSINESS DIRECTORY</p><h1>Find useful offers nearby.</h1></div>
+    <p class="intro">Twenty sample shops and services around Haridwar, Rishikesh, Dehradun, and Roorkee. This static page is ready to connect to the FastAPI endpoint.</p>
+  </header>
+  <main>
+    <section class="controls" aria-label="Offer filters">
+      <input id="search" type="search" placeholder="Search shop, offer, or city" aria-label="Search offers">
+      <select id="city" aria-label="Filter by city"><option value="">All cities</option><option>Haridwar</option><option>Rishikesh</option><option>Dehradun</option><option>Roorkee</option></select>
+    </section>
+    <p class="privacy">Showing <strong id="count">20</strong> offers. We never store your location; use the Flutter app's area permission only when you want local filtering.</p>
+    <section id="offers" class="grid"></section>
+  </main>
+  <script>
+    const offers = [
+      ["Ganga Pooja Store","10% off on pooja essentials","Haridwar","Har Ki Pauri Road, Haridwar, Uttarakhand","+919876510001"],["Haridwar Handicrafts","Free local delivery above Rs 999","Haridwar","Upper Road Market, Haridwar, Uttarakhand","+919876510002"],["Maa Ganga Sweets","Buy 2 boxes, get 1 box at 50% off","Haridwar","Kankhal Main Bazaar, Haridwar, Uttarakhand","+919876510003"],["Shivam Guest House","15% off on two-night stays","Haridwar","Bhupatwala, Haridwar, Uttarakhand","+919876510004"],["Rishikesh Yoga House","First class free for new visitors","Rishikesh","Tapovan Main Road, Rishikesh, Uttarakhand","+919876510005"],["Ram Jhula Cafe","Free chai with every breakfast","Rishikesh","Swargashram Road, Rishikesh, Uttarakhand","+919876510006"],["Himalayan Trek Gear","20% off on trekking accessories","Rishikesh","Laxman Jhula Market, Rishikesh, Uttarakhand","+919876510007"],["Neelkanth Taxi Service","Fixed fare for temple transfers","Rishikesh","ISBT Road, Rishikesh, Uttarakhand","+919876510008"],["Doon Organic Basket","Free delivery on weekend orders","Dehradun","Rajpur Road, Dehradun, Uttarakhand","+919876510009"],["Paltan Bazaar Textiles","Extra 10% off on festive wear","Dehradun","Paltan Bazaar, Dehradun, Uttarakhand","+919876510010"],["Doon Computer Care","Free diagnosis for laptop repairs","Dehradun","Nehru Colony, Dehradun, Uttarakhand","+919876510011"],["Forest View Homestay","Complimentary breakfast for two","Dehradun","Sahastradhara Road, Dehradun, Uttarakhand","+919876510012"],["Roorkee Stationery Hub","Buy 5 notebooks, get 1 free","Roorkee","Civil Lines, Roorkee, Uttarakhand","+919876510013"],["IIT Road Cafe","Student combo from Rs 99","Roorkee","IIT Roorkee Road, Roorkee, Uttarakhand","+919876510014"],["Ganga Electronics","Free installation on selected appliances","Roorkee","Delhi Road Market, Roorkee, Uttarakhand","+919876510015"],["Saraswati Boutique","15% off on wedding collection","Roorkee","B.T. Ganj, Roorkee, Uttarakhand","+919876510016"],["Kankhal Ayurveda Centre","Free wellness consultation","Haridwar","Jwalapur Road, Haridwar, Uttarakhand","+919876510017"],["Beatles Walk Tours","Second walking tour at half price","Rishikesh","Muni Ki Reti, Rishikesh, Uttarakhand","+919876510018"],["Doon Web Studio","Free consultation for small businesses","Dehradun","IT Park Road, Dehradun, Uttarakhand","+919876510019"],["Roorkee Mobile Point","Free screen guard with every phone","Roorkee","Railway Road, Roorkee, Uttarakhand","+919876510020"]
+    ];
+    const esc = value => value.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function render() {
+      const term = document.querySelector('#search').value.toLowerCase();
+      const city = document.querySelector('#city').value;
+      const visible = offers.filter(o => (!city || o[2] === city) && o.slice(0,3).join(' ').toLowerCase().includes(term));
+      document.querySelector('#count').textContent = visible.length;
+      document.querySelector('#offers').innerHTML = visible.map(o => `<article><span class="verified">&#10003; Verified</span><h2>${esc(o[0])}</h2><p class="offer">${esc(o[1])}</p><p>${esc(o[3])}</p><p class="location">${esc(o[2])}</p><div class="actions"><a class="button" href="tel:${o[4]}">Call</a><a class="button" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o[3])}" target="_blank" rel="noopener">Location</a></div></article>`).join('') || '<p>No offers match your filters.</p>';
+    }
+    document.querySelector('#search').addEventListener('input', render); document.querySelector('#city').addEventListener('change', render); render();
+  </script>
+</body>
+</html>

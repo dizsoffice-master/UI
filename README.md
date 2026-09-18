@@ -55,6 +55,26 @@ To run the widget tests, use:
 flutter test
 ```
 
+### FastAPI Offers API
+
+The local business API is in `api/` and serves the same 20 sample offers used by the static directory page.
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r api/requirements.txt
+uvicorn api.main:app --reload
+```
+
+Useful endpoints:
+
+- `GET http://127.0.0.1:8000/health`
+- `GET http://127.0.0.1:8000/api/offers`
+- `GET http://127.0.0.1:8000/api/offers?city=Rishikesh`
+- `GET http://127.0.0.1:8000/api/offers?search=guest`
+
+The static directory is available at `web/pages/local-business-offers.html` and does not require the API server.
+
 ## Usage
 
 This app serves as a template for building Flutter applications. You can modify the `lib/screens/home_screen.dart` to customize the home screen and add more features as needed.
