@@ -1,3 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
 .dart_tool/
 .packages
 .pub-cache/
