@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Duplicate Finder and Remover Tool</title>
+  <link rel="stylesheet" href="../assets/master.css">
+  <script src="../assets/page-settings.js"></script>
+  <script src="../assets/site-partials.js"></script>
+  <script src="../assets/adsense.js"></script>
+  <style>
+    body { background: var(--page-bg); }
+    .duplicate-page { width: 100%; max-width: none; background: var(--case); }
+    .duplicate-content { padding: clamp(16px, 3vw, 32px); }
+    .duplicate-content h1,.duplicate-content h2 { color: var(--blue-dark); margin: 0 0 12px; }
+    .duplicate-content h1 { font-size: clamp(28px, 3vw, 42px); }
+    .duplicate-content h2 { margin-top: 26px; font-size: 20px; border-top: 1px solid var(--line); padding-top: 20px; }
+    .duplicate-subtitle { color: var(--muted); line-height: 1.7; }
+    .duplicate-input { width: 100%; min-height: 270px; resize: vertical; background: #f8fafc; color: var(--text); font: 14px/1.55 "Courier New",monospace; padding: 16px; border: 1px solid var(--line); border-radius: 8px; }
+    .duplicate-input:focus,.duplicate-options select:focus { outline: 2px solid var(--blue); outline-offset: 1px; }
+    .duplicate-options { display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-top:10px; color:var(--muted); font-size:13px; }
+    .duplicate-options select { margin-left:5px; padding:7px 10px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--text); }
+    .duplicate-actions { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .duplicate-actions button { min-height:42px; }
+    .duplicate-message { min-height:22px; color:var(--muted); font-weight:700; }
+    .duplicate-message.success { color:var(--green); }.duplicate-message.error { color:#a40000; }
+    .duplicate-stat-grid { display:grid; grid-template-columns:repeat(4,minmax(120px,1fr)); gap:10px; }
+    .duplicate-stat { padding:14px; border:1px solid var(--line); border-radius:8px; background:var(--blue-soft); }
+    .duplicate-stat strong { display:block; color:var(--blue-dark); font-size:25px; }.duplicate-stat span { color:var(--muted); font-size:13px; }
+    .duplicate-table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:8px; }
+    .duplicate-table { width:100%; min-width:480px; border-collapse:collapse; }.duplicate-table th,.duplicate-table td { padding:10px 12px; border-bottom:1px solid var(--line); text-align:left; }.duplicate-table th { background:var(--blue-dark); color:#fff; }.duplicate-table tr:last-child td { border-bottom:0; }.duplicate-table .duplicate-row td:first-child { color:#a40000; font-weight:800; }
+    .duplicate-output,.duplicate-highlight { padding:14px; border:1px solid var(--line); border-radius:8px; background:#f8fafc; white-space:pre-wrap; }.duplicate-highlight { background:#fffdf2; border-color:var(--orange); color:var(--blue-dark); font-weight:800; }
+    .duplicate-result { width:100%; min-height:210px; resize:vertical; padding:14px; background:#f8fafc; border:1px solid var(--line); border-radius:8px; font:14px/1.55 "Courier New",monospace; }
+    .duplicate-help { color:var(--muted); }
+    @media (max-width:900px) { .duplicate-stat-grid { grid-template-columns:repeat(2,minmax(120px,1fr)); } }
+    @media (max-width:600px) { .duplicate-content { padding:14px; }.duplicate-stat-grid { grid-template-columns:1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="duplicate-page">
+    <div id="siteHeader"></div>
+    <div id="headerServicesLayer"></div>
+    <main class="duplicate-content">
+      <div class="ad-block">Google AdSense Banner</div>
+      <h1>Duplicate Finder &amp; Duplicate Remover Tool</h1>
+      <p class="duplicate-subtitle">Find, count, remove, delete, and report duplicate values from text, CSV, or line-based data in your browser.</p>
+
+      <section aria-labelledby="duplicate-input-heading">
+        <h2 id="duplicate-input-heading">Find Duplicate Values</h2>
+        <textarea id="duplicateInput" class="duplicate-input" placeholder="Paste one value per line, CSV values, or tab-separated data...">apple
+banana
+apple
+orange
+banana
+apple</textarea>
+        <div class="duplicate-options">
+          <label>Separator <select id="duplicateSeparator"><option value="line">One value per line</option><option value=",">Comma (,)</option><option value="\t">Tab</option><option value="auto">Auto detect</option></select></label>
+          <label><input id="duplicateTrim" type="checkbox" checked> Trim whitespace</label>
+          <label><input id="duplicateIgnoreCase" type="checkbox"> Ignore case</label>
+        </div>
+        <div class="duplicate-actions">
+          <button type="button" id="analyzeDuplicates">Analyze Duplicates</button>
+          <button type="button" id="removeDuplicates" class="secondary">Remove Duplicate Values</button>
+          <button type="button" id="deleteDuplicates" class="secondary">Delete Duplicate Values</button>
+          <button type="button" id="copyDuplicateResult" class="copy-all">Copy Result</button>
+          <button type="button" id="downloadDuplicateResult" class="copy-all">Download Result</button>
+          <button type="button" id="clearDuplicateTool" class="secondary">Clear</button>
+        </div>
+        <div id="duplicateMessage" class="duplicate-message" aria-live="polite"></div>
+      </section>
+
+      <section aria-labelledby="duplicate-counter-heading"><h2 id="duplicate-counter-heading">Duplicate Value Counter</h2><div id="duplicateStats" class="duplicate-stat-grid"></div></section>
+      <section aria-labelledby="duplicate-report-heading"><h2 id="duplicate-report-heading">Duplicate Value Report</h2><div class="duplicate-table-wrap"><table class="duplicate-table"><thead><tr><th>Value</th><th>Count</th><th>Status</th></tr></thead><tbody id="duplicateReportBody"></tbody></table></div></section>
+      <section aria-labelledby="duplicate-analysis-heading"><h2 id="duplicate-analysis-heading">Duplicate Value Analysis</h2><div id="duplicateAnalysis" class="duplicate-output">Run analysis to see details.</div></section>
+      <section aria-labelledby="highest-repeat-heading"><h2 id="highest-repeat-heading">Find Highest Repeated Value</h2><div id="highestRepeated" class="duplicate-highlight">No analysis yet.</div></section>
+      <section aria-labelledby="remove-heading"><h2 id="remove-heading">Remove Duplicate Values</h2><textarea id="uniqueValuesOutput" class="duplicate-result" readonly placeholder="Unique values will appear here."></textarea></section>
+      <section aria-labelledby="delete-heading"><h2 id="delete-heading">Delete Duplicate Values</h2><p class="duplicate-help">The delete action keeps the first occurrence of each value and removes later duplicates from the input.</p><div id="deleteSummary" class="duplicate-output">No values deleted yet.</div></section>
+      <section aria-labelledby="statistics-heading"><h2 id="statistics-heading">Duplicate Value Statistics</h2><div id="duplicateStatistics" class="duplicate-output">Statistics will appear after analysis.</div></section>
+      <div class="ad-block">Google AdSense Banner</div>
+    </main>
+    <div id="footerServicesLayer"></div>
+    <div id="siteFooter"></div>
+  </div>
+  <script>
+    (() => {
+      const input=document.getElementById('duplicateInput'), separator=document.getElementById('duplicateSeparator'), trim=document.getElementById('duplicateTrim'), ignoreCase=document.getElementById('duplicateIgnoreCase'), message=document.getElementById('duplicateMessage');
+      let state={values:[],counts:new Map(),unique:[],duplicates:[]};
+      const escapeHtml=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const key=value=>ignoreCase.checked?value.toLocaleLowerCase():value;
+      const parse=()=>{let values=separator.value==='line'?input.value.split(/\r?\n/):separator.value==='auto'?(input.value.includes('\n')?input.value.split(/\r?\n/):input.value.split(/,|\t/)):input.value.split(separator.value);return values.map(v=>trim.checked?v.trim():v).filter(Boolean);};
+      const say=(text,type='')=>{message.textContent=text;message.className=`duplicate-message ${type}`;};
+      function analyze(){const values=parse(),counts=new Map(),display=new Map();values.forEach(v=>{const k=key(v);counts.set(k,(counts.get(k)||0)+1);if(!display.has(k))display.set(k,v);});const unique=[...display].map(([k,v])=>({key:k,value:v}));const duplicates=unique.filter(item=>counts.get(item.key)>1);state={values,counts,unique,duplicates};render();say(`Analyzed ${values.length} values and found ${duplicates.length} duplicate values.`,'success');}
+      function render(){document.getElementById('duplicateReportBody').innerHTML=state.unique.length?state.unique.map(item=>`<tr class="${state.counts.get(item.key)>1?'duplicate-row':''}"><td>${escapeHtml(item.value)}</td><td>${state.counts.get(item.key)}</td><td>${state.counts.get(item.key)>1?'Duplicate':'Unique'}</td></tr>`).join(''):'<tr><td colspan="3">No values found.</td></tr>';const repeated=state.values.length-state.unique.length,highest=state.duplicates.reduce((m,item)=>Math.max(m,state.counts.get(item.key)),0);document.getElementById('duplicateStats').innerHTML=[['Total Values',state.values.length],['Unique Values',state.unique.length],['Duplicate Values',state.duplicates.length],['Repeated Entries',repeated]].map(([label,count])=>`<div class="duplicate-stat"><strong>${count}</strong><span>${label}</span></div>`).join('');document.getElementById('duplicateStatistics').textContent=`Total values: ${state.values.length}\nUnique values: ${state.unique.length}\nDuplicate values: ${state.duplicates.length}\nRepeated entries: ${repeated}\nHighest occurrence count: ${highest}`;document.getElementById('uniqueValuesOutput').value=state.unique.map(item=>item.value).join('\n');document.getElementById('duplicateAnalysis').textContent=state.values.length?`The input contains ${state.values.length} values. ${state.unique.length} are unique, ${state.duplicates.length} have duplicates, and ${repeated} repeated entries can be removed.`:'No values found.';const highestItems=state.duplicates.filter(item=>state.counts.get(item.key)===highest);document.getElementById('highestRepeated').textContent=highestItems.length?`${highestItems.map(item=>item.value).join(', ')} — repeated ${highest} times.`:'No repeated value found.';document.getElementById('deleteSummary').textContent=state.values.length?`Delete Duplicate Values will keep ${state.unique.length} first occurrences and remove ${repeated} later occurrences.`:'No values to delete.';}
+      const result=()=>document.getElementById('uniqueValuesOutput').value;
+      document.getElementById('analyzeDuplicates').onclick=analyze;
+      document.getElementById('removeDuplicates').onclick=()=>{analyze();say(`Removed ${state.values.length-state.unique.length} duplicate entries.`,'success');};
+      document.getElementById('deleteDuplicates').onclick=()=>{analyze();input.value=state.unique.map(item=>item.value).join('\n');say(`Deleted ${state.values.length-state.unique.length} duplicate entries from the input.`,'success');};
+      document.getElementById('copyDuplicateResult').onclick=async()=>{if(!result())return say('Analyze values before copying a result.','error');try{await navigator.clipboard.writeText(result());say('Copied!','success');}catch(e){say('Copy was blocked by the browser. Select the result and copy it manually.','error');}};
+      document.getElementById('downloadDuplicateResult').onclick=()=>{if(!result())return say('Analyze values before downloading a result.','error');const link=document.createElement('a');link.href=URL.createObjectURL(new Blob([result()],{type:'text/plain'}));link.download='duplicate-values-result.txt';link.click();say('Result downloaded.','success');};
+      document.getElementById('clearDuplicateTool').onclick=()=>{input.value='';state={values:[],counts:new Map(),unique:[],duplicates:[]};render();say('Cleared.');};
+      input.oninput=()=>{if(input.value.trim())analyze();};
+      analyze();
+    })();
+  </script>
+</body>
+</html>

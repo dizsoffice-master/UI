@@ -4,8 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Excel / CSV Difference Checker</title>
-  <meta name="description" content="Compare two Excel or CSV files locally, map columns, export differences, and generate SQL migration statements.">
+  
+  <link rel="stylesheet" href="../assets/site-columns.css">
   <link rel="stylesheet" href="../assets/master.css">
+  <meta name="description" content="Compare two Excel or CSV files locally, map columns, export differences, and generate SQL migration statements.">
   <script src="../assets/page-settings.js"></script>
   <script src="../assets/site-partials.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -60,9 +62,19 @@
 <div class="tool-page-wrap">
   <div id="siteHeader"></div>
   <div id="headerServicesLayer"></div>
-<main id="excel-diff-app">
-  <header id="excel-diff-header"><h1>Excel / CSV Difference Checker</h1><p>Compare two spreadsheets locally, map columns, review changes, export results, and generate migration SQL. Files never leave your browser.</p></header>
-  <section class="excel-diff-card"><h2 class="excel-diff-step"><span>1</span> Upload Files</h2><div id="excel-diff-upload-grid">
+    <main class="tool-content">
+      <div class="page-title">
+        Compares two Excel/CSV files, detects added/deleted/changed records, and generates CSV outputs plus SQL INSERT, UPDATE, and DELETE queries
+      </div>
+      <div class="ad-block">
+        Google AdSense Banner
+      </div>
+       <p class="page-subtitle">Compare two Excel sheets or CSV files quickly and accurately with our Excel and CSV Data Comparison Tool. Upload your old and new files to identify added records, deleted records, and changed data values between the two datasets. The tool compares rows and column values and generates separate output files for changed, added, and deleted records..</p></header>
+
+       
+
+      <div class="json-editor-area">
+    <section class="excel-diff-card"><h2 class="excel-diff-step"><span>1</span> Upload Files</h2><div id="excel-diff-upload-grid">
     <div class="excel-diff-upload"><strong>FIRST EXCEL / CSV</strong><input id="excel-diff-first-file" type="file" accept=".xlsx,.xls,.csv"><div class="excel-diff-file-info" id="excel-diff-first-info">Choose a .xlsx, .xls, or .csv file.</div></div>
     <div class="excel-diff-upload"><strong>SECOND EXCEL / CSV</strong><input id="excel-diff-second-file" type="file" accept=".xlsx,.xls,.csv"><div class="excel-diff-file-info" id="excel-diff-second-info">Choose a .xlsx, .xls, or .csv file.</div></div>
   </div><div id="excel-diff-message"></div></section>
@@ -74,6 +86,79 @@
   <section class="excel-diff-card excel-diff-hidden" id="excel-diff-results-card"><h2 class="excel-diff-step"><span>4</span> Comparison Results</h2><div id="excel-diff-summary-grid"></div><p id="excel-diff-row-summary"></p><div id="excel-diff-result-tabs"><button class="excel-diff-button excel-diff-tab active" data-result="missing">Missing</button><button class="excel-diff-button excel-diff-tab" data-result="added">Added</button><button class="excel-diff-button excel-diff-tab" data-result="common">Common</button><button class="excel-diff-button excel-diff-tab" data-result="changed">Changed</button></div><input id="excel-diff-result-search" type="search" placeholder="Search key or visible value"><div class="excel-diff-toolbar"><button class="excel-diff-button" data-export="missing">Download Missing Excel</button><button class="excel-diff-button" data-export="added">Download Added Excel</button><button class="excel-diff-button" data-export="common">Download Common Excel</button><button class="excel-diff-button" data-export="changed">Download Changed Excel</button><button class="excel-diff-button primary" id="excel-diff-export-all">Download All Results</button></div><div class="excel-diff-table-wrap"><table class="excel-diff-table" id="excel-diff-results-table"><thead></thead><tbody></tbody></table></div></section>
 
   <section class="excel-diff-card excel-diff-hidden" id="excel-diff-sql-card"><h2 class="excel-diff-step"><span>5</span> SQL Statement Generator</h2><div id="excel-diff-sql-config"><div class="excel-diff-field"><label for="excel-diff-database">Database</label><select id="excel-diff-database"><option>PostgreSQL</option><option>MySQL</option><option>SQL Server</option><option>Oracle</option></select></div><div class="excel-diff-field"><label for="excel-diff-schema">Schema</label><input id="excel-diff-schema" value="public"></div><div class="excel-diff-field"><label for="excel-diff-table">Table</label><input id="excel-diff-table" value="customers"></div><div class="excel-diff-field"><label><input id="excel-diff-include-schema" type="checkbox" checked> Include schema</label></div></div><div id="excel-diff-sql-panels"></div></section>
+
+</div>
+<p>** Compare two Excel files ** </p>
+<p>** Compare two CSV files ** </p>
+<p>** Compare two datasets ** </p>
+<p>** Compare Excel and CSV data **</p>
+<p>** Find added records **</p>
+<p>** Find deleted records **</p>
+<p>** Find changed records **</p>
+<p>** Compare individual column values **</p>
+<p>** Export changed records **</p>
+<p>** Export added records **</p>
+<p>** Export deleted records **</p>
+<p>** Generate SQL INSERT queries **</p>
+<p>** Generate SQL UPDATE queries **</p>
+<p>** Generate SQL DELETE queries **</p>
+<p>** Prepare data synchronization queries **</p>
+<p>** Validate migrated database data **</p>
+<p>** SEO Search Keywords **</p>
+<p>Excel comparison tool</p>
+<p></p>CSV comparison tool</p>
+<p>compare two Excel sheets</p>
+<p>compare two CSV files</p>
+<p>Excel data comparison</p>
+<p>CSV data comparison</p>
+<p>compare Excel files</p>
+<p>compare CSV files</p>
+<p>Excel sheet compare</p>
+<p>CSV file compare</p>
+<p>Data Difference Keywords</p>
+<p>compare data values</p>
+<p>find differences between two Excel files</p>
+<p>find differences between two CSV files</p>
+<p>compare two datasets</p>
+<p>compare two data files</p>
+<p>find changed records</p>
+<p>find added records</p>
+<p>find deleted records</p>
+<p>detect changed data</p>
+<p>data difference checker</p>
+<p>CSV difference checker</p>
+<p>Excel difference checker</p>
+<p>SQL Keywords</p>
+<p>generate SQL insert query</p>
+<p>generate SQL update query</p>
+<p>generate SQL delete query</p>
+<p>Excel to SQL insert query</p>
+<p>CSV to SQL insert query</p>
+<p>generate SQL queries from CSV</p>
+<p>generate SQL queries from Excel</p>
+<p>SQL data synchronization</p>
+<p>SQL data comparison</p>
+<p>SQL update generator</p>
+<p>SQL delete query generator</p>
+<p>SQL insert query generator</p>
+<p>Long-Tail SEO Keywords</p>
+<p>compare two Excel sheets and find differences</p>
+<p>compare two CSV files and find changed records</p>
+<p>compare Excel and CSV data online</p>
+<p></p>find added and deleted records between two CSV files</p>
+<p>find changed values between two Excel files</p>
+<p>generate SQL insert update delete queries from CSV</p>
+<p>generate SQL queries from Excel data</p>
+<p>compare old and new CSV files</p>
+<p>compare old and new Excel data</p>
+<p>Excel CSV data comparison tool online</p>
+<p>free Excel comparison tool online</p>
+<p>free CSV comparison tool online</p>
+<p>compare two datasets and generate SQL queries</p>
+<p>find added deleted and updated records</p>
+<p>CSV data difference checker online</p>
+
+       
 </main>
   <div id="footerServicesLayer"></div>
   <div id="siteFooter"></div>

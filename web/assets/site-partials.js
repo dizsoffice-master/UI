@@ -69,6 +69,10 @@ function headerServicesLayerMarkup() {
         <img class="service-card-icon" src="${rootPath}assets/icons/excel-difference.svg" alt="">
         <span class="service-card-text">Excel CSV Difference Checker</span>
       </a>
+      <a class="service-layer-card" href="${rootPath}pages/duplicate-finder-duplicate-remover-duplicate-value-delete-duplicate-value-count-reparter-list-highest-repeat-value-finder.html">
+        <span class="service-card-icon">DUP</span>
+        <span class="service-card-text">Duplicate Finder</span>
+      </a>
       <a class="service-layer-card" href="${rootPath}pages/json-editor.html">
         <img class="service-card-icon" src="${rootPath}assets/icons/json-editor.svg" alt="">
         <span class="service-card-text">JSON Editor</span>

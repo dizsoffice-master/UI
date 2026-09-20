@@ -27,6 +27,12 @@ window.toolPageSettings = [
     file: 'excel-csv-difference-checker.html',
     label: 'Excel CSV Difference Checker',
     previous: 'json-difference-checker.html',
+    next: 'duplicate-finder-duplicate-remover-duplicate-value-delete-duplicate-value-count-reparter-list-highest-repeat-value-finder.html'
+  },
+  {
+    file: 'duplicate-finder-duplicate-remover-duplicate-value-delete-duplicate-value-count-reparter-list-highest-repeat-value-finder.html',
+    label: 'Duplicate Finder and Remover Tool',
+    previous: 'excel-csv-difference-checker.html',
     next: 'json-editor.html'
   },
   {
