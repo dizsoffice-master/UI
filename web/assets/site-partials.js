@@ -14,14 +14,15 @@ const nextPage = currentPage.next ? rootPath + 'pages/' + currentPage.next : '';
 function headerMarkupIndex() {
   return `<header class="site-header">
     <div class="site-logo">
-      <div class="site-logo-mark">SM</div>
+      <div class="site-logo-mark">D</div>
       <div class="site-logo-copy">
-        <strong>DIZS Software Services Pvt. Ltd.</strong>
+        <strong>DIZS</strong>
       </div>
     </div>
     <nav class="site-nav">
-      <a class="home-button" href="${rootPath}index.html">Login</a>
-      <a class="home-button" href="${rootPath}index.html">Sign Up</a>
+   <!--   <a class="home-button" href="${rootPath}index.html">Login</a>
+      <a class="home-button" href="${rootPath}index.html">Sign Up</a> 
+-->
     </nav>
   </header>`;
 }
@@ -53,19 +54,19 @@ function headerServicesLayerMarkup() {
         <img class="service-card-icon" src="${rootPath}assets/icons/sql-formatter.svg" alt="">
         <span class="service-card-text">SQL Formatter</span>
       </a>
-      <a class="service-layer-card" href="${rootPath}pages/sql-insert-query-builder-from-json-excel-csv.html">
+      <a class="service-layer-card" href="${rootPath}pages/sql-insert-query-builder-from-json-excel-csv-free-online-tool.html">
         <img class="service-card-icon" src="${rootPath}assets/icons/sql-builder.svg" alt="">
         <span class="service-card-text">SQL INSERT Builder</span>
       </a>
-      <a class="service-layer-card" href="${rootPath}pages/json-viewer-formatter.html">
+      <a class="service-layer-card" href="${rootPath}pages/json-viewer-formatter-online-free-tool.html">
         <img class="service-card-icon" src="${rootPath}assets/icons/json-viewer.svg" alt="">
         <span class="service-card-text">JSON Viewer Formatter</span>
       </a>
-      <a class="service-layer-card" href="${rootPath}pages/json-difference-checker.html">
+      <a class="service-layer-card" href="${rootPath}pages/json-difference-checker-sql-postgres-correction-database-free-online.html">
         <img class="service-card-icon" src="${rootPath}assets/icons/json-difference.svg" alt="">
         <span class="service-card-text">JSON Difference Checker</span>
       </a>
-      <a class="service-layer-card" href="${rootPath}pages/excel-csv-difference-checker.html">
+      <a class="service-layer-card" href="${rootPath}pages/excel-csv-difference-checker-sql-query-builder-free-online-tool.html">
         <img class="service-card-icon" src="${rootPath}assets/icons/excel-difference.svg" alt="">
         <span class="service-card-text">Excel CSV Difference Checker</span>
       </a>
@@ -73,7 +74,7 @@ function headerServicesLayerMarkup() {
         <span class="service-card-icon">DUP</span>
         <span class="service-card-text">Duplicate Finder</span>
       </a>
-      <a class="service-layer-card" href="${rootPath}pages/json-editor.html">
+      <a class="service-layer-card" href="${rootPath}pages/json-editor-free-online-add-remove-replace-key-value-pair.html">
         <img class="service-card-icon" src="${rootPath}assets/icons/json-editor.svg" alt="">
         <span class="service-card-text">JSON Editor</span>
       </a>
@@ -161,9 +162,9 @@ function footerMarkup() {
       <div class="footer-col">
         <h4>Contact</h4>
         <ul>
-          <li>Phone: +91 90000 00000</li>
-          <li>Email: info@dizsservices.com</li>
-          <li>Address: India</li>
+          <li>Phone: +91 9045029002</li>
+          <li>Email: dizs.office@gmail.com</li>
+          <li>Address: Haridwar, UK India</li>
         </ul>
       </div>
       <div class="footer-col">
