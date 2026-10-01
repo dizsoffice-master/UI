@@ -9,12 +9,18 @@ window.toolPageSettings = [
     file: 'sql-insert-query-builder-from-json-excel-csv-free-online-tool.html',
     label: 'SQL INSERT Query Builder',
     previous: 'sql-syntax-formatter-online-free-tool.html',
-    next: 'excel-csv-difference-checker-sql-query-builder.html'
+    next: 'postgres-and-sql-all-query-builder-online-free-tool-for-fresher-developer.html'
+  },
+  {
+    file: 'postgres-and-sql-all-query-builder-online-free-tool-for-fresher-developer.html',
+    label: 'SQL Query Builder',
+    previous: 'sql-syntax-formatter-online-free-tool.html',
+    next: 'excel-csv-difference-checker-sql-query-builder-free-online-tool.html'
   },
 {
     file: 'excel-csv-difference-checker-sql-query-builder-free-online-tool.html',
     label: 'Excel CSV Difference Checker',
-    previous: 'sql-insert-query-builder-from-json-excel-csv-free-online-tool.html',
+    previous: 'postgres-and-sql-all-query-builder-online-free-tool-for-fresher-developer.html',
     next: 'duplicate-finder-duplicate-remover-duplicate-value-delete-duplicate-value-count-reparter-list-highest-repeat-value-finder.html'
   },
   {

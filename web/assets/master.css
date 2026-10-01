@@ -265,4 +265,48 @@ body {
     align-items: flex-start;
     flex-direction: column;
   }
+  .query-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 12px 16px;
+
+  background: var(--blue-soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.query-header-h2-with-right-button h2 {
+  margin: 0;
+
+  flex: 1;
+
+  color: var(--blue-dark);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.query-header-h2-with-right-button button,
+.query-header-h2-with-right-button .copy-btn,
+.query-header-h2-with-right-button .primary {
+  flex: 0 0 auto;
+
+  width: auto;
+  min-width: unset;
+
+  white-space: nowrap;
+
+  padding: 8px 14px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: var(--blue);
+  color: white;
+
+  font-weight: 700;
+  cursor: pointer;
+}
 }

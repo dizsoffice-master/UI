@@ -35,7 +35,7 @@ function headerMarkup() {
     <div class="site-logo">
       <div class="site-logo-mark">SM</div>
       <div class="site-logo-copy">
-        <strong>DIZS Software Services Pvt. Ltd.</strong>
+        <strong>DIZS</strong>
       </div>
     </div>
     <nav class="site-nav">
@@ -58,6 +58,10 @@ function headerServicesLayerMarkup() {
         <img class="service-card-icon" src="${rootPath}assets/icons/sql-builder.svg" alt="">
         <span class="service-card-text">SQL INSERT Builder</span>
       </a>
+      <a class="service-layer-card" href="${rootPath}pages/postgres-and-sql-all-query-builder-online-free-tool-for-fresher-developer.html">
+        <span class="service-card-icon">SQL</span>
+        <span class="service-card-text">SQL Query Builder</span>
+      </a>
       <a class="service-layer-card" href="${rootPath}pages/json-viewer-formatter-online-free-tool.html">
         <img class="service-card-icon" src="${rootPath}assets/icons/json-viewer.svg" alt="">
         <span class="service-card-text">JSON Viewer Formatter</span>
@@ -78,6 +82,7 @@ function headerServicesLayerMarkup() {
         <img class="service-card-icon" src="${rootPath}assets/icons/json-editor.svg" alt="">
         <span class="service-card-text">JSON Editor</span>
       </a>
+
       <!--
       <a class="service-layer-card" href="#">
         <span class="service-card-icon">API</span>

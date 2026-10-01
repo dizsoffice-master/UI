@@ -1,0 +1,647 @@
+<html lang="en">
+  <!-- TEST-SAWAN-999 -->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL Query Builder</title>
+  <link rel="stylesheet" href="../assets/site-columns.css">
+  <link rel="stylesheet" href="../assets/master.css">
+  <script src="../assets/page-settings.js"></script>
+  <script src="../assets/site-partials.js"></script>
+  <script src="../assets/adsense.js"></script>
+  <style>
+    body {
+      background: var(--page-bg);
+    }
+
+    .tool-page-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: var(--case);
+      box-shadow: var(--shadow);
+    }
+
+    .tool-header {
+      background: var(--blue-dark);
+      color: white;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 90px;
+    }
+
+    .tool-header .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tool-header .logo-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 22px;
+    }
+
+    .tool-header .logo-title {
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .tool-header .logo-subtitle {
+      font-size: 12px;
+      color: #b9c7d9;
+    }
+
+    .tool-nav {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .tool-nav a {
+      color: white;
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      padding: 8px 10px;
+    }
+
+    .tool-nav .login {
+      background: var(--green);
+      border-radius: 8px;
+      padding: 10px 16px;
+    }
+
+    .tool-strip {
+      background: var(--blue-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 28px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .tool-strip a {
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      background: white;
+      color: var(--blue-dark);
+      font-weight: 800;
+      font-size: 13px;
+      border: 1px solid var(--line);
+      text-decoration: none;
+    }
+
+    .tool-layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 260px) minmax(540px, 1fr) minmax(180px, 250px);
+      gap: 20px;
+      padding: 24px 28px;
+      background: var(--case);
+    }
+
+    .left-panel,
+    .right-panel {
+      background: var(--blue-soft);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .left-panel .panel-title,
+    .right-panel .panel-title {
+      font-size: 14px;
+      color: var(--blue-dark);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .left-panel ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .left-panel li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .left-panel li:last-child {
+      border-bottom: none;
+    }
+
+    .left-panel a {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .tool-content {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 26px;
+      min-height: 480px;
+    }
+
+    .tool-content .page-title {
+      color: var(--blue-dark);
+      font-size: clamp(30px, 3vw, 40px);
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .tool-content .page-subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 260px;
+      resize: vertical;
+      background: #f8fafc;
+      color: var(--text);
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      outline: none;
+    }
+
+    .input-summary {
+      margin-top: 10px;
+      color: var(--blue-dark);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 14px 0 16px;
+    }
+
+    .button-row button {
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--blue);
+      color: white;
+    }
+
+    .button-row button.secondary {
+      background: var(--blue-dark);
+    }
+
+    .output-box {
+      background: #071b3d;
+      color: #d9fedc;
+      padding: 16px;
+      min-height: 160px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      white-space: pre-wrap;
+      font-family: "Courier New", monospace;
+    }
+
+    .ad-block {
+      background: #fffdf2;
+      border: 1px dashed var(--orange);
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue-dark);
+      font-weight: 800;
+      border-radius: 10px;
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .all-tools {
+      background: var(--blue-soft);
+      padding: 22px 28px;
+      border-top: 1px solid var(--line);
+    }
+
+    .all-tools-title {
+      color: var(--blue-dark);
+      font-weight: 900;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    .all-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .all-tools-grid a {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    @media (max-width: 900px) {
+      .tool-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .tool-strip,
+      .all-tools-grid {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+      }
+
+      .query-card {
+  margin-bottom: 24px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.query-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--blue-soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.query-header h2 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--blue-dark);
+}
+
+.copy-btn {
+  border: none;
+  border-radius: 8px;
+  background: var(--blue);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  min-width: 120px;
+  min-height: 40px;
+  padding: 8px 16px;
+}
+
+.copy-btn:hover {
+  opacity: 0.9;
+}
+    }
+  </style>
+</head>
+<body>
+  <div class="tool-page-wrap">
+    <div id="siteHeader"></div>
+    <div id="headerServicesLayer"></div>
+
+      <main class="tool-content">
+<section>
+
+  <h1 class="page-title">
+    SQL Query Builder
+  </h1>
+
+  <p class="page-subtitle">
+    Generate ready-to-use SQL query templates instantly. Enter your table name once and every SQL example below updates automatically. This page includes SELECT, COUNT, GROUP BY, HAVING, JOIN, CTE, Window Functions, PARTITION BY, Ranking Queries, Date Filters, Pagination, Insert, Update and Delete templates commonly used in PostgreSQL, MySQL, SQL Server and other relational databases.
+  </p>
+
+  <label for="tableName">
+    <strong>Main Table Name</strong>
+  </label>
+
+  <input
+    id="tableName"
+    type="text"
+    value="your_table_name"
+    placeholder="your_table_name"
+    style="
+      width:100%;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      margin:12px 0 24px;
+    "
+  >
+
+</section>
+<section>
+
+<div class="query-header-h2-with-right-button">
+  <h2>Select All Records Query</h2>
+  <button onclick="copyQuery(this)">Copy</button>
+
+  <pre class="output-box sql-template">
+SELECT *
+FROM your_table_name;
+  </pre>
+</div>
+
+<div class="query-header-h2-with-right-button">
+
+  <h2>Select Latest 100 Records Query</h2>
+  <button class="primary" onclick="copyQuery(this)">Copy</button>
+  </div>
+  <pre class="output-box sql-temacplate">
+SELECT *
+FROM your_table_name
+ORDER BY id DESC
+LIMIT 100;
+  </pre>
+
+  <h2>Count Total Records Query</h2>
+  <button class="primary" onclick="copyQuery(this)">Copy</button>
+
+  <pre class="output-box sql-template">
+SELECT COUNT(*) AS total_records
+FROM your_table_name;
+  </pre>
+
+  <h2>Maximum Value Query</h2>
+  <button class="primary" onclick="copyQuery(this)">Copy</button>
+
+  <pre class="output-box sql-template">
+SELECT MAX(id) AS max_id
+FROM your_table_name;
+  </pre>
+
+  <h2>Minimum Value Query</h2>
+  <pre class="output-box sql-template">
+SELECT MIN(id) AS min_id
+FROM your_table_name;
+  </pre>
+
+  <h2>Average Value Query</h2>
+  <pre class="output-box sql-template">
+SELECT AVG(id) AS average_id
+FROM your_table_name;
+  </pre>
+
+  <h2>Sum Query</h2>
+  <pre class="output-box sql-template">
+SELECT SUM(amount) AS total_amount
+FROM your_table_name;
+  </pre>
+
+  <h2>Distinct Values Query</h2>
+  <pre class="output-box sql-template">
+SELECT DISTINCT status
+FROM your_table_name;
+  </pre>
+
+  <h2>Group By Query</h2>
+  <pre class="output-box sql-template">
+SELECT status,
+       COUNT(*) AS total
+FROM your_table_name
+GROUP BY status;
+  </pre>
+  <script>
+  atOptions = {
+    'key' : '6454803855b00a443dad6542bc5de5c6',
+    'format' : 'iframe',
+    'height' : 600,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highrevenueformat.com/6454803855b00a443dad6542bc5de5c6/invoke.js"></script>
+
+  <h2>Having Clause Query</h2>
+  <pre class="output-box sql-template">
+SELECT status,
+       COUNT(*) AS total
+FROM your_table_name
+GROUP BY status
+HAVING COUNT(*) > 10;
+  </pre>
+
+  <h2>Order By Ascending Query</h2>
+  <pre class="output-box sql-template">
+SELECT *
+FROM your_table_name
+ORDER BY id ASC;
+  </pre>
+
+  <h2>Order By Descending Query</h2>
+  <pre class="output-box sql-template">
+SELECT *
+FROM your_table_name
+ORDER BY id DESC;
+  </pre>
+
+  <h2>Current Date Filter Query</h2>
+  <pre class="output-box sql-template">
+SELECT *
+FROM your_table_name
+WHERE created_at >= CURRENT_DATE;
+  </pre>
+
+  <h2>Last 7 Days Query</h2>
+  <pre class="output-box sql-template">
+SELECT *
+FROM your_table_name
+WHERE created_at >= CURRENT_DATE - INTERVAL '7 days';
+  </pre>
+
+  <h2>Last 30 Days Query</h2>
+  <pre class="output-box sql-template">
+SELECT *
+FROM your_table_name
+WHERE created_at >= CURRENT_DATE - INTERVAL '30 days';
+  </pre>
+
+  <h2>Pagination Query</h2>
+  <pre class="output-box sql-template">
+SELECT *
+FROM your_table_name
+ORDER BY id
+LIMIT 50 OFFSET 0;
+  </pre>
+
+  <h2>Common Table Expression CTE Query</h2>
+  <pre class="output-box sql-template">
+WITH recent_rows AS (
+    SELECT *
+    FROM your_table_name
+    ORDER BY id DESC
+    LIMIT 100
+)
+SELECT *
+FROM recent_rows;
+  </pre>
+
+  <h2>Partition By Query</h2>
+  <pre class="output-box sql-template">
+SELECT *,
+       ROW_NUMBER() OVER (
+           PARTITION BY status
+           ORDER BY id DESC
+       ) AS row_number
+FROM your_table_name;
+  </pre>
+
+  <h2>Rank Query</h2>
+  <pre class="output-box sql-template">
+SELECT *,
+       RANK() OVER (
+           ORDER BY amount DESC
+       ) AS rank_value
+FROM your_table_name;
+  </pre>
+
+  <h2>Dense Rank Query</h2>
+  <pre class="output-box sql-template">
+SELECT *,
+       DENSE_RANK() OVER (
+           ORDER BY amount DESC
+       ) AS dense_rank_value
+FROM your_table_name;
+  </pre>
+
+  <h2>Duplicate Records Query</h2>
+  <pre class="output-box sql-template">
+SELECT email,
+       COUNT(*)
+FROM your_table_name
+GROUP BY email
+HAVING COUNT(*) > 1;
+  </pre>
+
+  <h2>Insert Query Template</h2>
+  <pre class="output-box sql-template">
+INSERT INTO your_table_name (
+    column_1,
+    column_2
+)
+VALUES (
+    value_1,
+    value_2
+);
+  </pre>
+
+  <h2>Update Query Template</h2>
+  <pre class="output-box sql-template">
+UPDATE your_table_name
+SET column_1 = value_1
+WHERE id = 1;
+  </pre>
+
+  <h2>Delete Query Template</h2>
+  <pre class="output-box sql-template">
+DELETE
+FROM your_table_name
+WHERE id = 1;
+  </pre>
+
+</section>
+      </main>
+
+    <div id="footerServicesLayer"></div>
+    <div id="siteFooter"></div>
+  </div>
+
+<script>
+
+function updateTableName() {
+
+  const tableName =
+    document
+      .getElementById('tableName')
+      .value
+      .trim() || 'your_table_name';
+
+  document
+    .querySelectorAll('.sql-template')
+    .forEach(element => {
+
+      if (!element.dataset.template) {
+        element.dataset.template =
+          element.textContent;
+      }
+
+      element.textContent =
+        element.dataset.template.replaceAll(
+          'your_table_name',
+          tableName
+        );
+
+    });
+
+}
+
+document.addEventListener(
+  'DOMContentLoaded',
+  () => {
+
+    const input =
+      document.getElementById('tableName');
+
+    input.addEventListener(
+      'input',
+      updateTableName
+    );
+
+    updateTableName();
+
+  }
+);
+
+
+
+
+function copyQuery(button) {
+
+  const query =
+    button
+      .closest('.query-card')
+      .querySelector('.sql-template')
+      .textContent;
+
+  navigator.clipboard.writeText(query);
+
+  const originalText = button.textContent;
+
+  button.textContent = 'Copied';
+
+  setTimeout(() => {
+    button.textContent = originalText;
+  }, 1500);
+
+}
+</script>
+</body>
+</html>
