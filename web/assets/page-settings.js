@@ -75,5 +75,13 @@ window.toolPageSettings = [
   { file: 'word-counter-online-free-service-tool.html', label: 'Word Counter Online Free Tool', previous: '', next: '' },
   { file: 'character-counter-online-free-service-tool.html', label: 'Character Counter Online Free Tool', previous: '', next: '' },
   { file: 'qr-code-generator-online-free-service-tool.html', label: 'QR Code Generator Online Free Tool', previous: '', next: '' },
-  { file: 'password-generator-online-free-service-tool.html', label: 'Password Generator Online Free Tool', previous: '', next: '' }
+  { file: 'password-generator-online-free-service-tool.html', label: 'Password Generator Online Free Tool', previous: '', next: '' },
+  { file: 'basic-calculator-online-free-service-tool.html', label: 'Basic Calculator Online Free Tool', previous: '', next: '' },
+  { file: 'emi-loan-calculator-online-free-service-tool.html', label: 'EMI Loan Calculator Online Free Tool', previous: '', next: '' },
+  { file: 'interest-calculator-online-free-service-tool.html', label: 'Simple and Compound Interest Calculator Online Free Tool', previous: '', next: '' },
+  { file: 'daily-monthly-yearly-interest-calculator-online-free-service-tool.html', label: 'Daily Monthly Yearly Interest Calculator Online Free Tool', previous: '', next: '' },
+  { file: 'salary-slip-generator-online-free-service-tool.html', label: 'Salary Slip Generator Online Free Tool', previous: '', next: '' },
+  { file: 'offer-letter-maker-online-free-service-tool.html', label: 'Offer Letter Maker Online Free Tool', previous: '', next: '' },
+  { file: 'fresher-resume-maker-online-free-service-tool.html', label: 'Fresher Resume Maker Online Free Tool', previous: '', next: '' },
+  { file: 'salary-increment-letter-maker-online-free-service-tool.html', label: 'Salary Increment Letter Maker Online Free Tool', previous: '', next: '' }
 ];

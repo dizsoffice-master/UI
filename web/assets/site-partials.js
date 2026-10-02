@@ -60,6 +60,18 @@ const serviceGroups = [
     ['Character Counter', 'character-counter-online-free-service-tool.html'],
     ['QR Code Generator', 'qr-code-generator-online-free-service-tool.html'],
     ['Password Generator', 'password-generator-online-free-service-tool.html']
+  ] },
+  { title: 'Banking & Finance Calculators', items: [
+    ['Basic Calculator', 'basic-calculator-online-free-service-tool.html'],
+    ['EMI Loan Calculator', 'emi-loan-calculator-online-free-service-tool.html'],
+    ['Simple & Compound Interest Calculator', 'interest-calculator-online-free-service-tool.html'],
+    ['Daily / Monthly / Yearly Interest Calculator', 'daily-monthly-yearly-interest-calculator-online-free-service-tool.html']
+  ] },
+  { title: 'Business & Career Documents', items: [
+    ['Salary Slip Generator', 'salary-slip-generator-online-free-service-tool.html'],
+    ['Offer Letter Maker', 'offer-letter-maker-online-free-service-tool.html'],
+    ['Fresher Resume Maker', 'fresher-resume-maker-online-free-service-tool.html'],
+    ['Salary Increment Letter Maker', 'salary-increment-letter-maker-online-free-service-tool.html']
   ] }
 ];
 
@@ -93,8 +105,8 @@ function sharedHeaderMarkup() {
     <nav class="site-nav" aria-label="Main navigation">
       <div class="site-nav-links">
         <a href="${rootPath}index.html">Home</a>
-        <a href="${rootPath}index.html#about">About</a>
-        <a href="${rootPath}index.html#contact">Contact</a>
+        <a href="${rootPath}pages/about-us.html">About</a>
+        <a href="${rootPath}pages/contact-us.html">Contact</a>
         <a href="${rootPath}index.html#privacy">Privacy</a>
         <a href="${rootPath}index.html#terms">Terms</a>
       </div>
@@ -123,12 +135,11 @@ function mountToolLayout(content) {
     </aside>
     <button class="site-drawer-backdrop" type="button" aria-label="Close tools menu" hidden></button>
     <div class="site-center-column" id="mainContent">
-      <div class="top-ad-container">${adSlotMarkup('top-primary')}${adSlotMarkup('top-secondary')}</div>
       <div class="site-tool-host"></div>
       <div class="site-after-tool-ads">${adSlotMarkup('after-tool')}${adSlotMarkup('after-info')}${adSlotMarkup('before-footer')}</div>
     </div>
     <aside class="site-right-ads" aria-label="Advertisement sidebar"><div class="ad-stack">
-      ${adSlotMarkup('rail-top')}${adSlotMarkup('rail-middle')}${adSlotMarkup('rail-bottom')}
+      ${adSlotMarkup('rail-top')}${adSlotMarkup('rail-middle')}${adSlotMarkup('rail-bottom')}${adSlotMarkup('rail-monetag')}
     </div></aside>`;
   mount.parentElement.insertBefore(shell, mount);
   shell.querySelector('.site-tool-host').append(content);
@@ -210,7 +221,7 @@ function sharedFooterMarkup() {
         <li><a href="${rootPath}pages/excel-csv-difference-checker-sql-query-builder-free-online-tool.html">Excel Tools</a></li>
         <li><a href="#siteFooter">Image Tools</a></li><li><a href="#siteFooter">Developer Tools</a></li>
       </ul></div>
-      <div class="footer-col"><h4>Company</h4><ul><li><a href="${rootPath}index.html#about">About Us</a></li><li><a href="${rootPath}index.html#contact">Contact Us</a></li><li><a href="${rootPath}index.html#privacy">Privacy Policy</a></li><li><a href="${rootPath}index.html#terms">Terms &amp; Conditions</a></li><li><a href="${rootPath}index.html#disclaimer">Disclaimer</a></li></ul></div>
+      <div class="footer-col"><h4>Company</h4><ul><li><a href="${rootPath}pages/about-us.html">About Us</a></li><li><a href="${rootPath}pages/contact-us.html">Contact Us</a></li><li><a href="${rootPath}index.html#privacy">Privacy Policy</a></li><li><a href="${rootPath}index.html#terms">Terms &amp; Conditions</a></li><li><a href="${rootPath}index.html#disclaimer">Disclaimer</a></li></ul></div>
       <div class="footer-col"><h4>Useful Links</h4><ul><li><a href="${rootPath}index.html">All Tools</a></li><li><a href="${rootPath}index.html">Latest Tools</a></li><li><a href="${rootPath}index.html">Popular Tools</a></li><li><a href="${rootPath}sitemap.xml">Sitemap</a></li></ul></div>
       <div class="footer-col"><h4>OnlineDataTool.com</h4><p>Free online tools for data, documents, and everyday development tasks.</p></div>
     </div>
@@ -444,4 +455,6 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  window.initializeSiteAdSlots?.();
 });

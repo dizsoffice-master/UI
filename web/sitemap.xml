@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.onlinedatatool.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.onlinedatatool.com/pages/about-us.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.onlinedatatool.com/pages/contact-us.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.onlinedatatool.com/pages/sql-syntax-formatter-online-free-tool.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://www.onlinedatatool.com/pages/sql-insert-query-builder-from-json-excel-csv-free-online-tool.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://www.onlinedatatool.com/pages/postgres-and-sql-all-query-builder-online-free-tool-for-fresher-developer.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
@@ -37,4 +39,12 @@
   <url><loc>https://www.onlinedatatool.com/pages/character-counter-online-free-service-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.onlinedatatool.com/pages/qr-code-generator-online-free-service-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.onlinedatatool.com/pages/password-generator-online-free-service-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.onlinedatatool.com/pages/basic-calculator-online-free-service-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.onlinedatatool.com/pages/emi-loan-calculator-online-free-service-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.onlinedatatool.com/pages/interest-calculator-online-free-service-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.onlinedatatool.com/pages/daily-monthly-yearly-interest-calculator-online-free-service-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.onlinedatatool.com/pages/salary-slip-generator-online-free-service-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.onlinedatatool.com/pages/offer-letter-maker-online-free-service-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.onlinedatatool.com/pages/fresher-resume-maker-online-free-service-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.onlinedatatool.com/pages/salary-increment-letter-maker-online-free-service-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>

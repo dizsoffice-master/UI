@@ -108,11 +108,11 @@
       faq: [['Where is the crop taken from?', 'The requested rectangle is centered in the original image.'], ['Can I crop outside the image bounds?', 'No. The tool requires crop dimensions that fit within the source image.']]
     },
     'passport-photo-maker': {
-      title: 'Passport Photo Maker Online Free Tool', category: 'Image Tools', type: 'passport-photo',
-      description: 'Create a square passport-photo image from a selected picture in your browser and download it for review.',
-      details: 'Choose a picture and set a square output size to make a centered crop suitable for a profile or photo workflow. Official passport photo size, background, and framing rules differ by country and application; verify the final image against the issuing authority requirements before submitting it.',
-      steps: ['Select a clear portrait image.', 'Choose the square output size in pixels.', 'Generate and download the centered photo.'],
-      faq: [['Does this guarantee official passport compliance?', 'No. Requirements vary by issuing authority, and the generated result must be checked against current rules.'], ['How is the picture framed?', 'The tool exports a centered square crop; it does not detect or reposition a face.']]
+      title: 'Passport Photo Maker for Print Shops Online Free Tool', category: 'Image Tools', type: 'passport-photo',
+      description: 'Prepare India, USA, UK, or Australia passport-size photos for photo studios and print shops. Reposition the crop, arrange multiple copies on A4, and export PNG, JPG, SVG, or print.',
+      details: 'Create a passport-photo proof for customers at a photo studio, cyber cafe, or print shop. Choose a commonly used country size, reposition the crop horizontally and vertically, and place a requested number of copies onto an A4 sheet. Export the individual crop or print sheet in PNG, JPG, or SVG, or open a print-ready A4 page. Country photo requirements can vary by application and change over time; check the relevant issuing authority before printing official submissions.',
+      steps: ['Upload a clear portrait photo from the customer.', 'Choose a country size and adjust horizontal and vertical crop position.', 'Set the number of copies to fit on an A4 sheet.', 'Download the individual photo or A4 sheet as PNG, JPG, or SVG, or print the sheet.'],
+      faq: [['Which dimensions are provided?', 'The presets use common reference dimensions: India, UK, and Australia 35 × 45 mm; USA 51 × 51 mm. Confirm the current requirements for the exact document application.'], ['Can I change how the face is positioned?', 'Yes. Use the horizontal and vertical crop-position controls and check the preview before exporting.'], ['How many copies fit on A4?', 'The sheet uses A4 portrait dimensions and places copies left to right, then continues on the next row. The requested number is limited to 1–100.'], ['Does the tool upload customer photos?', 'No. Image processing runs in this browser tab.']]
     },
     'base64-encoder-decoder': {
       title: 'Base64 Encoder and Decoder Online Free Tool', category: 'Developer Tools', type: 'base64',
@@ -197,6 +197,34 @@
       details: 'Create a password using the browser Web Crypto API, which supplies cryptographically strong random bytes. Choose a length and whether to include uppercase, lowercase, digits, and symbols. Store generated passwords in a password manager and never reuse a password across important accounts.',
       steps: ['Choose the password length and character groups.', 'Select Generate Password.', 'Copy the result into a trusted password manager.'],
       faq: [['Is randomness cryptographically secure?', 'Where supported, the tool uses the browser Web Crypto API.'], ['Is my password saved?', 'No. The generated password remains in the current page until you clear or leave it.']]
+    },
+    'basic-calculator': {
+      title: 'Basic Calculator Online Free Tool', category: 'Banking & Finance Calculators', type: 'basic-calculator',
+      description: 'Use a free online calculator for addition, subtraction, multiplication, and division with clear, immediate results.',
+      details: 'Perform everyday arithmetic using two numeric values and a selected operation. The calculator validates its inputs, reports division by zero clearly, and keeps calculations in your browser. It is intended for general arithmetic, not financial advice or tax calculations.',
+      steps: ['Enter the first and second values.', 'Select addition, subtraction, multiplication, or division.', 'Choose Calculate to view the result.'],
+      faq: [['Can I divide by zero?', 'No. The calculator reports that division by zero is undefined.'], ['Are values sent to a server?', 'No. Arithmetic runs locally in your browser.']]
+    },
+    'emi-loan-calculator': {
+      title: 'EMI Loan Calculator Online Free Tool', category: 'Banking & Finance Calculators', type: 'emi-calculator',
+      description: 'Estimate monthly loan EMI, total repayment, and total interest from the loan amount, annual interest rate, and term.',
+      details: 'Estimate a fixed-rate monthly installment using the standard reducing-balance EMI formula. The estimate excludes fees, insurance, rate changes, taxes, and lender-specific rounding. Confirm final repayment figures with your lender before making a borrowing decision.',
+      steps: ['Enter the principal loan amount.', 'Enter the annual interest rate as a percentage.', 'Enter the repayment term in years and calculate the estimate.'],
+      faq: [['What does EMI mean?', 'EMI is an equated monthly installment, a fixed monthly payment estimate for a reducing-balance loan.'], ['Does the estimate include fees?', 'No. Lender fees, insurance, taxes, and rate changes are not included.']]
+    },
+    'interest-calculator': {
+      title: 'Simple and Compound Interest Calculator Online Free Tool', category: 'Banking & Finance Calculators', type: 'interest-calculator',
+      description: 'Calculate estimated simple or compound interest using principal, annual rate, time, and a compounding frequency.',
+      details: 'Compare simple interest with compound growth over a chosen number of years. Simple interest is calculated on the original principal; compound interest adds earned interest to the balance at each selected interval. Results are mathematical estimates and do not include fees, taxes, changing rates, or investment risk.',
+      steps: ['Enter the starting principal and annual percentage rate.', 'Enter the duration in years.', 'Choose simple or compound interest and its compounding frequency.'],
+      faq: [['How does compound interest differ?', 'Compound interest is calculated on principal plus previously accumulated interest at each compounding interval.'], ['Are these investment returns guaranteed?', 'No. The calculator only applies the rate you enter and does not predict or guarantee returns.']]
+    },
+    'daily-monthly-yearly-interest-calculator': {
+      title: 'Daily Monthly Yearly Interest Calculator Online Free Tool', category: 'Banking & Finance Calculators', type: 'period-interest-calculator',
+      description: 'Estimate simple interest by day, month, or year from a principal and annual percentage rate.',
+      details: 'Convert an annual simple interest rate into a per-day, per-month, or per-year estimate and calculate interest for a selected number of periods. Daily calculations use a 365-day year; monthly calculations use one twelfth of the annual rate. Actual bank day-count conventions, compounding, and product terms may differ.',
+      steps: ['Enter the principal and annual rate.', 'Choose daily, monthly, or yearly periods.', 'Enter the number of periods and calculate estimated interest and total.'],
+      faq: [['Does this calculator compound interest?', 'No. This tool calculates simple interest for the selected period. Use the separate compound interest calculator for compounding.'], ['How are days counted?', 'The estimate uses 365 days per year; actual financial products may use another convention.']]
     }
   };
 
@@ -298,6 +326,304 @@
     URL.revokeObjectURL(link.href);
   }
 
+  function downloadBlob(blob, filename) {
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = filename;
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function renderPassportMaker(root, controls, result, status, imageResult) {
+    controls.innerHTML = `<p class="passport-step-heading">1. Upload customer photo</p><label class="document-field document-field-wide">Portrait photo<input data-passport-file type="file" accept="image/*"></label>
+      <p class="passport-step-heading">2. Select country photo size</p><label class="document-field">Country size<select data-passport-size><option value="india">India — 35 × 45 mm</option><option value="usa">USA — 51 × 51 mm</option><option value="uk">UK — 35 × 45 mm</option><option value="australia">Australia — 35 × 45 mm</option></select></label>
+      <p class="passport-step-heading">3. Position crop and set photo background</p>
+      <label class="document-field">Horizontal crop position <output data-position-x>50%</output><input data-position="x" type="range" min="0" max="100" value="50"></label>
+      <label class="document-field">Vertical crop position <output data-position-y>50%</output><input data-position="y" type="range" min="0" max="100" value="50"></label>
+      <p class="passport-step-note">Drag the crop frame over the full image preview, or use the position sliders.</p>
+      <fieldset class="passport-background-options"><legend>Photo background</legend><label><input type="checkbox" data-remove-background> Remove plain background</label><label class="document-field">Replacement<select data-background-mode><option value="transparent">Transparent</option><option value="white" selected>White</option><option value="lightblue">Light blue</option><option value="custom">Custom color</option></select></label><label class="document-field" data-custom-color-wrap hidden>Custom color<input type="color" data-background-color value="#ffffff"></label><label class="document-field">Background tolerance <output data-background-tolerance-label>45</output><input data-background-tolerance type="range" min="10" max="140" value="45"></label><small>Background removal samples the image edges and works best with a plain, evenly lit background.</small></fieldset>
+      <p class="passport-authority-note">Common reference sizes only. Check current photo requirements for the issuing authority before printing official documents.</p>
+      <div class="maker-actions"><button type="button" data-passport-generate-photo disabled>4. Generate photo</button></div>
+      <section class="passport-export-group"><h3>Individual photo</h3><div class="maker-actions"><button type="button" data-export-photo="png" disabled>Photo PNG</button><button type="button" data-export-photo="jpg" disabled>Photo JPG</button><button type="button" data-export-photo="svg" disabled>Photo SVG</button></div></section>
+      <fieldset class="passport-sheet-controls" disabled><legend>5. Generate A4 sheet</legend><label class="document-field">Number of copies<input data-passport-copies type="number" min="1" max="100" step="1" value="6"></label><p>Copies auto-fit horizontally on A4 paper, then continue on the next row.</p><div class="maker-actions"><button type="button" data-passport-generate-sheet disabled>Generate A4 sheet</button></div></fieldset>`;
+    root.querySelector('.online-tool-actions').hidden = true;
+    result.hidden = true;
+    imageResult.innerHTML = '<section class="passport-preview-panel"><h2>Uploaded image and crop position</h2><canvas data-passport-source-preview aria-label="Uploaded portrait with draggable crop frame"></canvas></section><section class="passport-preview-panel passport-photo-output" hidden><h2>Generated individual photo</h2><canvas data-passport-photo-preview></canvas></section><section class="passport-preview-panel passport-sheet-output" hidden><h2>Generated A4 sheet</h2><canvas data-passport-sheet-preview></canvas><div class="maker-actions passport-sheet-downloads"><button type="button" data-export-sheet="png" disabled>Download PNG</button><button type="button" data-export-sheet="jpg" disabled>Download JPG</button><button type="button" data-export-sheet="svg" disabled>Download SVG</button><button type="button" data-passport-print disabled>Print A4 sheet</button></div></section>';
+    const sourceCanvas = imageResult.querySelector('[data-passport-source-preview]');
+    const photoCanvas = imageResult.querySelector('[data-passport-photo-preview]');
+    const sheetCanvas = imageResult.querySelector('[data-passport-sheet-preview]');
+    const sourceContext = sourceCanvas.getContext('2d');
+    const photoContext = photoCanvas.getContext('2d');
+    const sheetContext = sheetCanvas.getContext('2d');
+    const presets = {
+      india: { width: 35, height: 45 },
+      usa: { width: 51, height: 51 },
+      uk: { width: 35, height: 45 },
+      australia: { width: 35, height: 45 }
+    };
+    let bitmap = null;
+    let cropData = null;
+    let sheetData = null;
+    let photoGenerated = false;
+    let sheetGenerated = false;
+    let dragging = false;
+    const selectedSize = () => presets[controls.querySelector('[data-passport-size]').value];
+    const outputSize = () => {
+      const size = selectedSize();
+      return { width: Math.round(size.width / 25.4 * 300), height: Math.round(size.height / 25.4 * 300) };
+    };
+
+    function cropGeometry() {
+      if (!bitmap) return false;
+      const { width, height } = outputSize();
+      const targetRatio = width / height;
+      const sourceRatio = bitmap.width / bitmap.height;
+      let sourceWidth = bitmap.width, sourceHeight = bitmap.height;
+      if (sourceRatio > targetRatio) sourceWidth = bitmap.height * targetRatio;
+      else sourceHeight = bitmap.width / targetRatio;
+      const maxX = bitmap.width - sourceWidth;
+      const maxY = bitmap.height - sourceHeight;
+      const xPosition = Number(controls.querySelector('[data-position="x"]').value) / 100;
+      const yPosition = Number(controls.querySelector('[data-position="y"]').value) / 100;
+      const sourceX = maxX * xPosition;
+      const sourceY = maxY * yPosition;
+      return { sourceX, sourceY, sourceWidth, sourceHeight, width, height, maxX, maxY };
+    }
+
+    function drawSourcePreview() {
+      if (!bitmap) return false;
+      const scale = Math.min(1, 1200 / Math.max(bitmap.width, bitmap.height));
+      const previewWidth = Math.max(1, Math.round(bitmap.width * scale));
+      const previewHeight = Math.max(1, Math.round(bitmap.height * scale));
+      if (sourceCanvas.width !== previewWidth) sourceCanvas.width = previewWidth;
+      if (sourceCanvas.height !== previewHeight) sourceCanvas.height = previewHeight;
+      sourceContext.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
+      sourceContext.drawImage(bitmap, 0, 0, sourceCanvas.width, sourceCanvas.height);
+      const crop = cropGeometry();
+      if (!crop) return false;
+      const x = crop.sourceX * scale, y = crop.sourceY * scale;
+      const width = crop.sourceWidth * scale, height = crop.sourceHeight * scale;
+      sourceContext.fillStyle = 'rgba(10, 20, 28, .48)';
+      sourceContext.fillRect(0, 0, sourceCanvas.width, y);
+      sourceContext.fillRect(0, y + height, sourceCanvas.width, sourceCanvas.height - y - height);
+      sourceContext.fillRect(0, y, x, height);
+      sourceContext.fillRect(x + width, y, sourceCanvas.width - x - width, height);
+      sourceContext.strokeStyle = '#fff'; sourceContext.lineWidth = Math.max(2, sourceCanvas.width / 300);
+      sourceContext.strokeRect(x, y, width, height);
+      sourceContext.strokeStyle = '#08715f'; sourceContext.lineWidth = Math.max(1, sourceCanvas.width / 600);
+      sourceContext.strokeRect(x + 2, y + 2, Math.max(0, width - 4), Math.max(0, height - 4));
+      return { scale, x, y, width, height };
+    }
+
+    function removeSampledBackground(context, width, height) {
+      if (!controls.querySelector('[data-remove-background]').checked) return;
+      const mode = controls.querySelector('[data-background-mode]').value;
+      const tolerance = Number(controls.querySelector('[data-background-tolerance]').value);
+      const image = context.getImageData(0, 0, width, height);
+      const data = image.data;
+      const samplePoints = [[0, 0], [width - 1, 0], [0, height - 1], [width - 1, height - 1], [Math.floor(width / 2), 0], [Math.floor(width / 2), height - 1]];
+      const background = samplePoints.reduce((sum, [x, y]) => {
+        const offset = (y * width + x) * 4;
+        sum[0] += data[offset]; sum[1] += data[offset + 1]; sum[2] += data[offset + 2];
+        return sum;
+      }, [0, 0, 0]).map(value => value / samplePoints.length);
+      const color = controls.querySelector('[data-background-color]').value;
+      const replacement = color.match(/[\da-f]{2}/gi).map(value => parseInt(value, 16));
+      for (let index = 0; index < data.length; index += 4) {
+        const distance = Math.sqrt((data[index] - background[0]) ** 2 + (data[index + 1] - background[1]) ** 2 + (data[index + 2] - background[2]) ** 2);
+        if (distance <= tolerance) {
+          if (mode === 'transparent') data[index + 3] = 0;
+          else {
+            const rgb = mode === 'white' ? [255, 255, 255] : mode === 'lightblue' ? [210, 230, 250] : replacement;
+            data[index] = rgb[0]; data[index + 1] = rgb[1]; data[index + 2] = rgb[2]; data[index + 3] = 255;
+          }
+        }
+      }
+      context.putImageData(image, 0, 0);
+    }
+
+    function drawPhoto() {
+      const crop = cropGeometry();
+      if (!crop) return false;
+      const { width, height, sourceX, sourceY, sourceWidth, sourceHeight } = crop;
+      photoCanvas.width = width; photoCanvas.height = height;
+      photoContext.clearRect(0, 0, width, height);
+      photoContext.drawImage(bitmap, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, width, height);
+      removeSampledBackground(photoContext, width, height);
+      cropData = crop;
+      return true;
+    }
+
+    function drawSheet() {
+      if (!photoGenerated) return false;
+      const dpi = 300, sheetWidth = Math.round(210 / 25.4 * dpi), sheetHeight = Math.round(297 / 25.4 * dpi);
+      const margin = Math.round(5 / 25.4 * dpi), gap = Math.round(2 / 25.4 * dpi);
+      const columns = Math.max(1, Math.floor((sheetWidth - margin * 2 + gap) / (photoCanvas.width + gap)));
+      const rowsFit = Math.max(1, Math.floor((sheetHeight - margin * 2 + gap) / (photoCanvas.height + gap)));
+      const capacity = Math.min(100, columns * rowsFit);
+      const requested = Math.max(1, Math.min(100, Math.floor(Number(controls.querySelector('[data-passport-copies]').value) || 1)));
+      const copies = Math.min(requested, capacity);
+      controls.querySelector('[data-passport-copies]').value = copies;
+      controls.querySelector('[data-passport-copies]').max = capacity;
+      const rows = Math.ceil(copies / columns);
+      sheetCanvas.width = sheetWidth;
+      sheetCanvas.height = sheetHeight;
+      sheetContext.fillStyle = '#fff';
+      sheetContext.fillRect(0, 0, sheetWidth, sheetHeight);
+      for (let index = 0; index < copies; index += 1) {
+        const column = index % columns;
+        const row = Math.floor(index / columns);
+        const x = margin + column * (photoCanvas.width + gap);
+        const y = margin + row * (photoCanvas.height + gap);
+        if (y + photoCanvas.height > sheetHeight - margin) break;
+        sheetContext.drawImage(photoCanvas, x, y);
+      }
+      sheetData = { copies, columns, rows, width: sheetWidth, height: sheetHeight, margin, gap, photoWidth: photoCanvas.width, photoHeight: photoCanvas.height };
+      result.hidden = false;
+      result.textContent = `A4 portrait · ${sheetData.copies} copies · ${columns} per row · capacity ${capacity} · ${widthMm(photoCanvas.width)} × ${widthMm(photoCanvas.height)} mm each · 300 DPI`;
+      if (requested > capacity) status.textContent = `A4 sheet capacity is ${capacity} copies at this photo size. Copy count adjusted to fit.`;
+      imageResult.querySelector('.passport-sheet-output').hidden = false;
+      sheetGenerated = true;
+      imageResult.querySelectorAll('[data-export-sheet],[data-passport-print]').forEach(button => { button.disabled = false; });
+      return true;
+    }
+
+    function widthMm(pixels) { return (pixels / 300 * 25.4).toFixed(1); }
+    function invalidateSheet() {
+      sheetGenerated = false;
+      imageResult.querySelector('.passport-sheet-output').hidden = true;
+      result.hidden = true;
+      imageResult.querySelectorAll('[data-export-sheet],[data-passport-print]').forEach(button => { button.disabled = true; });
+    }
+
+    function invalidatePhoto() {
+      photoGenerated = false;
+      imageResult.querySelector('.passport-photo-output').hidden = true;
+      controls.querySelector('[data-passport-generate-sheet]').disabled = true;
+      controls.querySelector('[data-passport-copies]').disabled = true;
+      controls.querySelector('.passport-sheet-controls').disabled = true;
+      controls.querySelectorAll('[data-export-photo]').forEach(button => { button.disabled = true; });
+      invalidateSheet();
+    }
+
+    function announce() { status.textContent = bitmap ? 'Crop and sheet preview updated locally.' : 'Upload a portrait photo to start. Your image stays in this browser.'; }
+    function requirePhoto() {
+      if (!photoGenerated) { status.textContent = 'Position the crop and choose Generate photo before exporting.'; return false; }
+      return true;
+    }
+    function requireSheet() {
+      if (!sheetGenerated) { status.textContent = 'Choose Generate A4 sheet before exporting or printing the sheet.'; return false; }
+      return true;
+    }
+    function canvasBlob(canvas, mime) {
+      return new Promise(resolve => canvas.toBlob(resolve, mime, 0.95));
+    }
+    function toSvg(canvas, widthMmValue, heightMmValue) {
+      const data = canvas.toDataURL('image/png');
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${widthMmValue}mm" height="${heightMmValue}mm" viewBox="0 0 ${canvas.width} ${canvas.height}"><image width="${canvas.width}" height="${canvas.height}" href="${data}"/></svg>`;
+    }
+
+    controls.querySelector('[data-passport-file]').addEventListener('change', async event => {
+      const file = event.target.files[0];
+      if (!file) {
+        bitmap = null; cropData = null; sheetData = null;
+        controls.querySelector('[data-passport-generate-photo]').disabled = true;
+        photoContext.clearRect(0, 0, photoCanvas.width, photoCanvas.height);
+        sheetContext.clearRect(0, 0, sheetCanvas.width, sheetCanvas.height);
+        sourceContext.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
+        invalidatePhoto(); announce(); return;
+      }
+      try {
+        bitmap = await createImageBitmap(file);
+        invalidatePhoto();
+        controls.querySelector('[data-passport-generate-photo]').disabled = false;
+        drawSourcePreview();
+        announce();
+      } catch (error) { bitmap = null; status.textContent = 'The selected image could not be opened by this browser.'; }
+    });
+    controls.querySelector('[data-passport-size]').addEventListener('change', () => { if (bitmap) drawSourcePreview(); invalidatePhoto(); });
+    controls.querySelector('[data-passport-copies]').addEventListener('input', invalidateSheet);
+    for (const axis of ['x', 'y']) {
+      controls.querySelector(`[data-position="${axis}"]`).addEventListener('input', event => {
+        controls.querySelector(`[data-position-${axis}]`).value = `${event.target.value}%`;
+        if (bitmap) drawSourcePreview();
+        invalidatePhoto();
+      });
+    }
+    controls.querySelector('[data-passport-generate-photo]').addEventListener('click', () => {
+      if (!bitmap) { status.textContent = 'Upload a portrait photo before generating.'; return; }
+      if (drawPhoto()) {
+        photoGenerated = true;
+        imageResult.querySelector('.passport-photo-output').hidden = false;
+        controls.querySelectorAll('[data-export-photo]').forEach(button => { button.disabled = false; });
+        controls.querySelector('.passport-sheet-controls').disabled = false;
+        controls.querySelector('[data-passport-copies]').disabled = false;
+        controls.querySelector('[data-passport-generate-sheet]').disabled = false;
+        invalidateSheet();
+        status.textContent = 'Photo generated. Review it, set the copy count, then generate the A4 sheet.';
+      }
+    });
+    controls.querySelector('[data-passport-generate-sheet]').addEventListener('click', () => {
+      if (!photoGenerated) { status.textContent = 'Generate and review the individual photo first.'; return; }
+      if (drawSheet()) status.textContent = 'A4 sheet generated. Check the layout and copy count before printing.';
+    });
+    controls.querySelector('[data-remove-background]').addEventListener('change', invalidatePhoto);
+    controls.querySelector('[data-background-mode]').addEventListener('change', event => { controls.querySelector('[data-custom-color-wrap]').hidden = event.target.value !== 'custom'; invalidatePhoto(); });
+    controls.querySelector('[data-background-color]').addEventListener('input', invalidatePhoto);
+    controls.querySelector('[data-background-tolerance]').addEventListener('input', event => { controls.querySelector('[data-background-tolerance-label]').value = event.target.value; invalidatePhoto(); });
+    sourceCanvas.addEventListener('pointerdown', event => { if (!bitmap) return; dragging = true; sourceCanvas.setPointerCapture(event.pointerId); });
+    sourceCanvas.addEventListener('pointerup', event => { dragging = false; if (sourceCanvas.hasPointerCapture(event.pointerId)) sourceCanvas.releasePointerCapture(event.pointerId); });
+    sourceCanvas.addEventListener('pointermove', event => {
+      if (!dragging || !bitmap) return;
+      const rect = sourceCanvas.getBoundingClientRect();
+      const preview = drawSourcePreview();
+      if (!preview) return;
+      const localX = (event.clientX - rect.left) / rect.width * sourceCanvas.width;
+      const localY = (event.clientY - rect.top) / rect.height * sourceCanvas.height;
+      const xRange = Math.max(0, sourceCanvas.width - preview.width);
+      const yRange = Math.max(0, sourceCanvas.height - preview.height);
+      const xRatio = xRange ? Math.max(0, Math.min(1, (localX - preview.width / 2) / xRange)) : 0.5;
+      const yRatio = yRange ? Math.max(0, Math.min(1, (localY - preview.height / 2) / yRange)) : 0.5;
+      controls.querySelector('[data-position="x"]').value = Math.round(xRatio * 100);
+      controls.querySelector('[data-position="y"]').value = Math.round(yRatio * 100);
+      controls.querySelector('[data-position-x]').value = `${controls.querySelector('[data-position="x"]').value}%`;
+      controls.querySelector('[data-position-y]').value = `${controls.querySelector('[data-position="y"]').value}%`;
+      invalidatePhoto();
+    });
+    controls.querySelectorAll('[data-export-photo]').forEach(button => button.addEventListener('click', async () => {
+      if (!requirePhoto()) return;
+      const format = button.dataset.exportPhoto;
+      const size = selectedSize();
+      if (format === 'svg') downloadBlob(new Blob([toSvg(photoCanvas, size.width, size.height)], { type: 'image/svg+xml;charset=utf-8' }), `passport-photo-${controls.querySelector('[data-passport-size]').value}.svg`);
+      else {
+        const blob = await canvasBlob(photoCanvas, format === 'jpg' ? 'image/jpeg' : 'image/png');
+        if (blob) downloadBlob(blob, `passport-photo-${controls.querySelector('[data-passport-size]').value}.${format}`);
+      }
+      status.textContent = `Passport photo exported as ${format.toUpperCase()}.`;
+    }));
+    imageResult.querySelectorAll('[data-export-sheet]').forEach(button => button.addEventListener('click', async () => {
+      if (!requireSheet()) return;
+      const format = button.dataset.exportSheet;
+      if (format === 'svg') downloadBlob(new Blob([toSvg(sheetCanvas, 210, 297)], { type: 'image/svg+xml;charset=utf-8' }), 'passport-photos-a4.svg');
+      else {
+        const blob = await canvasBlob(sheetCanvas, format === 'jpg' ? 'image/jpeg' : 'image/png');
+        if (blob) downloadBlob(blob, `passport-photos-a4.${format}`);
+      }
+      status.textContent = `A4 sheet exported as ${format.toUpperCase()}.`;
+    }));
+    imageResult.querySelector('[data-passport-print]').addEventListener('click', () => {
+      if (!requireSheet()) return;
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) { status.textContent = 'Allow pop-ups for this site to open the print sheet.'; return; }
+      const image = sheetCanvas.toDataURL('image/png');
+      printWindow.document.write(`<!doctype html><html><head><title>A4 Passport Photo Sheet</title><style>@page{size:A4 portrait;margin:0}html,body{width:210mm;height:297mm;margin:0}img{display:block;width:210mm;height:297mm}</style></head><body><img src="${image}" alt="A4 passport photo sheet"><script>window.onload=()=>{window.focus();window.print()}<\/script></body></html>`);
+      printWindow.document.close();
+      status.textContent = 'A4 print sheet opened. Check printer paper size and scale before printing.';
+    });
+    announce();
+  }
+
   function renderPage(root, tool) {
     document.title = tool.title;
     const descriptionMeta = document.querySelector('meta[name="description"]');
@@ -316,10 +642,21 @@
     const type = tool.type;
     if (type === 'two-text') {
       controls.innerHTML = '<label>Original text<textarea data-input="left" rows="12" spellcheck="false"></textarea></label><label>Updated text<textarea data-input="right" rows="12" spellcheck="false"></textarea></label>';
-    } else if (type.startsWith('image-') || type === 'passport-photo' || type === 'file-csv') {
+    } else if (type === 'passport-photo') {
+      renderPassportMaker(root, controls, root.querySelector('.online-tool-result'), root.querySelector('.online-tool-status'), root.querySelector('.online-tool-image-result'));
+      return;
+    } else if (type.startsWith('image-') || type === 'file-csv') {
       controls.innerHTML = `<label>Choose a local file<input data-file type="file" accept="${type === 'file-csv' ? '.xlsx,.xls' : 'image/*'}"></label>${type === 'image-compress' || type === 'image-jpeg' ? '<label>JPEG quality <input data-option="quality" type="range" min="0.2" max="1" step="0.05" value="0.82"><output data-quality>82%</output></label>' : ''}${type === 'image-resize' || type === 'image-crop' || type === 'passport-photo' ? `<div class="online-tool-dimensions"><label>Width (px)<input data-option="width" type="number" min="1" max="10000" value="${type === 'passport-photo' ? 600 : 800}"></label><label>Height (px)<input data-option="height" type="number" min="1" max="10000" value="${type === 'passport-photo' ? 600 : 600}"></label></div>` : ''}${type === 'image-convert' ? '<label>Output format<select data-option="format"><option value="png">PNG</option><option value="jpeg">JPEG</option></select></label>' : ''}`;
     } else if (type === 'password') {
       controls.innerHTML = '<label>Password length<input data-option="length" type="number" min="8" max="128" value="20"></label><div class="online-tool-checks"><label><input data-option="lower" type="checkbox" checked> Lowercase</label><label><input data-option="upper" type="checkbox" checked> Uppercase</label><label><input data-option="numbers" type="checkbox" checked> Numbers</label><label><input data-option="symbols" type="checkbox" checked> Symbols</label></div>';
+    } else if (type === 'basic-calculator') {
+      controls.innerHTML = '<label>First number<input data-option="first" type="number" step="any" value="25"></label><label>Operation<select data-option="operation"><option value="add">Add (+)</option><option value="subtract">Subtract (-)</option><option value="multiply">Multiply (×)</option><option value="divide">Divide (÷)</option></select></label><label>Second number<input data-option="second" type="number" step="any" value="5"></label>';
+    } else if (type === 'emi-calculator') {
+      controls.innerHTML = '<label>Loan amount<input data-option="principal" type="number" min="0.01" step="any" value="1000000"></label><label>Annual interest rate (%)<input data-option="rate" type="number" min="0" step="any" value="8.5"></label><label>Loan term (years)<input data-option="years" type="number" min="0.01" step="any" value="20"></label>';
+    } else if (type === 'interest-calculator') {
+      controls.innerHTML = '<label>Principal amount<input data-option="principal" type="number" min="0.01" step="any" value="100000"></label><label>Annual interest rate (%)<input data-option="rate" type="number" min="0" step="any" value="6"></label><label>Time (years)<input data-option="years" type="number" min="0.01" step="any" value="5"></label><label>Interest method<select data-option="method"><option value="compound">Compound interest</option><option value="simple">Simple interest</option></select></label><label>Compounding frequency<select data-option="frequency"><option value="1">Annually</option><option value="2">Semi-annually</option><option value="4">Quarterly</option><option value="12" selected>Monthly</option><option value="365">Daily</option></select></label>';
+    } else if (type === 'period-interest-calculator') {
+      controls.innerHTML = '<label>Principal amount<input data-option="principal" type="number" min="0.01" step="any" value="100000"></label><label>Annual interest rate (%)<input data-option="rate" type="number" min="0" step="any" value="6"></label><label>Period<select data-option="period"><option value="daily">Daily</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select></label><label>Number of periods<input data-option="periods" type="number" min="0.01" step="any" value="12"></label>';
     } else if (type === 'qr') {
       controls.innerHTML = '<label>Text or URL<input data-input="left" type="text" autocomplete="off" placeholder="https://example.com"></label>';
     } else if (type === 'base64' || type === 'url') {
@@ -397,6 +734,54 @@
             const date = source.trim() && Number.isFinite(numeric) ? new Date(Math.abs(numeric) < 1e11 ? numeric * 1000 : numeric) : new Date(source);
             if (Number.isNaN(date.getTime())) throw new Error('Enter a valid timestamp or date.');
             output = `UTC: ${date.toISOString()}\nUnix seconds: ${Math.floor(date.getTime() / 1000)}\nUnix milliseconds: ${date.getTime()}`; filename = 'timestamp-conversion.txt'; break;
+          }
+          case 'basic-calculator': {
+            const first = Number(controls.querySelector('[data-option="first"]').value);
+            const second = Number(controls.querySelector('[data-option="second"]').value);
+            if (!Number.isFinite(first) || !Number.isFinite(second)) throw new Error('Enter valid numbers in both fields.');
+            const operation = controls.querySelector('[data-option="operation"]').value;
+            if (operation === 'divide' && second === 0) throw new Error('Division by zero is undefined.');
+            const symbols = { add: '+', subtract: '−', multiply: '×', divide: '÷' };
+            const value = operation === 'add' ? first + second : operation === 'subtract' ? first - second : operation === 'multiply' ? first * second : first / second;
+            output = `${first} ${symbols[operation]} ${second} = ${value}`; filename = 'calculation.txt'; break;
+          }
+          case 'emi-calculator': {
+            const principal = Number(controls.querySelector('[data-option="principal"]').value);
+            const annualRate = Number(controls.querySelector('[data-option="rate"]').value);
+            const years = Number(controls.querySelector('[data-option="years"]').value);
+            if (!(principal > 0) || annualRate < 0 || !(years > 0) || ![principal, annualRate, years].every(Number.isFinite)) throw new Error('Enter a positive loan amount and term, and a non-negative rate.');
+            const months = Math.round(years * 12);
+            const monthlyRate = annualRate / 1200;
+            const emi = monthlyRate === 0 ? principal / months : principal * monthlyRate * ((1 + monthlyRate) ** months) / (((1 + monthlyRate) ** months) - 1);
+            const total = emi * months;
+            const currency = value => value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            output = `Estimated monthly EMI: ${currency(emi)}\nNumber of monthly payments: ${months}\nTotal repayment: ${currency(total)}\nTotal interest: ${currency(total - principal)}\n\nFormula: EMI = P × r × (1 + r)^n ÷ ((1 + r)^n − 1)\nP = principal, r = monthly rate, n = number of monthly payments.\nEstimate only; lender fees and terms are not included.`;
+            filename = 'emi-loan-estimate.txt'; break;
+          }
+          case 'interest-calculator': {
+            const principal = Number(controls.querySelector('[data-option="principal"]').value);
+            const annualRate = Number(controls.querySelector('[data-option="rate"]').value);
+            const years = Number(controls.querySelector('[data-option="years"]').value);
+            const frequency = Number(controls.querySelector('[data-option="frequency"]').value);
+            const method = controls.querySelector('[data-option="method"]').value;
+            if (!(principal > 0) || annualRate < 0 || !(years > 0) || ![principal, annualRate, years, frequency].every(Number.isFinite)) throw new Error('Enter a positive principal and duration, plus a non-negative rate.');
+            const amount = method === 'simple' ? principal * (1 + annualRate / 100 * years) : principal * (1 + annualRate / 100 / frequency) ** (frequency * years);
+            const currency = value => value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            output = `Method: ${method === 'simple' ? 'Simple interest' : 'Compound interest'}\nPrincipal: ${currency(principal)}\nInterest earned: ${currency(amount - principal)}\nEstimated final amount: ${currency(amount)}\nAnnual rate: ${annualRate}%\nDuration: ${years} years${method === 'compound' ? `\nCompounding periods per year: ${frequency}` : ''}\n\nEstimate only; taxes, fees, changing rates, and investment risk are not included.`;
+            filename = 'interest-estimate.txt'; break;
+          }
+          case 'period-interest-calculator': {
+            const principal = Number(controls.querySelector('[data-option="principal"]').value);
+            const annualRate = Number(controls.querySelector('[data-option="rate"]').value);
+            const periods = Number(controls.querySelector('[data-option="periods"]').value);
+            const period = controls.querySelector('[data-option="period"]').value;
+            if (!(principal > 0) || annualRate < 0 || !(periods > 0) || ![principal, annualRate, periods].every(Number.isFinite)) throw new Error('Enter a positive principal and number of periods, plus a non-negative rate.');
+            const daysPerPeriod = period === 'daily' ? 1 : period === 'monthly' ? 365 / 12 : 365;
+            const periodRate = annualRate / 100 * daysPerPeriod / 365;
+            const interest = principal * periodRate * periods;
+            const currency = value => value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            output = `Period: ${period[0].toUpperCase()}${period.slice(1)}\nNumber of periods: ${periods}\nRate per period (simple): ${(periodRate * 100).toFixed(6)}%\nEstimated interest: ${currency(interest)}\nEstimated total: ${currency(principal + interest)}\n\nDaily uses 365 days per year; monthly uses 1/12 of a year. Simple interest only; lender conventions may differ.`;
+            filename = 'period-interest-estimate.txt'; break;
           }
           case 'count': {
             const words = source.trim() ? source.trim().split(/\s+/u).length : 0;
