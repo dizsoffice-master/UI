@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL Query Performance and Capstone Project | Lesson 10</title>
+  <meta name="description" content="Finish the free SQL course with EXPLAIN, indexes, safe parameterized queries, and a complete customer-order reporting project.">
+  <link rel="canonical" href="https://www.onlinedatatool.com/pages/sql-course-10-performance-project.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head><body><div class="tool-page-wrap"><div id="siteHeader"></div><main class="excel-course-page" data-sql-course data-course-key="sql-query-course-completed" data-course-total="10">
+  <header class="excel-course-hero"><p class="excel-course-eyebrow">Free SQL Course / Lesson 10 of 10</p><h1>SQL Performance, Security, and Final Project</h1><p>Read query plans, choose useful indexes, protect application queries, and combine the course into a practical reporting workflow.</p></header>
+  <div class="excel-course-layout"><aside class="excel-course-index" aria-label="SQL course lessons"><h2>Course lessons</h2><nav><ol>
+    <li><a href="sql-course.html" data-lesson-number="1">Query basics</a></li><li><a href="sql-course-02-filtering.html" data-lesson-number="2">Filtering and sorting</a></li><li><a href="sql-course-03-aggregates.html" data-lesson-number="3">Aggregates and groups</a></li><li><a href="sql-course-04-joins.html" data-lesson-number="4">Joins</a></li><li><a href="sql-course-05-subqueries-ctes.html" data-lesson-number="5">Subqueries and CTEs</a></li><li><a href="sql-course-06-window-functions.html" data-lesson-number="6">Window functions</a></li><li><a href="sql-course-07-data-changes.html" data-lesson-number="7">Insert, update, delete</a></li><li><a href="sql-course-08-schema-constraints.html" data-lesson-number="8">Schema and constraints</a></li><li><a href="sql-course-09-functions-and-types.html" data-lesson-number="9">Functions and data types</a></li><li><a href="sql-course-10-performance-project.html" data-lesson-number="10">Performance and project</a></li>
+  </ol></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside><article class="excel-course-content">
+    <section><h2>Lesson 10: Measure before optimizing</h2><p>Use the query plan to find expensive scans, joins, sorts, and estimates that differ from actual row counts. Indexes speed some reads but consume storage and add write cost.</p><pre><code>EXPLAIN (ANALYZE, BUFFERS)
+SELECT customer_id, SUM(total)
+FROM orders
+WHERE order_date &gt;= DATE '2025-01-01'
+GROUP BY customer_id;</code></pre><div class="excel-course-callout"><p>EXPLAIN ANALYZE executes the query. Use it carefully for statements with side effects; PostgreSQL supports wrapping experiments in a transaction and rolling back.</p></div></section>
+    <section><h2>Performance and safety checklist</h2><div class="excel-formula-search"><label>Filter checklist<input type="search" data-course-search placeholder="Search EXPLAIN, index, parameter"></label><span data-course-results>10 checks shown</span></div><div class="excel-formula-table-wrap"><table class="excel-formula-table"><thead><tr><th>Practice</th><th>Why it matters</th><th>Example</th></tr></thead><tbody>
+      <tr data-formula-row><td>EXPLAIN</td><td>Shows the planner's estimated plan without executing the statement.</td><td><code>EXPLAIN SELECT * FROM orders WHERE customer_id=42;</code></td></tr><tr data-formula-row><td>EXPLAIN ANALYZE</td><td>Runs the query and reports actual timing and rows.</td><td><code>EXPLAIN (ANALYZE, BUFFERS) SELECT ...;</code></td></tr><tr data-formula-row><td>B-tree index</td><td>Useful for equality, range, and ordered access patterns.</td><td><code>CREATE INDEX ON orders(customer_id, order_date);</code></td></tr><tr data-formula-row><td>Partial index</td><td>Indexes rows meeting a stable predicate.</td><td><code>CREATE INDEX ON orders(order_date) WHERE status='open';</code></td></tr><tr data-formula-row><td>Composite index order</td><td>Leading columns affect which predicates can use the index.</td><td><code>(customer_id, order_date)</code> supports customer lookups first.</td></tr><tr data-formula-row><td>Parameterized query</td><td>Keeps values separate from SQL syntax and prevents injection.</td><td><code>SELECT * FROM users WHERE email = $1</code></td></tr><tr data-formula-row><td>SELECT needed columns</td><td>Reduces network and memory work; avoids fragile SELECT *.</td><td><code>SELECT id, status FROM orders</code></td></tr><tr data-formula-row><td>Limit results</td><td>Protects exploratory queries and user-facing pages.</td><td><code>ORDER BY created_at DESC LIMIT 100</code></td></tr><tr data-formula-row><td>Check cardinality</td><td>Join duplication can inflate aggregates.</td><td>Compare row counts before and after each join.</td></tr><tr data-formula-row><td>Transactions</td><td>Keep related changes atomic.</td><td><code>BEGIN; ... COMMIT;</code></td></tr>
+    </tbody></table></div></section>
+    <section><h2>Capstone: customer order report</h2><p>Build a report showing each customer, paid-order count, lifetime revenue, most recent order, and rank within their region. Use a CTE to aggregate orders, join customers and regions, and a window function to rank totals. Validate with a small known dataset, then inspect EXPLAIN for the production-sized query.</p><pre><code>WITH totals AS (
+  SELECT customer_id, COUNT(*) AS order_count, SUM(total) AS revenue,
+         MAX(order_date) AS latest_order
+  FROM orders
+  WHERE status = 'paid'
+  GROUP BY customer_id
+)
+SELECT c.name, t.order_count, t.revenue, t.latest_order,
+       RANK() OVER (PARTITION BY c.region_id ORDER BY t.revenue DESC) AS region_rank
+FROM totals t
+JOIN customers c USING (customer_id)
+ORDER BY c.region_id, region_rank;</code></pre></section>
+    <section><h2>SQL dialect note</h2><p>This course uses PostgreSQL syntax for examples such as ILIKE, RETURNING, identity columns, date_trunc, and JSONB. SQL Server, MySQL, SQLite, and Oracle differ in functions, paging syntax, data types, and DDL details. Check the documentation for your database before running statements.</p></section>
+    <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section><nav class="excel-course-footer-nav"><a href="sql-course-09-functions-and-types.html">Previous: Functions</a><a href="sql-course.html">Return to SQL course start</a></nav>
+  </article></div></main><div id="siteFooter"></div></div>
+  <!-- Dependencies: CSS [../assets/master.css, ../assets/site-columns.css, ../assets/excel-course.css]; shared JavaScript [../assets/page-settings.js, ../assets/ad-settings.js, ../assets/site-partials.js, ../assets/adsense.js, ../assets/excel-course.js]; page logic [sql-course-10-performance-project.js]. -->
+  <script src="../assets/excel-course.js"></script><script src="sql-course-10-performance-project.js"></script>
+</body></html>

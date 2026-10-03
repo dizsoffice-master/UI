@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL CREATE TABLE, Keys and Constraints | Lesson 8</title>
+  <meta name="description" content="Learn SQL tables, PostgreSQL data types, primary and foreign keys, unique and check constraints, and schema changes.">
+  <link rel="canonical" href="https://www.onlinedatatool.com/pages/sql-course-08-schema-constraints.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head><body><div class="tool-page-wrap"><div id="siteHeader"></div><main class="excel-course-page" data-sql-course data-course-key="sql-query-course-completed" data-course-total="10">
+  <header class="excel-course-hero"><p class="excel-course-eyebrow">Free SQL Course / Lesson 8 of 10</p><h1>SQL Tables, Data Types, Keys, and Constraints</h1><p>Design tables that express valid data, enforce relationships, and prevent duplicate or incomplete records.</p></header>
+  <div class="excel-course-layout"><aside class="excel-course-index" aria-label="SQL course lessons"><h2>Course lessons</h2><nav><ol>
+    <li><a href="sql-course.html" data-lesson-number="1">Query basics</a></li><li><a href="sql-course-02-filtering.html" data-lesson-number="2">Filtering and sorting</a></li><li><a href="sql-course-03-aggregates.html" data-lesson-number="3">Aggregates and groups</a></li><li><a href="sql-course-04-joins.html" data-lesson-number="4">Joins</a></li><li><a href="sql-course-05-subqueries-ctes.html" data-lesson-number="5">Subqueries and CTEs</a></li><li><a href="sql-course-06-window-functions.html" data-lesson-number="6">Window functions</a></li><li><a href="sql-course-07-data-changes.html" data-lesson-number="7">Insert, update, delete</a></li><li><a href="sql-course-08-schema-constraints.html" data-lesson-number="8">Schema and constraints</a></li><li><a href="sql-course-09-functions-and-types.html" data-lesson-number="9">Functions and data types</a></li><li><a href="sql-course-10-performance-project.html" data-lesson-number="10">Performance and project</a></li>
+  </ol></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside><article class="excel-course-content">
+    <section><h2>Lesson 8: Model the rules in the schema</h2><p>Choose types that represent the domain. Use numeric types for exact money, timestamps with time zones for global events, and constraints for invariants that every writer must obey.</p><pre><code>CREATE TABLE customers (
+  customer_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  email text NOT NULL UNIQUE,
+  created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE orders (
+  order_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  customer_id bigint NOT NULL REFERENCES customers(customer_id),
+  total numeric(12,2) NOT NULL CHECK (total &gt;= 0)
+);</code></pre></section>
+    <section><h2>Schema building blocks</h2><div class="excel-formula-search"><label>Filter concepts<input type="search" data-course-search placeholder="Search PRIMARY KEY, CHECK, ALTER"></label><span data-course-results>11 concepts shown</span></div><div class="excel-formula-table-wrap"><table class="excel-formula-table"><thead><tr><th>Feature</th><th>Purpose</th><th>Example</th></tr></thead><tbody>
+      <tr data-formula-row><td>CREATE TABLE</td><td>Defines columns and constraints.</td><td><code>CREATE TABLE products (id bigint, name text);</code></td></tr><tr data-formula-row><td>NOT NULL</td><td>Requires a value.</td><td><code>email text NOT NULL</code></td></tr><tr data-formula-row><td>PRIMARY KEY</td><td>Uniquely identifies each row.</td><td><code>customer_id bigint PRIMARY KEY</code></td></tr><tr data-formula-row><td>FOREIGN KEY</td><td>Enforces a relationship to a referenced key.</td><td><code>customer_id REFERENCES customers(customer_id)</code></td></tr><tr data-formula-row><td>UNIQUE</td><td>Prevents duplicate values or combinations.</td><td><code>UNIQUE (tenant_id, external_id)</code></td></tr><tr data-formula-row><td>CHECK</td><td>Enforces a Boolean rule for each row.</td><td><code>CHECK (quantity &gt;= 0)</code></td></tr><tr data-formula-row><td>DEFAULT</td><td>Provides a value when none is supplied.</td><td><code>created_at timestamptz DEFAULT CURRENT_TIMESTAMP</code></td></tr><tr data-formula-row><td>IDENTITY</td><td>Generates numeric key values in PostgreSQL.</td><td><code>id bigint GENERATED ALWAYS AS IDENTITY</code></td></tr><tr data-formula-row><td>ALTER TABLE</td><td>Changes an existing table definition.</td><td><code>ALTER TABLE products ADD COLUMN active boolean NOT NULL DEFAULT true;</code></td></tr><tr data-formula-row><td>DROP TABLE</td><td>Removes a table and its data; destructive.</td><td><code>DROP TABLE staging_data;</code></td></tr><tr data-formula-row><td>VIEW</td><td>Stores a reusable query definition.</td><td><code>CREATE VIEW paid_orders AS SELECT * FROM orders WHERE status='paid';</code></td></tr>
+    </tbody></table></div></section>
+    <section><h2>Choose types and relationships</h2><p>Use <code>numeric(p,s)</code> for exact decimal quantities such as money, <code>date</code> for calendar dates, <code>timestamptz</code> for instants, and <code>jsonb</code> for flexible PostgreSQL JSON. Normalize repeated entities and define delete/update behavior on foreign keys deliberately.</p></section>
+    <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section><nav class="excel-course-footer-nav"><a href="sql-course-07-data-changes.html">Previous: Data changes</a><a href="sql-course-09-functions-and-types.html">Next: Functions</a></nav>
+  </article></div></main><div id="siteFooter"></div></div>
+  <!-- Dependencies: CSS [../assets/master.css, ../assets/site-columns.css, ../assets/excel-course.css]; shared JavaScript [../assets/page-settings.js, ../assets/ad-settings.js, ../assets/site-partials.js, ../assets/adsense.js, ../assets/excel-course.js]; page logic [sql-course-08-schema-constraints.js]. -->
+  <script src="../assets/excel-course.js"></script><script src="sql-course-08-schema-constraints.js"></script>
+</body></html>

@@ -453,6 +453,36 @@ a.service-link:hover { border-color: var(--line); background: #fff; }
 .home-tool-group li[hidden],
 .home-tool-group[hidden] { display: none; }
 
+.home-course-group { padding: 0; }
+
+.home-course-group summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 54px;
+  padding: 14px 16px;
+  color: var(--heading);
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.home-course-group summary span:last-child {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.home-course-group ol {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 0 12px 12px 34px;
+}
+
 .home-tool-link {
   display: flex;
   align-items: center;

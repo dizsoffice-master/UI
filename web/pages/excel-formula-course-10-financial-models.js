@@ -1,0 +1,1 @@
+window.ExcelFormulaCourse.initPage(10);
