@@ -363,7 +363,7 @@
 
 <div class="query-header-h2-with-right-button">
   <h2>Select All Records Query</h2>
-  <button onclick="copyQuery(this)">Copy</button>
+  <button data-copy-query>Copy</button>
 
   <pre class="output-box sql-template">
 SELECT *
@@ -374,7 +374,7 @@ FROM your_table_name;
 <div class="query-header-h2-with-right-button">
 
   <h2>Select Latest 100 Records Query</h2>
-  <button class="primary" onclick="copyQuery(this)">Copy</button>
+  <button class="primary" data-copy-query>Copy</button>
   </div>
   <pre class="output-box sql-temacplate">
 SELECT *
@@ -384,7 +384,7 @@ LIMIT 100;
   </pre>
 
   <h2>Count Total Records Query</h2>
-  <button class="primary" onclick="copyQuery(this)">Copy</button>
+  <button class="primary" data-copy-query>Copy</button>
 
   <pre class="output-box sql-template">
 SELECT COUNT(*) AS total_records
@@ -392,7 +392,7 @@ FROM your_table_name;
   </pre>
 
   <h2>Maximum Value Query</h2>
-  <button class="primary" onclick="copyQuery(this)">Copy</button>
+  <button class="primary" data-copy-query>Copy</button>
 
   <pre class="output-box sql-template">
 SELECT MAX(id) AS max_id
@@ -563,76 +563,9 @@ WHERE id = 1;
 
     <div id="footerServicesLayer"></div>
     <div id="siteFooter"></div>
-  </div>
-
-<script>
-
-function updateTableName() {
-
-  const tableName =
-    document
-      .getElementById('tableName')
-      .value
-      .trim() || 'your_table_name';
-
-  document
-    .querySelectorAll('.sql-template')
-    .forEach(element => {
-
-      if (!element.dataset.template) {
-        element.dataset.template =
-          element.textContent;
-      }
-
-      element.textContent =
-        element.dataset.template.replaceAll(
-          'your_table_name',
-          tableName
-        );
-
-    });
-
-}
-
-document.addEventListener(
-  'DOMContentLoaded',
-  () => {
-
-    const input =
-      document.getElementById('tableName');
-
-    input.addEventListener(
-      'input',
-      updateTableName
-    );
-
-    updateTableName();
-
-  }
-);
+  </div>  <!-- Dependencies: CSS [../assets/master.css, ../assets/site-columns.css]; shared JavaScript [../assets/adsense.js, ../assets/ad-settings.js, ../assets/page-settings.js, ../assets/site-partials.js]; page logic [postgres-and-sql-all-query-builder-online-free-tool-for-fresher-developer.js]. -->
 
 
-
-
-function copyQuery(button) {
-
-  const query =
-    button
-      .closest('.query-card')
-      .querySelector('.sql-template')
-      .textContent;
-
-  navigator.clipboard.writeText(query);
-
-  const originalText = button.textContent;
-
-  button.textContent = 'Copied';
-
-  setTimeout(() => {
-    button.textContent = originalText;
-  }, 1500);
-
-}
-</script>
+<script src="postgres-and-sql-all-query-builder-online-free-tool-for-fresher-developer.js"></script>
 </body>
 </html>

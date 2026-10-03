@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SQL Syntax Formatter Online Free Tool</title>
+  <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="../assets/master.css">
   <script src="../assets/page-settings.js"></script>
   <script src="../assets/ad-settings.js"></script>
@@ -282,13 +283,14 @@
     <div id="headerServicesLayer"></div>
 
       <main class="tool-content">
-        <div class="page-title">SQL Syntax Formatter Online Free Tool</div>
+        <h1 class="page-title">SQL Syntax Formatter Online Free Tool</h1>
         <p class="page-subtitle">Beautify SQL statements and align your database query writing.</p>
 
+        <h2>Format and align SQL queries</h2>
         <textarea id="sqlInput">SELECT * FROM temples WHERE category = 'darshan' ORDER BY created_at DESC;</textarea>
         <div class="button-row">
-          <button onclick="formatSql()">Format SQL</button>
-          <button class="secondary" onclick="clearSql()">Clear</button>
+          <button data-sql-action="format">Format SQL</button>
+          <button class="secondary" data-sql-action="clear">Clear</button>
         </div>
         <div class="output-box" id="sqlOutput">Formatted SQL output appears here.</div>
 
@@ -296,24 +298,9 @@
 
     <div id="footerServicesLayer"></div>
     <div id="siteFooter"></div>
-  </div>
+  </div>  <!-- Dependencies: CSS [../assets/master.css]; shared JavaScript [../assets/adsense.js, ../assets/ad-settings.js, ../assets/page-settings.js, ../assets/site-partials.js]; page logic [sample.js]. -->
 
-  <script>
-    function formatSql() {
-      const sql = document.getElementById('sqlInput').value.trim();
-      const output = sql
-        .replace(/SELECT/g, '\nSELECT')
-        .replace(/FROM/g, '\nFROM')
-        .replace(/WHERE/g, '\nWHERE')
-        .replace(/ORDER BY/g, '\nORDER BY')
-        .replace(/;/g, ';\n');
-      document.getElementById('sqlOutput').textContent = output;
-    }
 
-    function clearSql() {
-      document.getElementById('sqlInput').value = '';
-      document.getElementById('sqlOutput').textContent = '';
-    }
-  </script>
+  <script src="sample.js"></script>
 </body>
 </html>

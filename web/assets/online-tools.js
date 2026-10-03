@@ -335,294 +335,2737 @@
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  function renderPassportMaker(root, controls, result, status, imageResult) {
-    controls.innerHTML = `<p class="passport-step-heading">1. Upload customer photo</p><label class="document-field document-field-wide">Portrait photo<input data-passport-file type="file" accept="image/*"></label>
-      <p class="passport-step-heading">2. Select country photo size</p><label class="document-field">Country size<select data-passport-size><option value="india">India — 35 × 45 mm</option><option value="usa">USA — 51 × 51 mm</option><option value="uk">UK — 35 × 45 mm</option><option value="australia">Australia — 35 × 45 mm</option></select></label>
-      <p class="passport-step-heading">3. Position crop and set photo background</p>
-      <label class="document-field">Horizontal crop position <output data-position-x>50%</output><input data-position="x" type="range" min="0" max="100" value="50"></label>
-      <label class="document-field">Vertical crop position <output data-position-y>50%</output><input data-position="y" type="range" min="0" max="100" value="50"></label>
-      <p class="passport-step-note">Drag the crop frame over the full image preview, or use the position sliders.</p>
-      <fieldset class="passport-background-options"><legend>Photo background</legend><label><input type="checkbox" data-remove-background> Remove plain background</label><label class="document-field">Replacement<select data-background-mode><option value="transparent">Transparent</option><option value="white" selected>White</option><option value="lightblue">Light blue</option><option value="custom">Custom color</option></select></label><label class="document-field" data-custom-color-wrap hidden>Custom color<input type="color" data-background-color value="#ffffff"></label><label class="document-field">Background tolerance <output data-background-tolerance-label>45</output><input data-background-tolerance type="range" min="10" max="140" value="45"></label><small>Background removal samples the image edges and works best with a plain, evenly lit background.</small></fieldset>
-      <p class="passport-authority-note">Common reference sizes only. Check current photo requirements for the issuing authority before printing official documents.</p>
-      <div class="maker-actions"><button type="button" data-passport-generate-photo disabled>4. Generate photo</button></div>
-      <section class="passport-export-group"><h3>Individual photo</h3><div class="maker-actions"><button type="button" data-export-photo="png" disabled>Photo PNG</button><button type="button" data-export-photo="jpg" disabled>Photo JPG</button><button type="button" data-export-photo="svg" disabled>Photo SVG</button></div></section>
-      <fieldset class="passport-sheet-controls" disabled><legend>5. Generate A4 sheet</legend><label class="document-field">Number of copies<input data-passport-copies type="number" min="1" max="100" step="1" value="6"></label><p>Copies auto-fit horizontally on A4 paper, then continue on the next row.</p><div class="maker-actions"><button type="button" data-passport-generate-sheet disabled>Generate A4 sheet</button></div></fieldset>`;
-    root.querySelector('.online-tool-actions').hidden = true;
-    result.hidden = true;
-    imageResult.innerHTML = '<section class="passport-preview-panel"><h2>Uploaded image and crop position</h2><canvas data-passport-source-preview aria-label="Uploaded portrait with draggable crop frame"></canvas></section><section class="passport-preview-panel passport-photo-output" hidden><h2>Generated individual photo</h2><canvas data-passport-photo-preview></canvas></section><section class="passport-preview-panel passport-sheet-output" hidden><h2>Generated A4 sheet</h2><canvas data-passport-sheet-preview></canvas><div class="maker-actions passport-sheet-downloads"><button type="button" data-export-sheet="png" disabled>Download PNG</button><button type="button" data-export-sheet="jpg" disabled>Download JPG</button><button type="button" data-export-sheet="svg" disabled>Download SVG</button><button type="button" data-passport-print disabled>Print A4 sheet</button></div></section>';
-    const sourceCanvas = imageResult.querySelector('[data-passport-source-preview]');
-    const photoCanvas = imageResult.querySelector('[data-passport-photo-preview]');
-    const sheetCanvas = imageResult.querySelector('[data-passport-sheet-preview]');
-    const sourceContext = sourceCanvas.getContext('2d');
-    const photoContext = photoCanvas.getContext('2d');
-    const sheetContext = sheetCanvas.getContext('2d');
+function renderPassportMaker(root, controls, result, status, imageResult) {
+
     const presets = {
-      india: { width: 35, height: 45 },
-      usa: { width: 51, height: 51 },
-      uk: { width: 35, height: 45 },
-      australia: { width: 35, height: 45 }
-    };
-    let bitmap = null;
-    let cropData = null;
-    let sheetData = null;
-    let photoGenerated = false;
-    let sheetGenerated = false;
-    let dragging = false;
-    const selectedSize = () => presets[controls.querySelector('[data-passport-size]').value];
-    const outputSize = () => {
-      const size = selectedSize();
-      return { width: Math.round(size.width / 25.4 * 300), height: Math.round(size.height / 25.4 * 300) };
-    };
-
-    function cropGeometry() {
-      if (!bitmap) return false;
-      const { width, height } = outputSize();
-      const targetRatio = width / height;
-      const sourceRatio = bitmap.width / bitmap.height;
-      let sourceWidth = bitmap.width, sourceHeight = bitmap.height;
-      if (sourceRatio > targetRatio) sourceWidth = bitmap.height * targetRatio;
-      else sourceHeight = bitmap.width / targetRatio;
-      const maxX = bitmap.width - sourceWidth;
-      const maxY = bitmap.height - sourceHeight;
-      const xPosition = Number(controls.querySelector('[data-position="x"]').value) / 100;
-      const yPosition = Number(controls.querySelector('[data-position="y"]').value) / 100;
-      const sourceX = maxX * xPosition;
-      const sourceY = maxY * yPosition;
-      return { sourceX, sourceY, sourceWidth, sourceHeight, width, height, maxX, maxY };
-    }
-
-    function drawSourcePreview() {
-      if (!bitmap) return false;
-      const scale = Math.min(1, 1200 / Math.max(bitmap.width, bitmap.height));
-      const previewWidth = Math.max(1, Math.round(bitmap.width * scale));
-      const previewHeight = Math.max(1, Math.round(bitmap.height * scale));
-      if (sourceCanvas.width !== previewWidth) sourceCanvas.width = previewWidth;
-      if (sourceCanvas.height !== previewHeight) sourceCanvas.height = previewHeight;
-      sourceContext.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
-      sourceContext.drawImage(bitmap, 0, 0, sourceCanvas.width, sourceCanvas.height);
-      const crop = cropGeometry();
-      if (!crop) return false;
-      const x = crop.sourceX * scale, y = crop.sourceY * scale;
-      const width = crop.sourceWidth * scale, height = crop.sourceHeight * scale;
-      sourceContext.fillStyle = 'rgba(10, 20, 28, .48)';
-      sourceContext.fillRect(0, 0, sourceCanvas.width, y);
-      sourceContext.fillRect(0, y + height, sourceCanvas.width, sourceCanvas.height - y - height);
-      sourceContext.fillRect(0, y, x, height);
-      sourceContext.fillRect(x + width, y, sourceCanvas.width - x - width, height);
-      sourceContext.strokeStyle = '#fff'; sourceContext.lineWidth = Math.max(2, sourceCanvas.width / 300);
-      sourceContext.strokeRect(x, y, width, height);
-      sourceContext.strokeStyle = '#08715f'; sourceContext.lineWidth = Math.max(1, sourceCanvas.width / 600);
-      sourceContext.strokeRect(x + 2, y + 2, Math.max(0, width - 4), Math.max(0, height - 4));
-      return { scale, x, y, width, height };
-    }
-
-    function removeSampledBackground(context, width, height) {
-      if (!controls.querySelector('[data-remove-background]').checked) return;
-      const mode = controls.querySelector('[data-background-mode]').value;
-      const tolerance = Number(controls.querySelector('[data-background-tolerance]').value);
-      const image = context.getImageData(0, 0, width, height);
-      const data = image.data;
-      const samplePoints = [[0, 0], [width - 1, 0], [0, height - 1], [width - 1, height - 1], [Math.floor(width / 2), 0], [Math.floor(width / 2), height - 1]];
-      const background = samplePoints.reduce((sum, [x, y]) => {
-        const offset = (y * width + x) * 4;
-        sum[0] += data[offset]; sum[1] += data[offset + 1]; sum[2] += data[offset + 2];
-        return sum;
-      }, [0, 0, 0]).map(value => value / samplePoints.length);
-      const color = controls.querySelector('[data-background-color]').value;
-      const replacement = color.match(/[\da-f]{2}/gi).map(value => parseInt(value, 16));
-      for (let index = 0; index < data.length; index += 4) {
-        const distance = Math.sqrt((data[index] - background[0]) ** 2 + (data[index + 1] - background[1]) ** 2 + (data[index + 2] - background[2]) ** 2);
-        if (distance <= tolerance) {
-          if (mode === 'transparent') data[index + 3] = 0;
-          else {
-            const rgb = mode === 'white' ? [255, 255, 255] : mode === 'lightblue' ? [210, 230, 250] : replacement;
-            data[index] = rgb[0]; data[index + 1] = rgb[1]; data[index + 2] = rgb[2]; data[index + 3] = 255;
-          }
+        india: {
+            width: 35,
+            height: 45,
+            label: 'India'
+        },
+        usa: {
+            width: 51,
+            height: 51,
+            label: 'USA'
+        },
+        uk: {
+            width: 35,
+            height: 45,
+            label: 'UK'
+        },
+        australia: {
+            width: 35,
+            height: 45,
+            label: 'Australia'
         }
-      }
-      context.putImageData(image, 0, 0);
+    };
+
+    const DPI = 300;
+
+    let bitmap = null;
+    let bitmapUrl = null;
+
+    let generatedPhotoCanvas = null;
+    let generatedSheetCanvas = null;
+
+    let cropX = 0;
+    let cropY = 0;
+    let cropWidth = 0;
+    let cropHeight = 0;
+
+    let cropInitialized = false;
+
+    let interactionMode = null;
+    let activePointerId = null;
+
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+
+    let startCropX = 0;
+    let startCropY = 0;
+    let startCropWidth = 0;
+    let startCropHeight = 0;
+
+    controls.innerHTML = `
+
+        <!-- =====================================================
+             1. UPLOAD PHOTO
+             ===================================================== -->
+
+        <section
+            class="passport-upload-section"
+            style="
+                width:100%;
+                margin:0 0 22px 0;
+            "
+        >
+
+            <p class="passport-step-heading">
+                1. Upload customer photo
+            </p>
+
+            <label
+                class="document-field document-field-wide"
+                style="
+                    width:100%;
+                    display:block;
+                "
+            >
+                Portrait photo
+
+                <input
+                    data-passport-file
+                    type="file"
+                    accept="image/*"
+                >
+            </label>
+
+        </section>
+
+
+        <!-- =====================================================
+             2. COUNTRY PHOTO SIZE
+             FULL WIDTH / SEPARATE SECTION
+             ===================================================== -->
+
+        <section
+            class="passport-country-size-section"
+            style="
+                width:100%;
+                margin:0 0 26px 0;
+            "
+        >
+
+            <p class="passport-step-heading">
+                2. Select country photo size
+            </p>
+
+            <label
+                class="document-field"
+                style="
+                    width:100%;
+                    display:block;
+                "
+            >
+
+                Country size
+
+                <select
+                    data-passport-size
+                    style="
+                        width:100%;
+                        box-sizing:border-box;
+                    "
+                >
+
+                    <option value="india">
+                        India — 35 × 45 mm
+                    </option>
+
+                    <option value="usa">
+                        USA — 51 × 51 mm
+                    </option>
+
+                    <option value="uk">
+                        UK — 35 × 45 mm
+                    </option>
+
+                    <option value="australia">
+                        Australia — 35 × 45 mm
+                    </option>
+
+                </select>
+
+            </label>
+
+        </section>
+
+
+        <!-- =====================================================
+             3. CROP + GENERATED PHOTO
+             FULL AVAILABLE WIDTH
+             50% / 50%
+             ===================================================== -->
+
+
+
+                <!-- =================================================
+                     CROP PHOTO
+                     ================================================= -->
+
+                <section
+                    class="passport-preview-panel passport-source-preview"
+                    data-passport-crop-section
+                    style="
+                        width:100%;
+                        min-width:0;
+                        margin:0;
+                    "
+                >
+
+                    <h2>
+                        3. Crop photo
+                    </h2>
+
+                    <p
+                        style="
+                            margin:0 0 12px 0;
+                        "
+                    >
+                        Drag the crop area to move it.
+                        Drag any corner to resize it.
+                        The selected photo ratio is always maintained.
+                    </p>
+
+                    <div
+                        data-passport-crop-workspace
+                        style="
+                            position:relative;
+                            width:100%;
+                            overflow:hidden;
+                            background:#111;
+                            border-radius:6px;
+                            touch-action:none;
+                            user-select:none;
+                            line-height:0;
+                        "
+                    >
+
+                        <img
+                            data-passport-crop-image
+                            alt="Uploaded portrait crop preview"
+                            draggable="false"
+                            style="
+                                display:block;
+                                width:100%;
+                                height:auto;
+                                max-width:100%;
+                                user-select:none;
+                                -webkit-user-drag:none;
+                                pointer-events:none;
+                            "
+                        >
+
+                        <div
+                            data-passport-crop-box
+                            style="
+                                position:absolute;
+                                display:none;
+                                box-sizing:border-box;
+                                border:3px solid #ffffff;
+                                box-shadow:
+                                    0 0 0 99999px rgba(0,0,0,.55);
+                                cursor:move;
+                                touch-action:none;
+                            "
+                        >
+
+                            <!-- TOP LEFT -->
+
+                            <div
+                                data-crop-handle="nw"
+                                style="
+                                    position:absolute;
+                                    width:22px;
+                                    height:22px;
+                                    left:-11px;
+                                    top:-11px;
+                                    border:3px solid #ffffff;
+                                    background:#222;
+                                    box-sizing:border-box;
+                                    cursor:nwse-resize;
+                                    touch-action:none;
+                                "
+                            ></div>
+
+
+                            <!-- TOP RIGHT -->
+
+                            <div
+                                data-crop-handle="ne"
+                                style="
+                                    position:absolute;
+                                    width:22px;
+                                    height:22px;
+                                    right:-11px;
+                                    top:-11px;
+                                    border:3px solid #ffffff;
+                                    background:#222;
+                                    box-sizing:border-box;
+                                    cursor:nesw-resize;
+                                    touch-action:none;
+                                "
+                            ></div>
+
+
+                            <!-- BOTTOM LEFT -->
+
+                            <div
+                                data-crop-handle="sw"
+                                style="
+                                    position:absolute;
+                                    width:22px;
+                                    height:22px;
+                                    left:-11px;
+                                    bottom:-11px;
+                                    border:3px solid #ffffff;
+                                    background:#222;
+                                    box-sizing:border-box;
+                                    cursor:nesw-resize;
+                                    touch-action:none;
+                                "
+                            ></div>
+
+
+                            <!-- BOTTOM RIGHT -->
+
+                            <div
+                                data-crop-handle="se"
+                                style="
+                                    position:absolute;
+                                    width:22px;
+                                    height:22px;
+                                    right:-11px;
+                                    bottom:-11px;
+                                    border:3px solid #ffffff;
+                                    background:#222;
+                                    box-sizing:border-box;
+                                    cursor:nwse-resize;
+                                    touch-action:none;
+                                "
+                            ></div>
+
+
+                            <div
+                                style="
+                                    position:absolute;
+                                    left:50%;
+                                    top:50%;
+                                    transform:translate(-50%,-50%);
+                                    color:#fff;
+                                    font:bold 15px Arial,sans-serif;
+                                    text-shadow:0 1px 4px #000;
+                                    pointer-events:none;
+                                    white-space:nowrap;
+                                "
+                            >
+                                DRAG TO MOVE
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            display:flex;
+                            justify-content:space-between;
+                            gap:12px;
+                            flex-wrap:wrap;
+                            margin-top:10px;
+                            font-size:13px;
+                        "
+                    >
+
+                        <span>
+                            Ratio:
+                            <strong data-crop-ratio>
+                                35 : 45
+                            </strong>
+                        </span>
+
+                        <span>
+                            Crop area:
+                            <strong data-crop-area>
+                                —
+                            </strong>
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     GENERATED INDIVIDUAL PHOTO
+                     ================================================= -->
+
+                <section
+                    class="passport-preview-panel passport-photo-output"
+                    data-passport-photo-output
+                    hidden
+                    style="
+                        width:100%;
+                        min-width:0;
+                        margin:0;
+                    "
+                >
+
+                    <h2>
+                        Generated individual photo
+                    </h2>
+
+
+                    <div
+                        data-passport-photo-preview-wrap
+                        style="
+                            width:100%;
+                            display:flex;
+                            justify-content:center;
+                            align-items:flex-start;
+                            padding:8px 0 12px;
+                            min-height:200px;
+                            box-sizing:border-box;
+                        "
+                    >
+
+                        <canvas
+                            data-passport-photo-preview
+                            style="
+                                display:block;
+                                width:auto;
+                                max-width:100%;
+                                height:auto;
+                                max-height:65vh;
+                            "
+                        ></canvas>
+
+                    </div>
+
+
+                    <!-- PHOTO DOWNLOAD BUTTONS -->
+
+                    <div
+                        class="maker-actions passport-photo-downloads"
+                        style="
+                            display:flex;
+                            flex-wrap:wrap;
+                            gap:8px;
+                            margin-top:4px;
+                        "
+                    >
+
+                        <button
+                            type="button"
+                            data-export-photo="png"
+                            disabled
+                        >
+                            Photo PNG
+                        </button>
+
+                        <button
+                            type="button"
+                            data-export-photo="jpg"
+                            disabled
+                        >
+                            Photo JPG
+                        </button>
+
+                        <button
+                            type="button"
+                            data-export-photo="svg"
+                            disabled
+                        >
+                            Photo SVG
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+
+        <!-- =====================================================
+             4. A4 SHEET
+             ===================================================== -->
+
+        <fieldset
+            class="passport-sheet-controls"
+            disabled
+            style="
+                margin-top:28px;
+            "
+        >
+
+            <legend>
+                4. Generate A4 sheet
+            </legend>
+
+
+            <label class="document-field">
+
+                Number of copies
+
+                <input
+                    data-passport-copies
+                    type="number"
+                    min="1"
+                    max="100"
+                    step="1"
+                    value="6"
+                >
+
+            </label>
+
+
+            <p>
+                Copies auto-fit horizontally on A4 paper,
+                then continue on the next row.
+            </p>
+
+
+            <div class="maker-actions">
+
+                <button
+                    type="button"
+                    data-passport-generate-sheet
+                    disabled
+                >
+                    Generate A4 sheet
+                </button>
+
+            </div>
+
+        </fieldset>
+
+
+        <!-- =====================================================
+             RESPONSIVE LAYOUT
+             ===================================================== -->
+
+        <style>
+
+            /*
+             * COUNTRY SIZE IS ALWAYS FULL WIDTH
+             */
+
+            .passport-country-size-section {
+                width:100% !important;
+            }
+
+
+            /*
+             * CROP + GENERATED PHOTO
+             *
+             * DESKTOP:
+             * 50% Crop
+             * 50% Generated
+             */
+
+            [data-passport-main-layout] {
+
+                display:grid !important;
+
+                grid-template-columns:
+                    minmax(0, 1fr)
+                    minmax(0, 1fr) !important;
+
+                width:100% !important;
+
+                gap:24px !important;
+
+            }
+
+
+            /*
+             * MAKE BOTH PANELS FULL WIDTH
+             */
+
+            [data-passport-crop-section],
+            [data-passport-photo-output] {
+
+                width:100% !important;
+
+                min-width:0 !important;
+
+                box-sizing:border-box;
+
+            }
+
+
+            /*
+             * MOBILE
+             *
+             * Crop first
+             * Generated photo second
+             */
+
+            @media (max-width:760px) {
+
+                [data-passport-main-layout] {
+
+                    grid-template-columns:
+                        minmax(0, 1fr) !important;
+
+                    gap:20px !important;
+
+                }
+
+                [data-passport-crop-section] {
+
+                    order:1;
+
+                }
+
+                [data-passport-photo-output] {
+
+                    order:2;
+
+                }
+
+                [data-passport-photo-preview-wrap] {
+
+                    justify-content:center !important;
+
+                }
+
+            }
+
+        </style>
+    `;
+
+
+    /* =========================================================
+       HIDE ONLINE ACTIONS / OLD RESULT
+       ========================================================= */
+
+    const onlineActions =
+        root.querySelector(
+            '.online-tool-actions'
+        );
+
+    if (onlineActions) {
+        onlineActions.hidden = true;
     }
 
-    function drawPhoto() {
-      const crop = cropGeometry();
-      if (!crop) return false;
-      const { width, height, sourceX, sourceY, sourceWidth, sourceHeight } = crop;
-      photoCanvas.width = width; photoCanvas.height = height;
-      photoContext.clearRect(0, 0, width, height);
-      photoContext.drawImage(bitmap, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, width, height);
-      removeSampledBackground(photoContext, width, height);
-      cropData = crop;
-      return true;
+    result.hidden = true;
+
+
+    /* =========================================================
+       A4 RESULT AREA
+       ========================================================= */
+
+    imageResult.innerHTML = `
+
+        <section
+            class="passport-preview-panel passport-sheet-output"
+            hidden
+        >
+
+            <h2>
+                Generated A4 sheet
+            </h2>
+
+
+            <canvas
+                data-passport-sheet-preview
+                style="
+                    display:block;
+                    max-width:100%;
+                    height:auto;
+                "
+            ></canvas>
+
+
+            <div
+                class="maker-actions passport-sheet-downloads"
+            >
+
+                <button
+                    type="button"
+                    data-export-sheet="png"
+                    disabled
+                >
+                    Download PNG
+                </button>
+
+                <button
+                    type="button"
+                    data-export-sheet="jpg"
+                    disabled
+                >
+                    Download JPG
+                </button>
+
+                <button
+                    type="button"
+                    data-export-sheet="svg"
+                    disabled
+                >
+                    Download SVG
+                </button>
+
+                <button
+                    type="button"
+                    data-passport-print
+                    disabled
+                >
+                    Print A4 sheet
+                </button>
+
+            </div>
+
+        </section>
+    `;
+
+
+    /* =========================================================
+       ELEMENT REFERENCES
+       ========================================================= */
+
+    const fileInput =
+        controls.querySelector(
+            '[data-passport-file]'
+        );
+
+    const sizeSelect =
+        controls.querySelector(
+            '[data-passport-size]'
+        );
+
+    const cropWorkspace =
+        controls.querySelector(
+            '[data-passport-crop-workspace]'
+        );
+
+    const cropImage =
+        controls.querySelector(
+            '[data-passport-crop-image]'
+        );
+
+    const cropBox =
+        controls.querySelector(
+            '[data-passport-crop-box]'
+        );
+
+    const cropRatioLabel =
+        controls.querySelector(
+            '[data-crop-ratio]'
+        );
+
+    const cropAreaLabel =
+        controls.querySelector(
+            '[data-crop-area]'
+        );
+
+    const photoOutput =
+        controls.querySelector(
+            '[data-passport-photo-output]'
+        );
+
+    const photoPreviewCanvas =
+        controls.querySelector(
+            '[data-passport-photo-preview]'
+        );
+
+    const photoExportButtons =
+        controls.querySelectorAll(
+            '[data-export-photo]'
+        );
+
+    const sheetControls =
+        controls.querySelector(
+            '.passport-sheet-controls'
+        );
+
+    const copiesInput =
+        controls.querySelector(
+            '[data-passport-copies]'
+        );
+
+    const generateSheetButton =
+        controls.querySelector(
+            '[data-passport-generate-sheet]'
+        );
+
+    const sheetOutput =
+        imageResult.querySelector(
+            '.passport-sheet-output'
+        );
+
+    const sheetPreviewCanvas =
+        imageResult.querySelector(
+            '[data-passport-sheet-preview]'
+        );
+
+    const sheetExportButtons =
+        imageResult.querySelectorAll(
+            '[data-export-sheet]'
+        );
+
+    const printButton =
+        imageResult.querySelector(
+            '[data-passport-print]'
+        );
+
+
+    /* =========================================================
+       PRESET
+       ========================================================= */
+
+    function getPreset() {
+
+        return (
+            presets[sizeSelect.value] ||
+            presets.india
+        );
+
     }
 
-    function drawSheet() {
-      if (!photoGenerated) return false;
-      const dpi = 300, sheetWidth = Math.round(210 / 25.4 * dpi), sheetHeight = Math.round(297 / 25.4 * dpi);
-      const margin = Math.round(5 / 25.4 * dpi), gap = Math.round(2 / 25.4 * dpi);
-      const columns = Math.max(1, Math.floor((sheetWidth - margin * 2 + gap) / (photoCanvas.width + gap)));
-      const rowsFit = Math.max(1, Math.floor((sheetHeight - margin * 2 + gap) / (photoCanvas.height + gap)));
-      const capacity = Math.min(100, columns * rowsFit);
-      const requested = Math.max(1, Math.min(100, Math.floor(Number(controls.querySelector('[data-passport-copies]').value) || 1)));
-      const copies = Math.min(requested, capacity);
-      controls.querySelector('[data-passport-copies]').value = copies;
-      controls.querySelector('[data-passport-copies]').max = capacity;
-      const rows = Math.ceil(copies / columns);
-      sheetCanvas.width = sheetWidth;
-      sheetCanvas.height = sheetHeight;
-      sheetContext.fillStyle = '#fff';
-      sheetContext.fillRect(0, 0, sheetWidth, sheetHeight);
-      for (let index = 0; index < copies; index += 1) {
-        const column = index % columns;
-        const row = Math.floor(index / columns);
-        const x = margin + column * (photoCanvas.width + gap);
-        const y = margin + row * (photoCanvas.height + gap);
-        if (y + photoCanvas.height > sheetHeight - margin) break;
-        sheetContext.drawImage(photoCanvas, x, y);
-      }
-      sheetData = { copies, columns, rows, width: sheetWidth, height: sheetHeight, margin, gap, photoWidth: photoCanvas.width, photoHeight: photoCanvas.height };
-      result.hidden = false;
-      result.textContent = `A4 portrait · ${sheetData.copies} copies · ${columns} per row · capacity ${capacity} · ${widthMm(photoCanvas.width)} × ${widthMm(photoCanvas.height)} mm each · 300 DPI`;
-      if (requested > capacity) status.textContent = `A4 sheet capacity is ${capacity} copies at this photo size. Copy count adjusted to fit.`;
-      imageResult.querySelector('.passport-sheet-output').hidden = false;
-      sheetGenerated = true;
-      imageResult.querySelectorAll('[data-export-sheet],[data-passport-print]').forEach(button => { button.disabled = false; });
-      return true;
+
+    function getRatio() {
+
+        const preset =
+            getPreset();
+
+        return (
+            preset.width /
+            preset.height
+        );
+
     }
 
-    function widthMm(pixels) { return (pixels / 300 * 25.4).toFixed(1); }
-    function invalidateSheet() {
-      sheetGenerated = false;
-      imageResult.querySelector('.passport-sheet-output').hidden = true;
-      result.hidden = true;
-      imageResult.querySelectorAll('[data-export-sheet],[data-passport-print]').forEach(button => { button.disabled = true; });
+
+    /* =========================================================
+       OUTPUT SIZE
+       ========================================================= */
+
+    function outputSize() {
+
+        const preset =
+            getPreset();
+
+        return {
+
+            width:
+                Math.round(
+                    preset.width /
+                    25.4 *
+                    DPI
+                ),
+
+            height:
+                Math.round(
+                    preset.height /
+                    25.4 *
+                    DPI
+                )
+
+        };
+
     }
 
-    function invalidatePhoto() {
-      photoGenerated = false;
-      imageResult.querySelector('.passport-photo-output').hidden = true;
-      controls.querySelector('[data-passport-generate-sheet]').disabled = true;
-      controls.querySelector('[data-passport-copies]').disabled = true;
-      controls.querySelector('.passport-sheet-controls').disabled = true;
-      controls.querySelectorAll('[data-export-photo]').forEach(button => { button.disabled = true; });
-      invalidateSheet();
+
+    /* =========================================================
+       INITIALIZE CROP
+       ========================================================= */
+
+    function initializeCrop() {
+
+        if (!bitmap) {
+            return;
+        }
+
+        const ratio =
+            getRatio();
+
+        const imageWidth =
+            bitmap.width;
+
+        const imageHeight =
+            bitmap.height;
+
+
+        let width =
+            imageWidth * 0.72;
+
+        let height =
+            width / ratio;
+
+
+        if (
+            height >
+            imageHeight * 0.72
+        ) {
+
+            height =
+                imageHeight * 0.72;
+
+            width =
+                height * ratio;
+
+        }
+
+
+        width =
+            Math.min(
+                width,
+                imageWidth
+            );
+
+
+        height =
+            Math.min(
+                height,
+                imageHeight
+            );
+
+
+        if (
+            width / height >
+            ratio
+        ) {
+
+            width =
+                height * ratio;
+
+        } else {
+
+            height =
+                width / ratio;
+
+        }
+
+
+        cropWidth =
+            Math.max(
+                1,
+                Math.min(
+                    imageWidth,
+                    width
+                )
+            );
+
+
+        cropHeight =
+            Math.max(
+                1,
+                Math.min(
+                    imageHeight,
+                    cropWidth / ratio
+                )
+            );
+
+
+        cropX =
+            (
+                imageWidth -
+                cropWidth
+            ) / 2;
+
+
+        cropY =
+            (
+                imageHeight -
+                cropHeight
+            ) / 2;
+
+
+        cropInitialized =
+            true;
+
+
+        renderCropBox();
+
     }
 
-    function announce() { status.textContent = bitmap ? 'Crop and sheet preview updated locally.' : 'Upload a portrait photo to start. Your image stays in this browser.'; }
-    function requirePhoto() {
-      if (!photoGenerated) { status.textContent = 'Position the crop and choose Generate photo before exporting.'; return false; }
-      return true;
-    }
-    function requireSheet() {
-      if (!sheetGenerated) { status.textContent = 'Choose Generate A4 sheet before exporting or printing the sheet.'; return false; }
-      return true;
-    }
-    function canvasBlob(canvas, mime) {
-      return new Promise(resolve => canvas.toBlob(resolve, mime, 0.95));
-    }
-    function toSvg(canvas, widthMmValue, heightMmValue) {
-      const data = canvas.toDataURL('image/png');
-      return `<svg xmlns="http://www.w3.org/2000/svg" width="${widthMmValue}mm" height="${heightMmValue}mm" viewBox="0 0 ${canvas.width} ${canvas.height}"><image width="${canvas.width}" height="${canvas.height}" href="${data}"/></svg>`;
+
+    /* =========================================================
+       RENDER CROP BOX
+       ========================================================= */
+
+    function renderCropBox() {
+
+        if (
+            !bitmap ||
+            !cropInitialized
+        ) {
+
+            cropBox.style.display =
+                'none';
+
+            return;
+
+        }
+
+
+        const workspaceWidth =
+            cropWorkspace.clientWidth;
+
+
+        if (!workspaceWidth) {
+            return;
+        }
+
+
+        const scale =
+            workspaceWidth /
+            bitmap.width;
+
+
+        const imageHeight =
+            bitmap.height *
+            scale;
+
+
+        cropWorkspace.style.height =
+            `${imageHeight}px`;
+
+
+        cropBox.style.display =
+            'block';
+
+
+        cropBox.style.left =
+            `${cropX * scale}px`;
+
+
+        cropBox.style.top =
+            `${cropY * scale}px`;
+
+
+        cropBox.style.width =
+            `${cropWidth * scale}px`;
+
+
+        cropBox.style.height =
+            `${cropHeight * scale}px`;
+
+
+        const preset =
+            getPreset();
+
+
+        cropRatioLabel.textContent =
+            `${preset.width} : ${preset.height}`;
+
+
+        cropAreaLabel.textContent =
+            `${Math.round(cropWidth)} × ${Math.round(cropHeight)} px`;
+
     }
 
-    controls.querySelector('[data-passport-file]').addEventListener('change', async event => {
-      const file = event.target.files[0];
-      if (!file) {
-        bitmap = null; cropData = null; sheetData = null;
-        controls.querySelector('[data-passport-generate-photo]').disabled = true;
-        photoContext.clearRect(0, 0, photoCanvas.width, photoCanvas.height);
-        sheetContext.clearRect(0, 0, sheetCanvas.width, sheetCanvas.height);
-        sourceContext.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
-        invalidatePhoto(); announce(); return;
-      }
-      try {
-        bitmap = await createImageBitmap(file);
-        invalidatePhoto();
-        controls.querySelector('[data-passport-generate-photo]').disabled = false;
-        drawSourcePreview();
-        announce();
-      } catch (error) { bitmap = null; status.textContent = 'The selected image could not be opened by this browser.'; }
-    });
-    controls.querySelector('[data-passport-size]').addEventListener('change', () => { if (bitmap) drawSourcePreview(); invalidatePhoto(); });
-    controls.querySelector('[data-passport-copies]').addEventListener('input', invalidateSheet);
-    for (const axis of ['x', 'y']) {
-      controls.querySelector(`[data-position="${axis}"]`).addEventListener('input', event => {
-        controls.querySelector(`[data-position-${axis}]`).value = `${event.target.value}%`;
-        if (bitmap) drawSourcePreview();
-        invalidatePhoto();
-      });
+
+    /* =========================================================
+       POINTER POSITION
+       ========================================================= */
+
+    function getPointerImagePosition(
+        event
+    ) {
+
+        const rect =
+            cropWorkspace.getBoundingClientRect();
+
+
+        if (
+            !rect.width ||
+            !bitmap
+        ) {
+
+            return {
+                x:0,
+                y:0
+            };
+
+        }
+
+
+        const displayX =
+            event.clientX -
+            rect.left;
+
+
+        const displayY =
+            event.clientY -
+            rect.top;
+
+
+        const scale =
+            bitmap.width /
+            rect.width;
+
+
+        return {
+
+            x:
+                displayX * scale,
+
+            y:
+                displayY * scale
+
+        };
+
     }
-    controls.querySelector('[data-passport-generate-photo]').addEventListener('click', () => {
-      if (!bitmap) { status.textContent = 'Upload a portrait photo before generating.'; return; }
-      if (drawPhoto()) {
-        photoGenerated = true;
-        imageResult.querySelector('.passport-photo-output').hidden = false;
-        controls.querySelectorAll('[data-export-photo]').forEach(button => { button.disabled = false; });
-        controls.querySelector('.passport-sheet-controls').disabled = false;
-        controls.querySelector('[data-passport-copies]').disabled = false;
-        controls.querySelector('[data-passport-generate-sheet]').disabled = false;
-        invalidateSheet();
-        status.textContent = 'Photo generated. Review it, set the copy count, then generate the A4 sheet.';
-      }
-    });
-    controls.querySelector('[data-passport-generate-sheet]').addEventListener('click', () => {
-      if (!photoGenerated) { status.textContent = 'Generate and review the individual photo first.'; return; }
-      if (drawSheet()) status.textContent = 'A4 sheet generated. Check the layout and copy count before printing.';
-    });
-    controls.querySelector('[data-remove-background]').addEventListener('change', invalidatePhoto);
-    controls.querySelector('[data-background-mode]').addEventListener('change', event => { controls.querySelector('[data-custom-color-wrap]').hidden = event.target.value !== 'custom'; invalidatePhoto(); });
-    controls.querySelector('[data-background-color]').addEventListener('input', invalidatePhoto);
-    controls.querySelector('[data-background-tolerance]').addEventListener('input', event => { controls.querySelector('[data-background-tolerance-label]').value = event.target.value; invalidatePhoto(); });
-    sourceCanvas.addEventListener('pointerdown', event => { if (!bitmap) return; dragging = true; sourceCanvas.setPointerCapture(event.pointerId); });
-    sourceCanvas.addEventListener('pointerup', event => { dragging = false; if (sourceCanvas.hasPointerCapture(event.pointerId)) sourceCanvas.releasePointerCapture(event.pointerId); });
-    sourceCanvas.addEventListener('pointermove', event => {
-      if (!dragging || !bitmap) return;
-      const rect = sourceCanvas.getBoundingClientRect();
-      const preview = drawSourcePreview();
-      if (!preview) return;
-      const localX = (event.clientX - rect.left) / rect.width * sourceCanvas.width;
-      const localY = (event.clientY - rect.top) / rect.height * sourceCanvas.height;
-      const xRange = Math.max(0, sourceCanvas.width - preview.width);
-      const yRange = Math.max(0, sourceCanvas.height - preview.height);
-      const xRatio = xRange ? Math.max(0, Math.min(1, (localX - preview.width / 2) / xRange)) : 0.5;
-      const yRatio = yRange ? Math.max(0, Math.min(1, (localY - preview.height / 2) / yRange)) : 0.5;
-      controls.querySelector('[data-position="x"]').value = Math.round(xRatio * 100);
-      controls.querySelector('[data-position="y"]').value = Math.round(yRatio * 100);
-      controls.querySelector('[data-position-x]').value = `${controls.querySelector('[data-position="x"]').value}%`;
-      controls.querySelector('[data-position-y]').value = `${controls.querySelector('[data-position="y"]').value}%`;
-      invalidatePhoto();
-    });
-    controls.querySelectorAll('[data-export-photo]').forEach(button => button.addEventListener('click', async () => {
-      if (!requirePhoto()) return;
-      const format = button.dataset.exportPhoto;
-      const size = selectedSize();
-      if (format === 'svg') downloadBlob(new Blob([toSvg(photoCanvas, size.width, size.height)], { type: 'image/svg+xml;charset=utf-8' }), `passport-photo-${controls.querySelector('[data-passport-size]').value}.svg`);
-      else {
-        const blob = await canvasBlob(photoCanvas, format === 'jpg' ? 'image/jpeg' : 'image/png');
-        if (blob) downloadBlob(blob, `passport-photo-${controls.querySelector('[data-passport-size]').value}.${format}`);
-      }
-      status.textContent = `Passport photo exported as ${format.toUpperCase()}.`;
-    }));
-    imageResult.querySelectorAll('[data-export-sheet]').forEach(button => button.addEventListener('click', async () => {
-      if (!requireSheet()) return;
-      const format = button.dataset.exportSheet;
-      if (format === 'svg') downloadBlob(new Blob([toSvg(sheetCanvas, 210, 297)], { type: 'image/svg+xml;charset=utf-8' }), 'passport-photos-a4.svg');
-      else {
-        const blob = await canvasBlob(sheetCanvas, format === 'jpg' ? 'image/jpeg' : 'image/png');
-        if (blob) downloadBlob(blob, `passport-photos-a4.${format}`);
-      }
-      status.textContent = `A4 sheet exported as ${format.toUpperCase()}.`;
-    }));
-    imageResult.querySelector('[data-passport-print]').addEventListener('click', () => {
-      if (!requireSheet()) return;
-      const printWindow = window.open('', '_blank');
-      if (!printWindow) { status.textContent = 'Allow pop-ups for this site to open the print sheet.'; return; }
-      const image = sheetCanvas.toDataURL('image/png');
-      printWindow.document.write(`<!doctype html><html><head><title>A4 Passport Photo Sheet</title><style>@page{size:A4 portrait;margin:0}html,body{width:210mm;height:297mm;margin:0}img{display:block;width:210mm;height:297mm}</style></head><body><img src="${image}" alt="A4 passport photo sheet"><script>window.onload=()=>{window.focus();window.print()}<\/script></body></html>`);
-      printWindow.document.close();
-      status.textContent = 'A4 print sheet opened. Check printer paper size and scale before printing.';
-    });
-    announce();
-  }
+
+
+    /* =========================================================
+       CLAMP
+       ========================================================= */
+
+    function clamp(
+        value,
+        min,
+        max
+    ) {
+
+        return Math.max(
+            min,
+            Math.min(
+                max,
+                value
+            )
+        );
+
+    }
+
+
+    /* =========================================================
+       MOVE CROP
+       ========================================================= */
+
+    function moveCrop(
+        pointerX,
+        pointerY
+    ) {
+
+        const maxX =
+            bitmap.width -
+            cropWidth;
+
+
+        const maxY =
+            bitmap.height -
+            cropHeight;
+
+
+        cropX =
+            clamp(
+                pointerX -
+                dragOffsetX,
+                0,
+                maxX
+            );
+
+
+        cropY =
+            clamp(
+                pointerY -
+                dragOffsetY,
+                0,
+                maxY
+            );
+
+    }
+
+
+    /* =========================================================
+       RESIZE CROP
+       ========================================================= */
+
+    function resizeCrop(
+        pointerX,
+        pointerY,
+        corner
+    ) {
+
+        const ratio =
+            getRatio();
+
+
+        const imageWidth =
+            bitmap.width;
+
+
+        const imageHeight =
+            bitmap.height;
+
+
+        const minWidth =
+            Math.max(
+                50,
+                imageWidth * 0.08
+            );
+
+
+        const right =
+            startCropX +
+            startCropWidth;
+
+
+        const bottom =
+            startCropY +
+            startCropHeight;
+
+
+        if (
+            corner === 'nw'
+        ) {
+
+            let width =
+                right -
+                pointerX;
+
+
+            width =
+                clamp(
+                    width,
+                    minWidth,
+                    right
+                );
+
+
+            let height =
+                width / ratio;
+
+
+            if (
+                bottom -
+                height <
+                0
+            ) {
+
+                height =
+                    bottom;
+
+                width =
+                    height *
+                    ratio;
+
+            }
+
+
+            cropWidth =
+                width;
+
+
+            cropHeight =
+                height;
+
+
+            cropX =
+                right -
+                width;
+
+
+            cropY =
+                bottom -
+                height;
+
+        }
+
+
+        else if (
+            corner === 'ne'
+        ) {
+
+            let width =
+                pointerX -
+                startCropX;
+
+
+            width =
+                clamp(
+                    width,
+                    minWidth,
+                    imageWidth -
+                    startCropX
+                );
+
+
+            let height =
+                width / ratio;
+
+
+            if (
+                startCropY +
+                startCropHeight -
+                height <
+                0
+            ) {
+
+                height =
+                    startCropY +
+                    startCropHeight;
+
+                width =
+                    height *
+                    ratio;
+
+            }
+
+
+            cropWidth =
+                width;
+
+
+            cropHeight =
+                height;
+
+
+            cropX =
+                startCropX;
+
+
+            cropY =
+                bottom -
+                height;
+
+        }
+
+
+        else if (
+            corner === 'sw'
+        ) {
+
+            let width =
+                right -
+                pointerX;
+
+
+            width =
+                clamp(
+                    width,
+                    minWidth,
+                    right
+                );
+
+
+            let height =
+                width / ratio;
+
+
+            if (
+                startCropY +
+                height >
+                imageHeight
+            ) {
+
+                height =
+                    imageHeight -
+                    startCropY;
+
+                width =
+                    height *
+                    ratio;
+
+            }
+
+
+            cropWidth =
+                width;
+
+
+            cropHeight =
+                height;
+
+
+            cropX =
+                right -
+                width;
+
+
+            cropY =
+                startCropY;
+
+        }
+
+
+        else if (
+            corner === 'se'
+        ) {
+
+            let width =
+                pointerX -
+                startCropX;
+
+
+            width =
+                clamp(
+                    width,
+                    minWidth,
+                    imageWidth -
+                    startCropX
+                );
+
+
+            let height =
+                width / ratio;
+
+
+            if (
+                startCropY +
+                height >
+                imageHeight
+            ) {
+
+                height =
+                    imageHeight -
+                    startCropY;
+
+                width =
+                    height *
+                    ratio;
+
+            }
+
+
+            cropWidth =
+                width;
+
+
+            cropHeight =
+                height;
+
+
+            cropX =
+                startCropX;
+
+
+            cropY =
+                startCropY;
+
+        }
+
+
+        cropWidth =
+            clamp(
+                cropWidth,
+                minWidth,
+                imageWidth
+            );
+
+
+        cropHeight =
+            cropWidth /
+            ratio;
+
+
+        if (
+            cropHeight >
+            imageHeight
+        ) {
+
+            cropHeight =
+                imageHeight;
+
+
+            cropWidth =
+                cropHeight *
+                ratio;
+
+        }
+
+
+        cropX =
+            clamp(
+                cropX,
+                0,
+                imageWidth -
+                cropWidth
+            );
+
+
+        cropY =
+            clamp(
+                cropY,
+                0,
+                imageHeight -
+                cropHeight
+            );
+
+    }
+
+
+    /* =========================================================
+       AUTOMATIC PHOTO GENERATION
+       ========================================================= */
+
+    function generatePhotoAutomatically() {
+
+        if (
+            !bitmap ||
+            !cropInitialized
+        ) {
+            return;
+        }
+
+
+        const output =
+            outputSize();
+
+
+        const canvas =
+            document.createElement(
+                'canvas'
+            );
+
+
+        canvas.width =
+            output.width;
+
+
+        canvas.height =
+            output.height;
+
+
+        const ctx =
+            canvas.getContext(
+                '2d'
+            );
+
+
+        ctx.imageSmoothingEnabled =
+            true;
+
+
+        ctx.imageSmoothingQuality =
+            'high';
+
+
+        ctx.drawImage(
+            bitmap,
+            cropX,
+            cropY,
+            cropWidth,
+            cropHeight,
+            0,
+            0,
+            output.width,
+            output.height
+        );
+
+
+        generatedPhotoCanvas =
+            canvas;
+
+
+        photoPreviewCanvas.width =
+            canvas.width;
+
+
+        photoPreviewCanvas.height =
+            canvas.height;
+
+
+        const previewCtx =
+            photoPreviewCanvas.getContext(
+                '2d'
+            );
+
+
+        previewCtx.clearRect(
+            0,
+            0,
+            photoPreviewCanvas.width,
+            photoPreviewCanvas.height
+        );
+
+
+        previewCtx.drawImage(
+            canvas,
+            0,
+            0
+        );
+
+
+        photoOutput.hidden =
+            false;
+
+
+        photoExportButtons.forEach(
+            button => {
+
+                button.disabled =
+                    false;
+
+            }
+        );
+
+
+        sheetControls.disabled =
+            false;
+
+
+        generateSheetButton.disabled =
+            false;
+
+
+        generatedSheetCanvas =
+            null;
+
+
+        sheetOutput.hidden =
+            true;
+
+
+        sheetExportButtons.forEach(
+            button => {
+
+                button.disabled =
+                    true;
+
+            }
+        );
+
+
+        printButton.disabled =
+            true;
+
+    }
+
+
+    /* =========================================================
+       CROP POINTER DOWN
+       ========================================================= */
+
+    cropBox.addEventListener(
+        'pointerdown',
+        event => {
+
+            if (!bitmap) {
+                return;
+            }
+
+
+            const handle =
+                event.target.closest(
+                    '[data-crop-handle]'
+                );
+
+
+            if (handle) {
+
+                interactionMode =
+                    `resize-${handle.dataset.cropHandle}`;
+
+            } else {
+
+                interactionMode =
+                    'move';
+
+            }
+
+
+            const pointer =
+                getPointerImagePosition(
+                    event
+                );
+
+
+            startCropX =
+                cropX;
+
+
+            startCropY =
+                cropY;
+
+
+            startCropWidth =
+                cropWidth;
+
+
+            startCropHeight =
+                cropHeight;
+
+
+            if (
+                interactionMode ===
+                'move'
+            ) {
+
+                dragOffsetX =
+                    pointer.x -
+                    cropX;
+
+
+                dragOffsetY =
+                    pointer.y -
+                    cropY;
+
+            }
+
+
+            activePointerId =
+                event.pointerId;
+
+
+            try {
+
+                cropBox.setPointerCapture(
+                    event.pointerId
+                );
+
+            } catch (error) {
+            }
+
+
+            event.preventDefault();
+
+        }
+    );
+
+
+    /* =========================================================
+       CROP POINTER MOVE
+       ========================================================= */
+
+    cropBox.addEventListener(
+        'pointermove',
+        event => {
+
+            if (
+                activePointerId === null ||
+                event.pointerId !==
+                    activePointerId ||
+                !bitmap
+            ) {
+
+                return;
+
+            }
+
+
+            const pointer =
+                getPointerImagePosition(
+                    event
+                );
+
+
+            if (
+                interactionMode ===
+                'move'
+            ) {
+
+                moveCrop(
+                    pointer.x,
+                    pointer.y
+                );
+
+            } else {
+
+                cropX =
+                    startCropX;
+
+
+                cropY =
+                    startCropY;
+
+
+                cropWidth =
+                    startCropWidth;
+
+
+                cropHeight =
+                    startCropHeight;
+
+
+                resizeCrop(
+                    pointer.x,
+                    pointer.y,
+                    interactionMode.replace(
+                        'resize-',
+                        ''
+                    )
+                );
+
+            }
+
+
+            renderCropBox();
+
+
+            generatePhotoAutomatically();
+
+
+            event.preventDefault();
+
+        }
+    );
+
+
+    /* =========================================================
+       STOP CROP INTERACTION
+       ========================================================= */
+
+    function stopCropInteraction(
+        event
+    ) {
+
+        if (
+            activePointerId !== null &&
+            event.pointerId !==
+                activePointerId
+        ) {
+
+            return;
+
+        }
+
+
+        interactionMode =
+            null;
+
+
+        activePointerId =
+            null;
+
+
+        try {
+
+            if (
+                cropBox.hasPointerCapture(
+                    event.pointerId
+                )
+            ) {
+
+                cropBox.releasePointerCapture(
+                    event.pointerId
+                );
+
+            }
+
+        } catch (error) {
+        }
+
+    }
+
+
+    cropBox.addEventListener(
+        'pointerup',
+        stopCropInteraction
+    );
+
+
+    cropBox.addEventListener(
+        'pointercancel',
+        stopCropInteraction
+    );
+
+
+    /* =========================================================
+       FILE UPLOAD
+       ========================================================= */
+
+    fileInput.addEventListener(
+        'change',
+        async event => {
+
+            const file =
+                event.target.files &&
+                event.target.files[0];
+
+
+            if (!file) {
+                return;
+            }
+
+
+            if (
+                !file.type ||
+                !file.type.startsWith(
+                    'image/'
+                )
+            ) {
+
+                status.textContent =
+                    'Please select an image file.';
+
+                return;
+
+            }
+
+
+            try {
+
+                if (bitmapUrl) {
+
+                    URL.revokeObjectURL(
+                        bitmapUrl
+                    );
+
+                    bitmapUrl =
+                        null;
+
+                }
+
+
+                bitmapUrl =
+                    URL.createObjectURL(
+                        file
+                    );
+
+
+                bitmap =
+                    await createImageBitmap(
+                        file
+                    );
+
+
+                cropInitialized =
+                    false;
+
+
+                generatedPhotoCanvas =
+                    null;
+
+
+                generatedSheetCanvas =
+                    null;
+
+
+                photoOutput.hidden =
+                    true;
+
+
+                sheetOutput.hidden =
+                    true;
+
+
+                photoExportButtons.forEach(
+                    button => {
+
+                        button.disabled =
+                            true;
+
+                    }
+                );
+
+
+                sheetExportButtons.forEach(
+                    button => {
+
+                        button.disabled =
+                            true;
+
+                    }
+                );
+
+
+                sheetControls.disabled =
+                    true;
+
+
+                generateSheetButton.disabled =
+                    true;
+
+
+                printButton.disabled =
+                    true;
+
+
+                cropImage.src =
+                    bitmapUrl;
+
+
+                cropImage.onload =
+                    () => {
+
+                        requestAnimationFrame(
+                            () => {
+
+                                initializeCrop();
+
+                                renderCropBox();
+
+                                generatePhotoAutomatically();
+
+                            }
+                        );
+
+                    };
+
+
+                status.textContent =
+                    'Photo loaded. Adjust the crop area. The generated photo updates automatically.';
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+
+                bitmap =
+                    null;
+
+
+                cropInitialized =
+                    false;
+
+
+                cropBox.style.display =
+                    'none';
+
+
+                status.textContent =
+                    'Unable to load the selected image.';
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       COUNTRY SIZE CHANGE
+       ========================================================= */
+
+    sizeSelect.addEventListener(
+        'change',
+        () => {
+
+            if (!bitmap) {
+                return;
+            }
+
+
+            cropInitialized =
+                false;
+
+
+            initializeCrop();
+
+
+            renderCropBox();
+
+
+            generatePhotoAutomatically();
+
+
+            status.textContent =
+                `${getPreset().label} photo ratio selected.`;
+
+        }
+    );
+
+
+    /* =========================================================
+       GENERATE A4 SHEET
+       ========================================================= */
+
+    function generateSheet() {
+
+        if (!generatedPhotoCanvas) {
+            return;
+        }
+
+
+        const copies =
+            Math.max(
+                1,
+                Math.min(
+                    100,
+                    Number(
+                        copiesInput.value
+                    ) || 1
+                )
+            );
+
+
+        copiesInput.value =
+            copies;
+
+
+        const A4_WIDTH =
+            Math.round(
+                210 /
+                25.4 *
+                DPI
+            );
+
+
+        const A4_HEIGHT =
+            Math.round(
+                297 /
+                25.4 *
+                DPI
+            );
+
+
+        const margin =
+            Math.round(
+                5 /
+                25.4 *
+                DPI
+            );
+
+
+        const gap =
+            Math.round(
+                2 /
+                25.4 *
+                DPI
+            );
+
+
+        const photoWidth =
+            generatedPhotoCanvas.width;
+
+
+        const photoHeight =
+            generatedPhotoCanvas.height;
+
+
+        const availableWidth =
+            A4_WIDTH -
+            margin * 2;
+
+
+        const columns =
+            Math.max(
+                1,
+                Math.floor(
+                    (
+                        availableWidth +
+                        gap
+                    ) /
+                    (
+                        photoWidth +
+                        gap
+                    )
+                )
+            );
+
+
+        const rows =
+            Math.ceil(
+                copies /
+                columns
+            );
+
+
+        const requiredHeight =
+            margin * 2 +
+            rows *
+            photoHeight +
+            Math.max(
+                0,
+                rows - 1
+            ) *
+            gap;
+
+
+        const sheet =
+            document.createElement(
+                'canvas'
+            );
+
+
+        sheet.width =
+            A4_WIDTH;
+
+
+        sheet.height =
+            Math.max(
+                A4_HEIGHT,
+                requiredHeight
+            );
+
+
+        const ctx =
+            sheet.getContext(
+                '2d'
+            );
+
+
+        ctx.fillStyle =
+            '#ffffff';
+
+
+        ctx.fillRect(
+            0,
+            0,
+            sheet.width,
+            sheet.height
+        );
+
+
+        for (
+            let i = 0;
+            i < copies;
+            i++
+        ) {
+
+            const column =
+                i % columns;
+
+
+            const row =
+                Math.floor(
+                    i /
+                    columns
+                );
+
+
+            const x =
+                margin +
+                column *
+                (
+                    photoWidth +
+                    gap
+                );
+
+
+            const y =
+                margin +
+                row *
+                (
+                    photoHeight +
+                    gap
+                );
+
+
+            ctx.drawImage(
+                generatedPhotoCanvas,
+                x,
+                y
+            );
+
+        }
+
+
+        generatedSheetCanvas =
+            sheet;
+
+
+        sheetPreviewCanvas.width =
+            sheet.width;
+
+
+        sheetPreviewCanvas.height =
+            sheet.height;
+
+
+        const previewCtx =
+            sheetPreviewCanvas.getContext(
+                '2d'
+            );
+
+
+        previewCtx.clearRect(
+            0,
+            0,
+            sheet.width,
+            sheet.height
+        );
+
+
+        previewCtx.drawImage(
+            sheet,
+            0,
+            0
+        );
+
+
+        sheetOutput.hidden =
+            false;
+
+
+        sheetExportButtons.forEach(
+            button => {
+
+                button.disabled =
+                    false;
+
+            }
+        );
+
+
+        printButton.disabled =
+            false;
+
+
+        status.textContent =
+            `A4 sheet generated with ${copies} copies.`;
+
+    }
+
+
+    generateSheetButton.addEventListener(
+        'click',
+        generateSheet
+    );
+
+
+    /* =========================================================
+       DOWNLOAD BLOB
+       ========================================================= */
+
+    function downloadBlob(
+        blob,
+        filename
+    ) {
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const link =
+            document.createElement(
+                'a'
+            );
+
+
+        link.href =
+            url;
+
+
+        link.download =
+            filename;
+
+
+        document.body.appendChild(
+            link
+        );
+
+
+        link.click();
+
+
+        link.remove();
+
+
+        setTimeout(
+            () => {
+
+                URL.revokeObjectURL(
+                    url
+                );
+
+            },
+            1000
+        );
+
+    }
+
+
+    /* =========================================================
+       CANVAS TO SVG
+       ========================================================= */
+
+    function canvasToSvg(
+        canvas
+    ) {
+
+        const dataUrl =
+            canvas.toDataURL(
+                'image/png'
+            );
+
+
+        return `
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="${canvas.width}"
+    height="${canvas.height}"
+    viewBox="0 0 ${canvas.width} ${canvas.height}"
+>
+    <image
+        href="${dataUrl}"
+        width="${canvas.width}"
+        height="${canvas.height}"
+        preserveAspectRatio="none"
+    />
+</svg>`;
+
+    }
+
+
+    /* =========================================================
+       EXPORT PHOTO
+       ========================================================= */
+
+    function exportPhoto(
+        format
+    ) {
+
+        if (!generatedPhotoCanvas) {
+            return;
+        }
+
+
+        if (
+            format === 'png'
+        ) {
+
+            generatedPhotoCanvas.toBlob(
+                blob => {
+
+                    if (blob) {
+
+                        downloadBlob(
+                            blob,
+                            'passport-photo.png'
+                        );
+
+                    }
+
+                },
+                'image/png'
+            );
+
+        }
+
+
+        else if (
+            format === 'jpg'
+        ) {
+
+            generatedPhotoCanvas.toBlob(
+                blob => {
+
+                    if (blob) {
+
+                        downloadBlob(
+                            blob,
+                            'passport-photo.jpg'
+                        );
+
+                    }
+
+                },
+                'image/jpeg',
+                0.95
+            );
+
+        }
+
+
+        else if (
+            format === 'svg'
+        ) {
+
+            const svg =
+                canvasToSvg(
+                    generatedPhotoCanvas
+                );
+
+
+            downloadBlob(
+                new Blob(
+                    [svg],
+                    {
+                        type:
+                            'image/svg+xml'
+                    }
+                ),
+                'passport-photo.svg'
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       EXPORT SHEET
+       ========================================================= */
+
+    function exportSheet(
+        format
+    ) {
+
+        if (!generatedSheetCanvas) {
+            return;
+        }
+
+
+        if (
+            format === 'png'
+        ) {
+
+            generatedSheetCanvas.toBlob(
+                blob => {
+
+                    if (blob) {
+
+                        downloadBlob(
+                            blob,
+                            'passport-a4-sheet.png'
+                        );
+
+                    }
+
+                },
+                'image/png'
+            );
+
+        }
+
+
+        else if (
+            format === 'jpg'
+        ) {
+
+            generatedSheetCanvas.toBlob(
+                blob => {
+
+                    if (blob) {
+
+                        downloadBlob(
+                            blob,
+                            'passport-a4-sheet.jpg'
+                        );
+
+                    }
+
+                },
+                'image/jpeg',
+                0.95
+            );
+
+        }
+
+
+        else if (
+            format === 'svg'
+        ) {
+
+            const svg =
+                canvasToSvg(
+                    generatedSheetCanvas
+                );
+
+
+            downloadBlob(
+                new Blob(
+                    [svg],
+                    {
+                        type:
+                            'image/svg+xml'
+                    }
+                ),
+                'passport-a4-sheet.svg'
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       PHOTO EXPORT EVENTS
+       ========================================================= */
+
+    photoExportButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                'click',
+                () => {
+
+                    exportPhoto(
+                        button.dataset.exportPhoto
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =========================================================
+       SHEET EXPORT EVENTS
+       ========================================================= */
+
+    sheetExportButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                'click',
+                () => {
+
+                    exportSheet(
+                        button.dataset.exportSheet
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =========================================================
+       PRINT
+       ========================================================= */
+
+    printButton.addEventListener(
+        'click',
+        () => {
+
+            if (!generatedSheetCanvas) {
+                return;
+            }
+
+
+            const image =
+                generatedSheetCanvas.toDataURL(
+                    'image/png'
+                );
+
+
+            const printWindow =
+                window.open(
+                    '',
+                    '_blank'
+                );
+
+
+            if (!printWindow) {
+                return;
+            }
+
+
+            printWindow.document.write(`
+                <!doctype html>
+
+                <html>
+
+                <head>
+
+                    <title>
+                        Passport A4 Sheet
+                    </title>
+
+                    <style>
+
+                        @page {
+                            size:A4;
+                            margin:0;
+                        }
+
+                        html,
+                        body {
+                            margin:0;
+                            padding:0;
+                            width:210mm;
+                            background:#fff;
+                        }
+
+                        img {
+                            display:block;
+                            width:210mm;
+                            height:auto;
+                        }
+
+                    </style>
+
+                </head>
+
+                <body>
+
+                    <img src="${image}">
+
+                    <script>
+
+                        window.onload = function () {
+
+                            setTimeout(
+                                function () {
+                                    window.print();
+                                },
+                                300
+                            );
+
+                        };
+
+                    <\/script>
+
+                </body>
+
+                </html>
+            `);
+
+
+            printWindow.document.close();
+
+        }
+    );
+
+
+    /* =========================================================
+       WINDOW RESIZE
+       ========================================================= */
+
+    let resizeTimer = null;
+
+
+    window.addEventListener(
+        'resize',
+        () => {
+
+            clearTimeout(
+                resizeTimer
+            );
+
+
+            resizeTimer =
+                setTimeout(
+                    () => {
+
+                        renderCropBox();
+
+                    },
+                    50
+                );
+
+        }
+    );
+
+
+    /* =========================================================
+       INITIAL STATE
+       ========================================================= */
+
+    cropBox.style.display =
+        'none';
+
+
+    /* =========================================================
+       CLEANUP
+       ========================================================= */
+
+    root.__passportMakerCleanup =
+        function () {
+
+            if (bitmapUrl) {
+
+                URL.revokeObjectURL(
+                    bitmapUrl
+                );
+
+                bitmapUrl =
+                    null;
+
+            }
+
+
+            bitmap =
+                null;
+
+
+            generatedPhotoCanvas =
+                null;
+
+
+            generatedSheetCanvas =
+                null;
+
+
+            cropInitialized =
+                false;
+
+        };
+
+}
+
+
 
   function renderPage(root, tool) {
     document.title = tool.title;
@@ -876,10 +3319,23 @@
     controls.querySelector('[data-option="quality"]')?.addEventListener('input', event => { controls.querySelector('[data-quality]').value = `${Math.round(Number(event.target.value) * 100)}%`; });
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-online-tool]').forEach(root => {
-      const tool = toolData[root.dataset.onlineTool];
-      if (tool) renderPage(root, tool);
+    function initializeTool(root) {
+        if (!root || root.dataset.onlineToolInitialized === 'true') return;
+        const tool = toolData[root.dataset.onlineTool];
+        if (!tool) return;
+        root.dataset.onlineToolInitialized = 'true';
+        renderPage(root, tool);
+    }
+
+    window.OnlineTools = Object.freeze({
+        initialize(toolId) {
+            document.querySelectorAll('[data-online-tool]').forEach(root => {
+                if (!toolId || root.dataset.onlineTool === toolId) initializeTool(root);
+            });
+        }
     });
-  });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        window.OnlineTools.initialize();
+    });
 }());

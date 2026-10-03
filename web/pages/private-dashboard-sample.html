@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Private Dashboard Sample</title>
+  <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="../assets/site-columns.css">
   <link rel="stylesheet" href="../assets/master.css">
   <script src="../assets/page-settings.js"></script>
@@ -235,20 +236,9 @@
     }
     </style>
 </head>
-<body>
-  <script>
-    const dashboardSessionKey = 'karauli_dashboard_session';
-    const validSession = sessionStorage.getItem(dashboardSessionKey) === 'active';
+<body>  <!-- Dependencies: CSS [../assets/master.css, ../assets/site-columns.css]; shared JavaScript [../assets/adsense.js, ../assets/ad-settings.js, ../assets/page-settings.js, ../assets/site-partials.js]; page logic [private-dashboard-sample.js]. -->
 
-    if (!validSession) {
-      window.location.href = 'login-required.html';
-    }
-
-    function logoutDashboard() {
-      sessionStorage.removeItem(dashboardSessionKey);
-      window.location.href = 'login-required.html';
-    }
-  </script>
+  <script src="private-dashboard-sample.js"></script>
 
   <div class="dashboard-page">
     <div id="siteHeader"></div>
@@ -258,7 +248,7 @@
         <section class="dashboard-heading">
           <h1>Private Dashboard</h1>
           <span class="private-badge">Login Protected</span>
-          <button class="logout-button" onclick="logoutDashboard()">Logout</button>
+          <button class="logout-button" data-dashboard-action="logout">Logout</button>
         </section>
 
         <section class="dashboard-profile">

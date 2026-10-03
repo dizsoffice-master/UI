@@ -199,10 +199,23 @@
     });
   }
 
+  function initializeMaker(root) {
+    if (!root || root.dataset.documentMakerInitialized === 'true') return;
+    const maker = makers[root.dataset.documentMaker];
+    if (!maker) return;
+    root.dataset.documentMakerInitialized = 'true';
+    renderMaker(root, maker);
+  }
+
+  window.DocumentMakers = Object.freeze({
+    initialize(makerId) {
+      document.querySelectorAll('[data-document-maker]').forEach(root => {
+        if (!makerId || root.dataset.documentMaker === makerId) initializeMaker(root);
+      });
+    }
+  });
+
   document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-document-maker]').forEach(root => {
-      const maker = makers[root.dataset.documentMaker];
-      if (maker) renderMaker(root, maker);
-    });
+    window.DocumentMakers.initialize();
   });
 }());
