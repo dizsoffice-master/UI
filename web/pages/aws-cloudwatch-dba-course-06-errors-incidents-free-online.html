@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS CloudWatch Log Analysis Course | Lesson 6: Error Analysis</title>
+  <meta name="description" content="Analyze AWS database and application errors in CloudWatch, identify incident patterns, and track a safe, evidence-based response.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/aws-cloudwatch-dba-course-06-errors-incidents-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-aws-cloudwatch-course data-course-key="aws-cloudwatch-dba-course-completed" data-course-total="10" data-lesson-number="6">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">AWS CloudWatch Logs for DBAs and Developers / Lesson 6 of 10</p><h1>Analyze Database Errors and Incidents</h1><p>Move from an error message to a verified failure pattern by checking severity, frequency, surrounding events, affected service, and changes in the same time window.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="AWS CloudWatch course lessons"><h2>Course lessons</h2><nav data-aws-cloudwatch-lessons aria-label="AWS CloudWatch lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Classify the error signal</h2><p>Separate application exceptions, database errors, connection/pool failures, AWS resource events, and monitoring noise. Record the error code/severity, database and application, first and last event time, rate, request/process identifier, and user impact. Do not assume every message labelled ERROR means a database outage.</p><pre><code>fields @timestamp, @logStream, @message
+| filter @message like /ERROR|FATAL|PANIC|connection refused|timeout|deadlock/
+| sort @timestamp asc
+| limit 200</code></pre></section>
+        <section><h2>2. Find frequency and first occurrence</h2><p>Count errors in short intervals to find the onset and whether a burst persists. Grouping fields depend on the actual message structure.</p><pre><code>filter @message like /ERROR|FATAL|PANIC/
+| stats count(*) as event_count by bin(1m), @logStream
+| sort bin(1m) asc</code></pre><p>Compare the graph with application error rate, request volume, database connections, CPU, storage latency, and deployment events. A rise in errors during a traffic spike may have a different cause than errors after a failover or configuration change.</p></section>
+        <section><h2>3. Diagnose common database signals</h2><ul><li><strong>Authentication/permission errors:</strong> verify role, secret rotation, endpoint, and recent access changes; never paste credentials into logs.</li><li><strong>Connection timeouts:</strong> separate network/connect timeout from pool wait and SQL execution time; inspect connections and saturation.</li><li><strong>Deadlock:</strong> collect the database deadlock detail and involved statements; identify the application transaction paths and consistent lock ordering.</li><li><strong>Lock timeout/lock wait:</strong> inspect the blocking chain and transaction age using authorized database activity views.</li><li><strong>Disk or resource pressure:</strong> correlate database and storage metrics, log errors, write rate, and retention/backup growth.</li></ul></section>
+        <section><h2>4. Keep an auditable incident trail</h2><ol><li>Open or update the incident record with impact, evidence links, and timezone.</li><li>State verified observations separately from hypotheses.</li><li>Assign a DBA, application owner, and incident lead as needed.</li><li>Make changes only through approved, reversible steps; capture before/after evidence.</li><li>Confirm recovery from the application perspective and track follow-up work.</li></ol><div class="excel-course-callout"><p>Database logs can include user names and SQL literals. Redact evidence before sharing it outside the authorized incident group.</p></div></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="aws-cloudwatch-dba-course-05-insights-queries-free-online.html">Previous: Logs Insights</a><a href="aws-cloudwatch-dba-course-07-long-queries-free-online.html">Next: Long-running queries</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/aws-cloudwatch-dba-course.js"></script>
+</body></html>

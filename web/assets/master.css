@@ -453,23 +453,29 @@ a.service-link:hover { border-color: var(--line); background: #fff; }
 .home-tool-group li[hidden],
 .home-tool-group[hidden] { display: none; }
 
-.home-course-group { padding: 0; }
+.home-course-group {
+  padding: 0;
+  overflow: hidden;
+}
 
-.home-course-group summary {
+.home-course-group-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   min-height: 54px;
   padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.home-course-group-heading h3 {
+  margin: 0;
   color: var(--heading);
   font-size: 15px;
   font-weight: 800;
-  cursor: pointer;
-  list-style-position: inside;
 }
 
-.home-course-group summary span:last-child {
+.home-course-group-heading span {
   color: var(--muted);
   font-size: 12px;
   font-weight: 600;
@@ -480,7 +486,20 @@ a.service-link:hover { border-color: var(--line); background: #fff; }
   display: grid;
   gap: 3px;
   margin: 0;
-  padding: 0 12px 12px 34px;
+  padding: 10px 12px 12px;
+  list-style: none;
+}
+
+.home-course-group ol.is-scrollable {
+  max-height: 420px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.home-course-group .home-tool-link::after {
+  content: "→";
+  margin-left: auto;
+  color: #08715f;
 }
 
 .home-tool-link {

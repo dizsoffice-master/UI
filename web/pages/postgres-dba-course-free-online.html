@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostgreSQL DBA Course | Lesson 1: Foundations</title>
+  <meta name="description" content="Start a practical PostgreSQL DBA course covering safe operations, monitoring, incident response, backups, maintenance, and performance.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/postgres-dba-course-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-postgres-dba-course data-course-key="postgres-dba-course-completed" data-course-total="10" data-lesson-number="1">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Free PostgreSQL DBA Course / Lesson 1 of 10</p><h1>PostgreSQL DBA Foundations and Safe Operations</h1><p>Build a repeatable operating model for PostgreSQL: know the environment, protect production, make reversible changes, and keep evidence for every decision.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="PostgreSQL DBA course lessons"><h2>Course lessons</h2><nav data-postgres-dba-lessons aria-label="PostgreSQL DBA lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Define the operating baseline</h2><p>Before changing a server, record its PostgreSQL version, environment, owner, maintenance window, data classification, recovery objectives, and escalation contact. Use a named account with only the permissions required for the task; do not use a superuser for routine reporting.</p><pre><code>SELECT version();
+SHOW server_version;
+SELECT current_database(), current_user, pg_is_in_recovery();
+SELECT datname, pg_size_pretty(pg_database_size(datname)) AS database_size
+FROM pg_database
+WHERE datistemplate = false
+ORDER BY pg_database_size(datname) DESC;</code></pre></section>
+        <section><h2>2. Use a safe change procedure</h2><ol><li>Write down the symptom, target, expected result, and rollback plan.</li><li>Check whether the change is read-only, transactional, lock-taking, or destructive.</li><li>Test the exact command on a representative non-production database.</li><li>Capture a before-state and schedule production work in an approved window.</li><li>Run one change at a time, verify the result, and record the evidence and owner.</li></ol><div class="excel-course-callout"><p>Never run a cleanup query or terminate a database session just because it looks old. Confirm the owner, impact, transaction state, and approved recovery action first.</p></div></section>
+        <section><h2>3. Core responsibilities and hand-offs</h2><p>A DBA maintains availability, recoverability, access control, capacity, and predictable performance. Application owners remain responsible for query intent and business data lifecycle. Agree on who receives alerts and who can approve a destructive action.</p><ul><li>Availability: connections, locks, replication, and planned maintenance.</li><li>Recoverability: tested backups and point-in-time recovery objectives.</li><li>Data safety: least privilege, change review, and controlled retention.</li><li>Performance: measure with plans and workload evidence before tuning.</li></ul></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><span>Course start</span><a href="postgres-dba-course-02-daily-health-checks-free-online.html">Next: Daily health checks</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/postgres-dba-course.js"></script>
+</body></html>

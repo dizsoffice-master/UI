@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS CloudWatch Log Analysis Course | Lesson 7: Long Queries</title>
+  <meta name="description" content="Find slow completed queries in CloudWatch logs, detect currently active long-running PostgreSQL queries, and distinguish database work from pool waits.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/aws-cloudwatch-dba-course-07-long-queries-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-aws-cloudwatch-course data-course-key="aws-cloudwatch-dba-course-completed" data-course-total="10" data-lesson-number="7">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">AWS CloudWatch Logs for DBAs and Developers / Lesson 7 of 10</p><h1>Locate Long-Running and Slow Queries</h1><p>Find completed slow-query events in database logs, inspect live query age in PostgreSQL, and identify whether delay is in a connection pool, database wait, or execution.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="AWS CloudWatch course lessons"><h2>Course lessons</h2><nav data-aws-cloudwatch-lessons aria-label="AWS CloudWatch lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Find logged slow statements</h2><p>If PostgreSQL is configured to log statement durations and exports are enabled, use Logs Insights to find matching duration lines. Adjust the regular expression to your log format and set the duration threshold for your service.</p><pre><code>fields @timestamp, @logStream, @message
+| filter @message like /duration:/
+| parse @message /duration: (?&lt;duration_ms&gt;[0-9.]+) ms/
+| filter duration_ms &gt; 1000
+| sort duration_ms desc
+| limit 100</code></pre><p>These events generally describe completed statements. They are not a real-time list of active SQL. Logging thresholds, log prefix, and statement parameter logging must be configured safely and can affect log volume and data exposure.</p></section>
+        <section><h2>2. Find currently active PostgreSQL work</h2><p>Connect through your approved database access path and use a monitoring role with the necessary visibility. The following read-only query reports current statements, elapsed query time, transaction age, and wait state:</p><pre><code>SELECT pid, usename, application_name, state,
+       wait_event_type, wait_event,
+       now() - query_start AS query_age,
+       now() - xact_start AS transaction_age,
+       left(query, 200) AS query_sample
+FROM pg_stat_activity
+WHERE pid &lt;&gt; pg_backend_pid()
+  AND query_start IS NOT NULL
+ORDER BY query_start;</code></pre><p>Review the query text and owner using approved access: visibility can depend on PostgreSQL role privileges. A long age alone does not mean the query is stuck; check state, wait event, expected work, and blocking PIDs before escalation.</p></section>
+        <section><h2>3. Distinguish pool wait from SQL duration</h2><p>For developers, measure separate spans for request duration, acquiring a connection from the pool, executing SQL, and consuming results. Emit a trace/request ID and operation name in structured logs. A slow endpoint with a fast database statement may point to pool exhaustion, network delay, retries, or application-side processing instead.</p></section>
+        <section><h2>4. Investigate before intervening</h2><ol><li>Capture the exact time range, query sample or query identifier, database, application, and wait state.</li><li>Compare repeat count, duration distribution, throughput, rows, and related resource metrics.</li><li>Inspect an execution plan only through a safe, approved method; <code>EXPLAIN ANALYZE</code> executes the query.</li><li>Contact the query owner and check transaction/lock impact before considering cancellation.</li><li>Verify recovery and record the tuning or application follow-up with an owner.</li></ol><div class="excel-course-callout"><p>CloudWatch log search cannot reveal an unlogged query or live backend state. Use database activity statistics for currently executing work; never terminate a session based only on an age threshold.</p></div></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="aws-cloudwatch-dba-course-06-errors-incidents-free-online.html">Previous: Incident analysis</a><a href="aws-cloudwatch-dba-course-08-app-correlation-free-online.html">Next: Application tracing</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/aws-cloudwatch-dba-course.js"></script>
+</body></html>

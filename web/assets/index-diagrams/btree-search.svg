@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 310" role="img" aria-labelledby="title desc">
+  <title id="title">B-tree index lookup</title>
+  <desc id="desc">A search compares the requested key in a root node, follows the matching child pointer, reaches a sorted leaf, and then fetches the table row.</desc>
+  <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9z" fill="#176b4d"/></marker></defs>
+  <rect width="760" height="310" rx="18" fill="#f4f8f5"/>
+  <g font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">
+    <text x="380" y="30" font-size="18" font-weight="700" fill="#173d2e">Find key 42 by narrowing the search at each node</text>
+    <rect x="300" y="48" width="160" height="48" rx="9" fill="#176b4d"/><text x="380" y="78" font-size="18" fill="#fff">Root: 20 | 50</text>
+    <rect x="90" y="142" width="170" height="52" rx="9" fill="#dceee3" stroke="#176b4d"/><text x="175" y="174" font-size="16" fill="#173d2e">Leaf: 8 | 14</text>
+    <rect x="295" y="142" width="170" height="52" rx="9" fill="#ffe6a8" stroke="#a76018" stroke-width="3"/><text x="380" y="174" font-size="16" fill="#493310">Leaf: 30 | 42 | 47</text>
+    <rect x="500" y="142" width="170" height="52" rx="9" fill="#dceee3" stroke="#176b4d"/><text x="585" y="174" font-size="16" fill="#173d2e">Leaf: 61 | 75</text>
+    <path d="M340 96L190 140M380 96L380 138M420 96L570 140" stroke="#176b4d" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+    <path d="M380 196L380 235" stroke="#a76018" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+    <rect x="274" y="239" width="212" height="44" rx="9" fill="#fff" stroke="#a76018" stroke-width="2"/><text x="380" y="267" font-size="16" fill="#493310">Row locator → table row</text>
+    <text x="177" y="125" font-size="13" fill="#58695f">key &lt; 20</text><text x="380" y="125" font-size="13" fill="#80500f">20 ≤ key &lt; 50</text><text x="580" y="125" font-size="13" fill="#58695f">key ≥ 50</text>
+  </g>
+</svg>

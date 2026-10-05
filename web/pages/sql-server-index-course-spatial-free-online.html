@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL Server Spatial Indexes Explained</title>
+  <meta name="description" content="Understand Spatial Indexes in SQL Server: use cases, creation, examples, trade-offs, and query-plan tuning.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/sql-server-index-course-spatial-free-online.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="OnlineDataTool.com">
+  <meta property="og:title" content="SQL Server Spatial Indexes Explained">
+  <meta property="og:description" content="Understand Spatial Indexes in SQL Server: use cases, creation, examples, trade-offs, and query-plan tuning.">
+  <meta property="og:url" content="https://onlinedatatool.com/pages/sql-server-index-course-spatial-free-online.html">
+  <meta property="og:image" content="https://onlinedatatool.com/assets/index-diagrams/spatial-tree.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SQL Server Spatial Indexes Explained">
+  <meta name="twitter:description" content="Understand Spatial Indexes in SQL Server: use cases, creation, examples, trade-offs, and query-plan tuning.">
+  <meta name="twitter:image" content="https://onlinedatatool.com/assets/index-diagrams/spatial-tree.svg">
+  <link rel="stylesheet" href="../assets/site-columns.css">
+  <link rel="stylesheet" href="../assets/master.css">
+  <link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script>
+  <script src="../assets/ad-settings.js"></script>
+  <script src="../assets/site-partials.js"></script>
+  <script src="../assets/adsense.js"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://onlinedatatool.com/"},{"@type":"ListItem","position":2,"name":"Database Indexing Course","item":"https://onlinedatatool.com/pages/database-index-course-free-online.html"},{"@type":"ListItem","position":3,"name":"Microsoft SQL Server Indexes","item":"https://onlinedatatool.com/pages/sql-server-index-course-free-online.html"},{"@type":"ListItem","position":4,"name":"Spatial Indexes","item":"https://onlinedatatool.com/pages/sql-server-index-course-spatial-free-online.html"}]}</script>
+</head><body>
+  <div class="tool-page-wrap">
+    <div id="siteHeader"></div>
+    <main class="excel-course-page">
+      <header class="excel-course-hero">
+        <nav aria-label="Breadcrumb"><ol class="course-breadcrumb">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="database-index-course-free-online.html">Database Indexing Course</a></li>
+          <li>Microsoft SQL Server Index Type</li>
+        </ol></nav>
+        <p class="excel-course-eyebrow">Microsoft SQL Server Index Type</p>
+        <h1>Spatial Indexes in Microsoft SQL Server: How It Works and When to Use It</h1>
+        <p>Tessellates spatial objects into hierarchical grids, narrowing candidate objects for supported spatial methods.</p>
+      </header>
+      <div class="excel-course-layout">
+        <aside class="excel-course-index" aria-label="Database index course navigation">
+          <h2>Database Systems</h2><nav><ol><li><a href="database-index-course-free-online.html">Index algorithm foundations</a></li>
+    <li><a href="sql-server-index-course-free-online.html">Microsoft SQL Server index guide</a></li>
+    <li><a href="postgresql-index-course-free-online.html">PostgreSQL</a></li>
+<li><a href="mongodb-index-course-free-online.html">MongoDB</a></li>
+<li><a href="cassandra-index-course-free-online.html">Apache Cassandra</a></li>
+<li><a href="mysql-index-course-free-online.html">MySQL</a></li>
+<li><a href="oracle-index-course-free-online.html">Oracle Database</a></li></ol></nav>
+        </aside>
+        <article class="excel-course-content">
+          <section><h2>What Is a Spatial Indexes in Microsoft SQL Server?</h2><p>Tessellates spatial objects into hierarchical grids, narrowing candidate objects for supported spatial methods.</p></section>
+          <section><h2>How the Spatial Indexes Algorithm Works</h2><p>Tessellates spatial objects into hierarchical grids, narrowing candidate objects for supported spatial methods.</p><figure><img src="../assets/index-diagrams/spatial-tree.svg" alt="Diagram showing the Spatial Indexes lookup algorithm"><figcaption>Conceptual Spatial Indexes algorithm. Exact behavior depends on the database version and query plan.</figcaption></figure></section>
+          <section><h2>When to Use Spatial Indexes</h2><p>Geometry/geography intersection, distance, and containment predicates compatible with spatial indexing.</p></section>
+          <section><h2>How to Create a Microsoft SQL Server Spatial Indexes</h2><p>Review data quality, existing structures, feature support, build time, and deployment requirements before creating an index on a production table.</p><pre><code>CREATE SPATIAL INDEX IX_Stores_Location ON dbo.Stores (Location) USING GEOGRAPHY_AUTO_GRID;</code></pre></section>
+          <section><h2>Spatial Indexes Query Example</h2><p>This example demonstrates the matching query shape. Check the execution plan to confirm that the engine can use the index.</p><pre><code>SELECT StoreId FROM dbo.Stores WHERE Location.STDistance(geography::Point(47.6, -122.3, 4326)) &lt;= 5000;</code></pre></section>
+          <section><h2>Queries Supported by Spatial Indexes</h2><p>Geometry/geography intersection, distance, and containment predicates compatible with spatial indexing. A similar-looking predicate may not use the same access path; operators, expressions, key order, and data type all matter.</p></section>
+          <section><h2>Read Performance, Storage, and Write Costs</h2><p>Grid tessellation controls candidate count; exact calculations may recheck candidates. Indexes reduce some search work but require storage and add maintenance to writes.</p></section>
+          <section><h2>Spatial Indexes Limitations and Common Mistakes</h2><p>Coordinate argument order, units, SRID, and method affect eligibility and correctness.</p><p>Do not assume that an index being present means the optimizer chose it or that the query became selective.</p></section>
+          <section><h2>How to Measure and Tune Spatial Indexes</h2><p>Validate SRID/units and use actual plans to inspect spatial-index use and candidates.</p><p>Compare representative plans and timings before and after, including concurrent writes and realistic data volumes.</p></section>
+          <section><h2>Spatial Indexes Questions</h2><h3>Will the database always use this index?</h3><p>No. The optimizer weighs selectivity, estimated costs, statistics, cache state, and the amount of data returned.</p><h3>What should I verify before production?</h3><p>Confirm version support, query compatibility, write overhead, build/rollback procedures, and index behavior during backup and recovery.</p></section>
+          <section><h2>Official Microsoft SQL Server Index Documentation</h2><p>Check <a href="https://learn.microsoft.com/en-us/sql/relational-databases/indexes/indexes?view=sql-server-ver17" rel="noopener">Microsoft Learn: SQL Server Indexes</a> for release-specific requirements and supported operators.</p></section></article>
+      </div>
+    </main>
+    <div id="siteFooter"></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database Testing Course | Lesson 6: Integration Tests</title>
+  <meta name="description" content="Test application and database integration through real repositories and APIs, including validation, errors, and reliable cleanup.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/database-testing-course-06-integration-api-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-database-testing-course data-course-key="database-testing-course-completed" data-course-total="10" data-lesson-number="6">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Database Testing Course / Lesson 6 of 10</p><h1>Application and Database Integration Tests</h1><p>Exercise the real database driver and repository/API path so tests catch connection, mapping, transaction, and error-handling defects that mocks miss.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="Database testing course lessons"><h2>Course lessons</h2><nav data-database-testing-lessons aria-label="Database testing lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>Test through stable interfaces</h2><p>Start an isolated database at the supported engine/version, apply the same migrations the application uses, and connect through the real driver and repository layer. At the API boundary, send a request and assert status, response body, and persisted database state.</p><ol><li>Provision a clean test database and load deterministic fixtures.</li><li>Call the application service, repository, or API with realistic input.</li><li>Assert observable response and database state.</li><li>Test invalid input, missing rows, constraint errors, and duplicate/retried requests.</li><li>Clean up only records owned by the test.</li></ol></section>
+        <section><h2>Example test scenario</h2><p>For an order API, a test can create an order, read it back, and verify that a second request with the same idempotency key does not create a duplicate. Assert database rows as well as the HTTP response; a successful response alone may hide an unintended write.</p><pre><code>Given a test customer with no orders
+When the API creates an order with idempotency key "test-run-42"
+Then the response contains the new order ID
+And exactly one order exists for that test key
+When the same request is retried
+Then the same order ID is returned
+And the order count remains one</code></pre><p>This is a test specification, not SQL or executable code. Implement it with your application's test framework and isolated test fixtures.</p></section>
+        <section><h2>Replace external dependencies carefully</h2><p>Payment, email, and message brokers may be stubbed for a focused database integration test, but the database itself should be real for behaviors that depend on its SQL dialect, constraints, transactions, or locking. Add separate end-to-end tests for critical external integrations.</p></section>
+        <section><h2>Diagnose flaky integration tests</h2><ul><li>Use unique records and stable keys; avoid shared mutable fixtures.</li><li>Wait for explicit readiness rather than fixed sleeps.</li><li>Pin the engine image/version and initialize schema deterministically.</li><li>Ensure each test owns its transaction/connection lifecycle.</li><li>Capture sanitized database and application logs for failed runs.</li><li>Test concurrency deliberately instead of relying on test execution order.</li></ul></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="database-testing-course-05-constraints-transactions-free-online.html">Previous: Transactions</a><a href="database-testing-course-07-migrations-free-online.html">Next: Migrations</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/database-testing-course.js"></script>
+</body></html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS CloudWatch Log Analysis Course | Lesson 3: Log Groups</title>
+  <meta name="description" content="Organize CloudWatch database logs with log groups, streams, retention, IAM access, and cost-aware log exploration.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/aws-cloudwatch-dba-course-03-log-groups-streams-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-aws-cloudwatch-course data-course-key="aws-cloudwatch-dba-course-completed" data-course-total="10" data-lesson-number="3">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">AWS CloudWatch Logs for DBAs and Developers / Lesson 3 of 10</p><h1>Log Groups, Streams, Retention, and Access</h1><p>Navigate from a database resource to the right log group and stream, set a useful time range, and handle log access and retention responsibly.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="AWS CloudWatch course lessons"><h2>Course lessons</h2><nav data-aws-cloudwatch-lessons aria-label="AWS CloudWatch lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>Understand the log hierarchy</h2><p>A log group is the container for a log source and its retention and access controls. A log stream is a sequence of events from a particular source. RDS naming conventions typically include the resource and log type, but exact names depend on the service. Prefer the database resource's Logs &amp; events view to locate the destination rather than guessing.</p><ol><li>Confirm account and Region in the console.</li><li>Open the database resource and identify the exported log type.</li><li>Open the linked CloudWatch log group and select the relevant stream(s).</li><li>Set the incident time window and inspect the event time and message.</li></ol></section>
+        <section><h2>Retention, protection, and query scope</h2><p>Set retention according to operational, legal, and security requirements; log groups may otherwise retain data indefinitely. Restrict read, query, export, and deletion permissions to approved roles. Use KMS encryption and cross-account sharing only under the organization's controls. Query the narrowest relevant log groups and time range to reduce cost and noise.</p></section>
+        <section><h2>Search across logs</h2><p>CloudWatch Logs Insights can query multiple selected groups. Start with a narrow time range and a simple query:</p><pre><code>fields @timestamp, @logStream, @message
+| sort @timestamp desc
+| limit 50</code></pre><p>Then add a filter for an error term or known request ID:</p><pre><code>fields @timestamp, @logStream, @message
+| filter @message like /ERROR|FATAL|deadlock/
+| sort @timestamp desc
+| limit 100</code></pre><p>Search terms are examples; PostgreSQL and application log formats differ. Refine using the actual emitted field names and message text.</p></section>
+        <section><h2>Common navigation problems</h2><ul><li><strong>No log group:</strong> confirm exports are enabled and wait for the service to publish events.</li><li><strong>No stream for the time:</strong> check the selected resource, engine log type, and time zone.</li><li><strong>Access denied:</strong> confirm approved IAM permissions and account/Region, then request access rather than broadening a role.</li><li><strong>Unexpected cost:</strong> narrow the time range and groups; review ingestion volume and retention settings.</li></ul></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="aws-cloudwatch-dba-course-02-rds-log-setup-free-online.html">Previous: Enable logs</a><a href="aws-cloudwatch-dba-course-04-time-correlation-free-online.html">Next: Time correlation</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/aws-cloudwatch-dba-course.js"></script>
+</body></html>

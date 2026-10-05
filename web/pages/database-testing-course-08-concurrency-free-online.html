@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database Testing Course | Lesson 8: Concurrency</title>
+  <meta name="description" content="Test concurrent database transactions, isolation behavior, locking, race conditions, retry handling, and idempotency.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/database-testing-course-08-concurrency-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-database-testing-course data-course-key="database-testing-course-completed" data-course-total="10" data-lesson-number="8">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Database Testing Course / Lesson 8 of 10</p><h1>Concurrency and Isolation Testing</h1><p>Use coordinated transactions to expose lost updates, duplicate work, lock contention, and retry defects under the target database's actual isolation rules.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="Database testing course lessons"><h2>Course lessons</h2><nav data-database-testing-lessons aria-label="Database testing lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>Reproduce concurrency deliberately</h2><p>A sequential test cannot prove behavior when two clients act at once. Use two independent connections and explicit synchronization barriers so both transactions reach the intended point before either continues. Add timeouts so a failing test cannot hang the suite.</p><ol><li>Prepare known shared data in a disposable database.</li><li>Start transaction A on connection A and pause at a controlled barrier.</li><li>Start transaction B on connection B and perform the competing operation.</li><li>Release both at a deterministic point and capture results/errors.</li><li>Assert the allowed final state and clean up the fixture.</li></ol></section>
+        <section><h2>Test a conditional update</h2><p>For inventory or balances, protect the invariant in the database operation rather than relying only on a prior read.</p><pre><code>UPDATE inventory
+SET available = available - 1
+WHERE sku = 'TEST-1'
+  AND available &gt; 0
+RETURNING available;
+-- With one item and two concurrent buyers:
+-- assert no negative value and at most one successful reservation.</code></pre><p>This example must run against a fixture in an isolated test database. The exact expected error/result depends on application logic and transaction isolation.</p></section>
+        <section><h2>Test isolation and retry behavior</h2><ul><li>Check the transaction guarantees required by the business operation.</li><li>Test unique constraints as a final defense against duplicate concurrent inserts.</li><li>Test deadlock or serialization-failure handling where the engine/isolation mode can produce them.</li><li>Retry only errors known to be transient; use bounded attempts and backoff.</li><li>Make externally retried requests idempotent so a lost response does not create duplicate writes.</li><li>Verify connection state is cleaned up after a failed or cancelled transaction.</li></ul></section>
+        <section><h2>Avoid false confidence</h2><p>Use the production database engine and supported isolation level. Keep workload bounded, label test clients, and do not run contention experiments on shared staging without coordinating with its owner. A test should assert invariants, not require a particular scheduler interleaving unless the barrier controls it.</p></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="database-testing-course-07-migrations-free-online.html">Previous: Migrations</a><a href="database-testing-course-09-performance-security-free-online.html">Next: Performance and security</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/database-testing-course.js"></script>
+</body></html>

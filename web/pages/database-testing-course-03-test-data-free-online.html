@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database Testing Course | Lesson 3: Test Data</title>
+  <meta name="description" content="Build deterministic database fixtures with explicit keys, boundary cases, referential integrity, and reliable per-test cleanup.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/database-testing-course-03-test-data-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-database-testing-course data-course-key="database-testing-course-completed" data-course-total="10" data-lesson-number="3">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Database Testing Course / Lesson 3 of 10</p><h1>Deterministic Fixtures and Test Data</h1><p>Design small, explicit fixtures that reproduce business cases consistently and make failures easy to explain.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="Database testing course lessons"><h2>Course lessons</h2><nav data-database-testing-lessons aria-label="Database testing lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>Prefer data with a purpose</h2><p>Each fixture row should support a scenario: the expected result, a boundary, a rejection, or an interaction. Use explicit keys and stable values so expected outcomes do not depend on random ordering or another test's state.</p><pre><code>INSERT INTO customers (customer_id, name, active)
+VALUES
+  (9101, 'Active Customer', true),
+  (9102, 'Inactive Customer', false);
+
+INSERT INTO orders (order_id, customer_id, status, total, created_at)
+VALUES
+  (9201, 9101, 'paid', 10.00, TIMESTAMPTZ '2026-01-01 00:00:00+00'),
+  (9202, 9101, 'pending', 0.00, TIMESTAMPTZ '2026-01-02 00:00:00+00');</code></pre></section>
+        <section><h2>Include important boundaries</h2><ul><li>No matching rows and exactly one match.</li><li>Minimum, maximum, zero, and just-outside allowed values.</li><li>NULL versus empty string where the schema permits both.</li><li>Duplicate keys and missing foreign-key parents.</li><li>Timestamp exactly at a boundary and immediately before/after it.</li><li>Unicode, long text, and case behavior where relevant.</li><li>Multiple tenants/users to test isolation of reads and writes.</li></ul><p>Use a fixed clock or injected time for expiry and date-window tests. Avoid dependence on the machine's local timezone.</p></section>
+        <section><h2>Control fixture relationships and cleanup</h2><p>Insert parent rows before dependent rows and remove child data before parents when not using transaction rollback. Use a unique run ID if a shared test database must host concurrent jobs. Keep fixtures minimal; large production-like datasets belong in a separately controlled performance test.</p><pre><code>BEGIN;
+INSERT INTO customers (customer_id, name) VALUES (9103, 'Fixture');
+INSERT INTO orders (order_id, customer_id, status, total)
+VALUES (9203, 9103, 'paid', 15.00);
+-- Exercise assertions, then ROLLBACK in this isolated test.
+ROLLBACK;</code></pre></section>
+        <section><h2>Keep test data safe</h2><p>Use synthetic records wherever possible. If masked data is approved, verify masking, access, retention, and export controls. Test logs, snapshots, failure artifacts, and CI caches also need data-handling controls. Never store credentials or personal information in fixture files.</p></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="database-testing-course-02-test-environments-free-online.html">Previous: Environments</a><a href="database-testing-course-04-sql-crud-free-online.html">Next: SQL tests</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/database-testing-course.js"></script>
+</body></html>

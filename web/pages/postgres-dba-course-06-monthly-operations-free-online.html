@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostgreSQL DBA Course | Lesson 6: Monthly Operations</title>
+  <meta name="description" content="Run monthly PostgreSQL capacity, access, configuration, extension, and patch-readiness reviews with practical SQL checks.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/postgres-dba-course-06-monthly-operations-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-postgres-dba-course data-course-key="postgres-dba-course-completed" data-course-total="10" data-lesson-number="6">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Free PostgreSQL DBA Course / Lesson 6 of 10</p><h1>Monthly PostgreSQL Capacity and Security Review</h1><p>Review growth, connection use, access grants, extensions, and patch readiness monthly so that small changes do not turn into urgent production work.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="PostgreSQL DBA course lessons"><h2>Course lessons</h2><nav data-postgres-dba-lessons aria-label="PostgreSQL DBA lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Measure capacity and growth</h2><p>Compare current database/table sizes to stored monthly measurements. Check free disk space, WAL/archive growth, connection headroom, backup storage, and the projected date each resource could reach its limit. PostgreSQL size queries are point-in-time readings; export and retain snapshots if you need trends.</p><pre><code>SELECT current_database() AS database_name,
+       pg_size_pretty(pg_database_size(current_database())) AS database_size;
+
+SELECT schemaname, relname,
+       pg_size_pretty(pg_total_relation_size(relid)) AS total_size
+FROM pg_stat_user_tables
+ORDER BY pg_total_relation_size(relid) DESC
+LIMIT 20;</code></pre></section>
+        <section><h2>2. Review roles and effective privileges</h2><p>Remove access only after the application owner confirms it is no longer needed and the change is approved. PostgreSQL role membership can confer privileges indirectly, so examine inheritance and membership, not only direct grants.</p><pre><code>SELECT rolname, rolsuper, rolcreatedb, rolcreaterole,
+       rolcanlogin, rolvaliduntil
+FROM pg_roles
+ORDER BY rolname;
+
+SELECT member.rolname AS member_role,
+       granted.rolname AS granted_role
+FROM pg_auth_members AS membership
+JOIN pg_roles AS member ON member.oid = membership.member
+JOIN pg_roles AS granted ON granted.oid = membership.roleid
+ORDER BY member_role, granted_role;</code></pre><p>Record the requester, affected role, grants/memberships, approval, application owner, and rollback method before a revocation.</p></section>
+        <section><h2>3. Review configuration, extensions, and patching</h2><p>Compare critical settings to the approved baseline and note parameters requiring restart. Review installed extensions, supported PostgreSQL minor releases, end-of-support dates, vendor advisories, and compatibility requirements before scheduling updates.</p><pre><code>SELECT name, setting, unit, source, pending_restart
+FROM pg_settings
+WHERE pending_restart
+   OR name IN ('max_connections', 'shared_buffers',
+               'work_mem', 'maintenance_work_mem')
+ORDER BY name;
+
+SELECT extname, extversion
+FROM pg_extension
+ORDER BY extname;</code></pre><p>Do not copy tuning values from another cluster blindly. Estimate memory as a whole-system budget because per-operation settings such as <code>work_mem</code> may be used by multiple concurrent operations.</p></section>
+        <section><h2>Monthly review outputs</h2><ol><li>Attach capacity graphs and identify resources that need action before the next review.</li><li>Document stale roles, grants, and extension/version concerns; have owners validate them.</li><li>Create patch or configuration changes with testing, maintenance-window, and rollback steps.</li><li>Update backup retention, access review, and risk records.</li></ol></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="postgres-dba-course-05-weekly-maintenance-free-online.html">Previous: Weekly maintenance</a><a href="postgres-dba-course-07-yearly-readiness-free-online.html">Next: Yearly readiness</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/postgres-dba-course.js"></script>
+</body></html>

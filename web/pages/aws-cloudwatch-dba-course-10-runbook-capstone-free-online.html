@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS CloudWatch Log Analysis Course | Lesson 10: Runbook Capstone</title>
+  <meta name="description" content="Finish the AWS CloudWatch course with a repeatable database incident runbook for finding error times, slow queries, owners, and verified recovery.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/aws-cloudwatch-dba-course-10-runbook-capstone-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-aws-cloudwatch-course data-course-key="aws-cloudwatch-dba-course-completed" data-course-total="10" data-lesson-number="10">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">AWS CloudWatch Logs for DBAs and Developers / Lesson 10 of 10</p><h1>Build an AWS Database Log Investigation Runbook</h1><p>Combine log discovery, time correlation, Logs Insights, live database activity, application traces, and alert response into a repeatable incident workflow.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="AWS CloudWatch course lessons"><h2>Course lessons</h2><nav data-aws-cloudwatch-lessons aria-label="AWS CloudWatch lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Incident intake</h2><ol><li>Capture incident ID, symptom, user impact, service owner, and first known event time.</li><li>Record AWS account, Region, environment, RDS/Aurora resource, engine/version, and application service.</li><li>Confirm timezone and select a narrow CloudWatch absolute time range with lead-up and recovery context.</li><li>Check service events, recent deployments, configuration changes, and alarm transitions.</li></ol></section>
+        <section><h2>2. Search and correlate</h2><p>Open only the approved database and application log groups and start with a bounded query:</p><pre><code>fields @timestamp, @ingestionTime, @logStream, @message
+| filter @message like /ERROR|FATAL|timeout|deadlock|duration:/
+| sort @timestamp asc
+| limit 200</code></pre><ol><li>Identify the earliest relevant event and distinguish it from delayed ingestion.</li><li>Search the application trace/request ID and compare connection-pool wait with SQL duration.</li><li>For completed slow statements, search duration logs if enabled and parse the actual message format.</li><li>For a query that is running now, inspect PostgreSQL <code>pg_stat_activity</code> through approved database access.</li><li>Compare CPU, connections, storage latency, replication, and application error/latency metrics over the same time window.</li></ol></section>
+        <section><h2>3. Evidence and response</h2><p>Record timestamps with timezone, log groups/streams, query text only when authorized and redacted, trace ID, relevant metrics, wait/transaction age, hypotheses, owner, and next action. Do not share sensitive log exports in public tickets. Use approved change control for cancellation, configuration changes, failover, or other production actions. Never kill a database process solely because it is old.</p></section>
+        <section><h2>4. Verify resolution and prevent recurrence</h2><ol><li>Confirm error rate and user-facing latency recover.</li><li>Verify database connections, active waits, and service health return to the expected range.</li><li>Compare behavior with the same pre-incident metrics and logs.</li><li>Document root cause only when evidence supports it; mark unverified theories as hypotheses.</li><li>Create follow-up work for missing instrumentation, query optimization, alarm tuning, retention, or runbook gaps.</li><li>Close the incident with a timeline, impact, evidence, recovery check, and accountable owners.</li></ol></section>
+        <section><h2>Course completion checklist</h2><ul><li>Can you find the database resource's exported log group and verify that events arrive?</li><li>Can you search a bounded time range and explain event versus ingestion time?</li><li>Can you distinguish a logged completed slow query from a currently active query?</li><li>Can developers and DBAs correlate a request using a safe trace ID and timing breakdown?</li><li>Does each alarm have a tested notification route, owner, and response procedure?</li></ul></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="aws-cloudwatch-dba-course-09-metrics-alarms-free-online.html">Previous: Metrics and alarms</a><a href="aws-cloudwatch-dba-course-free-online.html">Return to course start</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/aws-cloudwatch-dba-course.js"></script>
+</body></html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database Testing Course | Lesson 7: Migrations</title>
+  <meta name="description" content="Test database migrations from clean and previous-version schemas, verify data preservation, and plan safe rollback and deployment order.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/database-testing-course-07-migrations-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-database-testing-course data-course-key="database-testing-course-completed" data-course-total="10" data-lesson-number="7">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Database Testing Course / Lesson 7 of 10</p><h1>Schema Migration and Upgrade Tests</h1><p>Prove a migration works from supported starting versions, preserves required data, and can be deployed safely alongside the application rollout.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="Database testing course lessons"><h2>Course lessons</h2><nav data-database-testing-lessons aria-label="Database testing lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>Test a migration from a clean database</h2><p>Create an empty database at the pinned engine/version, apply the complete migration chain, and assert tables, columns, types, constraints, indexes, grants, and seed/reference data. A fresh install catches missing or out-of-order migration dependencies.</p></section>
+        <section><h2>Test an upgrade with representative existing data</h2><ol><li>Build the previous schema revision and populate rows covering NULLs, boundaries, duplicates, and relationships.</li><li>Apply the new migration with the same migration runner used in deployment.</li><li>Verify transformed values, row counts, constraints, indexes, and application compatibility.</li><li>Run an application smoke test against both the expected deployment phases when using an expand/contract rollout.</li><li>Measure locks, runtime, disk use, and operational impact on representative volume.</li></ol></section>
+        <section><h2>Example expand-and-contract sequence</h2><p>For a column rename, avoid dropping the old column before all application versions stop using it.</p><ol><li>Expand: add the new nullable column and deploy code that can read/write both formats.</li><li>Backfill in controlled batches; assert every eligible row has matching values.</li><li>Switch reads to the new column and observe production behavior.</li><li>After compatibility is proven and old code is retired, enforce final constraints.</li><li>Contract in a later migration by removing the old column with explicit approval.</li></ol><p>The exact strategy depends on application architecture and engine locking behavior. Destructive changes require a tested restore/rollback plan; reverse DDL alone may not restore discarded data.</p></section>
+        <section><h2>Migration failure checklist</h2><ul><li>Does the migration runner stop on errors and report the failed revision?</li><li>Can a rerun leave a consistent state, or is manual recovery required?</li><li>Are DDL transaction semantics supported for each operation?</li><li>Are existing rows preserved and application versions compatible?</li><li>Has rollback or forward-fix behavior been rehearsed on a disposable copy?</li></ul></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="database-testing-course-06-integration-api-free-online.html">Previous: Integration</a><a href="database-testing-course-08-concurrency-free-online.html">Next: Concurrency tests</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/database-testing-course.js"></script>
+</body></html>

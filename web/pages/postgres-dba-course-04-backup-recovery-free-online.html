@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostgreSQL DBA Course | Lesson 4: Backup and Recovery</title>
+  <meta name="description" content="Plan PostgreSQL backup coverage, validate logical backups, restore safely, and understand WAL archiving and point-in-time recovery.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/postgres-dba-course-04-backup-recovery-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-postgres-dba-course data-course-key="postgres-dba-course-completed" data-course-total="10" data-lesson-number="4">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Free PostgreSQL DBA Course / Lesson 4 of 10</p><h1>PostgreSQL Backup, Restore, and Recovery</h1><p>Design backup coverage around recovery objectives, verify artifacts, and prove the restore procedure before an incident happens.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="PostgreSQL DBA course lessons"><h2>Course lessons</h2><nav data-postgres-dba-lessons aria-label="PostgreSQL DBA lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Define what recovery must achieve</h2><p>Agree a recovery point objective (maximum acceptable data loss) and recovery time objective (maximum acceptable outage) with the service owner. Map each database, role, tablespace, configuration, and dependency to a tested backup method and retention policy. Store backups separately from the database host and protect them with encryption and access controls.</p></section>
+        <section><h2>2. Make and inspect a logical backup</h2><p>For a small database or a portable migration, use a custom-format dump. Commands run from a trusted host with credentials supplied through the configured PostgreSQL service/credential mechanism, not embedded in shell history.</p><pre><code>pg_dump --format=custom --file=appdb_2026-10-04.dump appdb
+pg_restore --list appdb_2026-10-04.dump
+
+# Restore to a new, isolated test database; do not overwrite production.
+createdb appdb_restore_test
+pg_restore --exit-on-error --dbname=appdb_restore_test appdb_2026-10-04.dump</code></pre><p>Check command exit status, artifact size, storage location, and restore logs. Compare important table counts and application-level invariants between source and restored test data.</p></section>
+        <section><h2>3. Physical backups and point-in-time recovery</h2><p>For full-cluster recovery and point-in-time recovery (PITR), use a supported physical backup process plus continuous WAL archiving. Validate the backup and WAL chain, timeline, encryption keys, configuration, and restore instructions. A successful backup-job status alone does not prove recoverability.</p><ol><li>Identify a clean recovery target and stop writes to the restore environment.</li><li>Restore the base backup to an isolated host using the documented tool and version.</li><li>Configure recovery to stop at the approved timestamp or transaction marker.</li><li>Start in isolation; inspect recovery logs and confirm the expected timeline.</li><li>Validate schema, representative rows, and application checks before cutover approval.</li></ol></section>
+        <section><h2>4. Schedule restore drills</h2><p>Run regular restore drills, record measured recovery time and data point, and fix gaps in the runbook. Test both a single-database logical restore and the physical recovery path when those are part of the service design. Never test destructive restore steps against the live production data directory.</p></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="postgres-dba-course-03-incident-triage-free-online.html">Previous: Incident triage</a><a href="postgres-dba-course-05-weekly-maintenance-free-online.html">Next: Weekly maintenance</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/postgres-dba-course.js"></script>
+</body></html>

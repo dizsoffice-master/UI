@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database Testing Course | Lesson 4: SQL CRUD</title>
+  <meta name="description" content="Test database reads, inserts, updates, and deletes with explicit expected rows, boundary cases, and affected-row assertions.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/database-testing-course-04-sql-crud-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-database-testing-course data-course-key="database-testing-course-completed" data-course-total="10" data-lesson-number="4">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Database Testing Course / Lesson 4 of 10</p><h1>Test SQL Reads and Data Changes</h1><p>Assert query results and write effects against known fixture data, including empty results, ordering, and rejected or duplicate changes.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="Database testing course lessons"><h2>Course lessons</h2><nav data-database-testing-lessons aria-label="Database testing lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>Test SELECT results as a contract</h2><p>Check selected fields, row values, duplicates, NULL behavior, filters, joins, and stable ordering. Add an explicit order when result sequence matters; SQL does not guarantee order without <code>ORDER BY</code>.</p><pre><code>SELECT order_id, status, total
+FROM orders
+WHERE customer_id = 9101
+ORDER BY order_id;
+-- Assert exact expected rows:
+-- (9201, 'paid', 10.00)
+-- (9202, 'pending', 0.00)</code></pre><p>Include a customer with no orders and verify the intended behavior of an outer join or empty aggregate.</p></section>
+        <section><h2>Test inserts and updates</h2><p>Assert returned keys and the persisted row. Also test duplicate keys, invalid values, repeated requests, and update predicates that should match zero rows.</p><pre><code>INSERT INTO orders (order_id, customer_id, status, total)
+VALUES (9204, 9101, 'pending', 20.00)
+RETURNING order_id, status, total;
+
+UPDATE orders
+SET status = 'paid'
+WHERE order_id = 9204 AND status = 'pending'
+RETURNING order_id, status;
+-- Assert one affected row and the expected final state.</code></pre></section>
+        <section><h2>Test deletes with exact affected rows</h2><p>Before a destructive statement, validate the candidate set. In a test, assert exactly which rows were removed and which related rows remain or cascade, as specified by the schema.</p><pre><code>DELETE FROM orders
+WHERE order_id = 9204
+RETURNING order_id;
+-- Assert exactly one returned ID: 9204.
+-- Query afterward to assert the row is absent.</code></pre></section>
+        <section><h2>Use parameterized application queries</h2><p>Exercise the real data-access layer with bound parameters rather than string concatenation. Test values containing quotes, Unicode, wildcard characters, and SQL-looking input; verify they are treated as data and cannot widen the result set.</p><p>Keep a failing test's SQLSTATE and sanitized parameters in diagnostics, not secrets or unrestricted user data. Run the query against the actual supported engine.</p></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="database-testing-course-03-test-data-free-online.html">Previous: Test data</a><a href="database-testing-course-05-constraints-transactions-free-online.html">Next: Constraints and transactions</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/database-testing-course.js"></script>
+</body></html>

@@ -1,1 +1,3 @@
-// Page-specific behavior is not needed; shared rendering is provided by assets referenced in the HTML.
+document.querySelectorAll('.home-course-group ol').forEach((lessonList) => {
+  if (lessonList.children.length > 10) lessonList.classList.add('is-scrollable');
+});

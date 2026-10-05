@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostgreSQL DBA Course | Lesson 7: Yearly Readiness</title>
+  <meta name="description" content="Plan yearly PostgreSQL disaster-recovery exercises, major-version upgrades, lifecycle changes, and operational readiness reviews.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/postgres-dba-course-07-yearly-readiness-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-postgres-dba-course data-course-key="postgres-dba-course-completed" data-course-total="10" data-lesson-number="7">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Free PostgreSQL DBA Course / Lesson 7 of 10</p><h1>Yearly PostgreSQL Continuity and Upgrade Readiness</h1><p>Use an annual review to prove disaster recovery, plan supported version upgrades, refresh the operating baseline, and resolve lifecycle risks before they become outages.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="PostgreSQL DBA course lessons"><h2>Course lessons</h2><nav data-postgres-dba-lessons aria-label="PostgreSQL DBA lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Prove continuity and recovery</h2><p>Run an approved exercise that restores the service to an isolated environment, validates application behavior, measures actual recovery time and recovery point, and records gaps. Include credentials, encryption keys, DNS/network steps, monitoring, dependent services, and the decision authority for cutover.</p><ol><li>Select a scenario and target point with the service owner.</li><li>Confirm backup/WAL availability and protect production from the exercise.</li><li>Restore to a clean isolated host and record timestamps for every step.</li><li>Run data-integrity and application smoke checks with the owner.</li><li>Compare observed recovery against objectives and track remediations to closure.</li></ol></section>
+        <section><h2>2. Plan a major-version upgrade</h2><p>Inventory database size, extensions, collation behavior, drivers, application SQL, replication topology, and external integrations. Review the selected upgrade method and version-specific release notes. Test the migration on a recent restored copy, measure duration and rollback options, and obtain a go/no-go decision before scheduling.</p><pre><code>SELECT current_setting('server_version') AS server_version;
+SELECT extname, extversion FROM pg_extension ORDER BY extname;
+SELECT datname, datcollversion, pg_database_collation_actual_version(oid)
+FROM pg_database
+WHERE datistemplate = false;</code></pre><p>Upgrade commands and collation functions vary by PostgreSQL version and platform; validate the exact process with your hosting/provider documentation and test it end to end.</p></section>
+        <section><h2>3. Refresh annual controls</h2><ul><li>Confirm supported PostgreSQL version, patch cadence, and extension support.</li><li>Review privileged accounts, role memberships, service ownership, and secret rotation.</li><li>Revalidate backup retention, encryption, restore access, and retention deletion.</li><li>Review data retention, archival, legal holds, and decommissioned services.</li><li>Update the topology diagram, contacts, change runbooks, and emergency access process.</li></ul></section>
+        <section><h2>Yearly deliverables</h2><p>Keep the signed exercise report, measured RTO/RPO, upgrade test evidence, support-lifecycle plan, approved risk register, and dated remediation tickets. Assign owners and target dates; a checklist without evidence is not a recovery test.</p></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="postgres-dba-course-06-monthly-operations-free-online.html">Previous: Monthly operations</a><a href="postgres-dba-course-08-query-performance-free-online.html">Next: Performance diagnosis</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/postgres-dba-course.js"></script>
+</body></html>

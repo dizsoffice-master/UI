@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS CloudWatch Log Analysis Course | Lesson 1: Foundations</title>
+  <meta name="description" content="Learn AWS CloudWatch Logs foundations for DBAs and developers: locate database logs, search incidents, analyze slow queries, and monitor applications.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/aws-cloudwatch-dba-course-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-aws-cloudwatch-course data-course-key="aws-cloudwatch-dba-course-completed" data-course-total="10" data-lesson-number="1">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">AWS CloudWatch Logs for DBAs and Developers / Lesson 1 of 10</p><h1>AWS CloudWatch Logs and Monitoring Foundations</h1><p>Learn how to find database and application logs, search the right time window, investigate errors and slow queries, and turn evidence into useful monitoring.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="AWS CloudWatch course lessons"><h2>Course lessons</h2><nav data-aws-cloudwatch-lessons aria-label="AWS CloudWatch lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>What CloudWatch Logs does</h2><p>Amazon CloudWatch Logs stores and lets you query log events sent by AWS services, agents, and applications. Logs are grouped into log groups; log streams usually represent an instance, task, or log source. CloudWatch is an observability destination, not a live SQL session: a log search cannot show a query that the database has not emitted.</p></section>
+        <section><h2>Choose the right evidence source</h2><ul><li><strong>Database engine log:</strong> authentication failures, deadlocks, checkpoints, server warnings, and statements the configured logging policy records.</li><li><strong>Application log:</strong> request IDs, endpoint errors, pool wait, retry, and the application-side duration around a database call.</li><li><strong>CloudWatch metrics:</strong> CPU, storage, connections, latency, and service-level trends; metrics are not query text.</li><li><strong>Database activity view:</strong> for currently active PostgreSQL work, query <code>pg_stat_activity</code> with an authorized database connection.</li></ul></section>
+        <section><h2>Start an investigation</h2><ol><li>Select the correct AWS account, Region, environment, and database resource.</li><li>Confirm the engine, log export configuration, destination log group, and retention.</li><li>Write down the symptom, timezone, first/last observed time, and customer impact.</li><li>Search a narrow time window, then widen it to include lead-up and recovery.</li><li>Correlate database log events with application logs, metrics, deploys, and incident notes.</li></ol><div class="excel-course-callout"><p>CloudWatch timestamps are displayed in the console's selected timezone, commonly UTC. Confirm the timezone and compare event time with ingestion time before deciding when a problem began.</p></div></section>
+        <section><h2>Safe access and cost basics</h2><p>Use an approved IAM role scoped to the required account, Region, and log groups. Logs can contain SQL text, usernames, host details, and sensitive values. Limit access, avoid logging secrets or personal data, configure retention, and use approved encryption and export policies. High-volume logs and broad, long-range queries can cost more; begin with a small time range.</p></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><span>Course start</span><a href="aws-cloudwatch-dba-course-02-rds-log-setup-free-online.html">Next: Enable database logs</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/aws-cloudwatch-dba-course.js"></script>
+</body></html>

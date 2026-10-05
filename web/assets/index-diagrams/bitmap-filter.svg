@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" role="img" aria-labelledby="title desc">
+  <title id="title">Bitmap index filters and combines row sets</title>
+  <desc id="desc">Each category value maps to a bit vector. The database combines vectors with Boolean operations to select row positions.</desc>
+  <rect width="760" height="300" rx="18" fill="#f4f8f5"/>
+  <g font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">
+    <text x="380" y="34" font-size="19" font-weight="700" fill="#173d2e">Bitmap index: represent matching rows as bits</text>
+    <text x="100" y="93" font-size="16" font-weight="700" fill="#173d2e">status = paid</text>
+    <text x="100" y="155" font-size="16" font-weight="700" fill="#173d2e">region = west</text>
+    <text x="100" y="220" font-size="16" font-weight="700" fill="#173d2e">AND result</text>
+    <g font-size="18" font-weight="700">
+      <g fill="#176b4d"><rect x="210" y="67" width="48" height="40" rx="5"/><rect x="270" y="67" width="48" height="40" rx="5"/><rect x="390" y="67" width="48" height="40" rx="5"/><rect x="510" y="67" width="48" height="40" rx="5"/></g>
+      <g fill="#fff"><rect x="330" y="67" width="48" height="40" rx="5"/><rect x="450" y="67" width="48" height="40" rx="5"/><rect x="570" y="67" width="48" height="40" rx="5"/></g>
+      <g fill="#fff"><rect x="210" y="129" width="48" height="40" rx="5"/><rect x="270" y="129" width="48" height="40" rx="5"/><rect x="390" y="129" width="48" height="40" rx="5"/><rect x="510" y="129" width="48" height="40" rx="5"/></g>
+      <g fill="#176b4d"><rect x="330" y="129" width="48" height="40" rx="5"/><rect x="450" y="129" width="48" height="40" rx="5"/><rect x="570" y="129" width="48" height="40" rx="5"/></g>
+      <g fill="#fff"><rect x="210" y="195" width="48" height="40" rx="5"/><rect x="270" y="195" width="48" height="40" rx="5"/><rect x="330" y="195" width="48" height="40" rx="5"/><rect x="390" y="195" width="48" height="40" rx="5"/><rect x="450" y="195" width="48" height="40" rx="5"/><rect x="510" y="195" width="48" height="40" rx="5"/><rect x="570" y="195" width="48" height="40" rx="5"/></g>
+      <g fill="#173d2e"><text x="234" y="94">1</text><text x="294" y="94">1</text><text x="354" y="94">0</text><text x="414" y="94">1</text><text x="474" y="94">0</text><text x="534" y="94">1</text><text x="594" y="94">0</text><text x="234" y="156">0</text><text x="294" y="156">0</text><text x="354" y="156">1</text><text x="414" y="156">0</text><text x="474" y="156">1</text><text x="534" y="156">0</text><text x="594" y="156">1</text><text x="234" y="222">0</text><text x="294" y="222">0</text><text x="354" y="222">0</text><text x="414" y="222">0</text><text x="474" y="222">0</text><text x="534" y="222">0</text><text x="594" y="222">0</text></g>
+    </g>
+    <text x="380" y="270" font-size="13" fill="#58695f">Illustration only: the intersection contains positions where both predicates are true.</text>
+  </g>
+</svg>

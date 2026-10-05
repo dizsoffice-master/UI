@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostgreSQL DBA Course | Lesson 2: Daily Health Checks</title>
+  <meta name="description" content="Run a practical daily PostgreSQL health check for connections, long transactions, blocked sessions, database size, and replication.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/postgres-dba-course-02-daily-health-checks-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-postgres-dba-course data-course-key="postgres-dba-course-completed" data-course-total="10" data-lesson-number="2">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Free PostgreSQL DBA Course / Lesson 2 of 10</p><h1>Daily PostgreSQL Health Checks and Monitoring</h1><p>Use a consistent daily checklist to catch connection pressure, long transactions, blocking, storage growth, and replication lag before they become outages.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="PostgreSQL DBA course lessons"><h2>Course lessons</h2><nav data-postgres-dba-lessons aria-label="PostgreSQL DBA lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Connection and database-size check</h2><p>Run these from a monitoring role with catalog access. Compare the results to your own alert thresholds; the configured connection limit includes reserved slots and should not be treated as a target.</p><pre><code>SELECT count(*) AS open_connections,
+       current_setting('max_connections')::int AS max_connections
+FROM pg_stat_activity;
+
+SELECT datname, pg_size_pretty(pg_database_size(datname)) AS size
+FROM pg_database
+WHERE datistemplate = false
+ORDER BY pg_database_size(datname) DESC;</code></pre></section>
+        <section><h2>2. Find long transactions and blocked work</h2><p>Review age and query text with the service owner. Long idle transactions can prevent vacuum from reclaiming dead tuples, but the age alone does not prove that a backend is safe to stop.</p><pre><code>SELECT pid, usename, application_name, client_addr, state,
+       now() - xact_start AS transaction_age,
+       wait_event_type, wait_event, left(query, 200) AS query_sample
+FROM pg_stat_activity
+WHERE xact_start IS NOT NULL
+  AND pid &lt;&gt; pg_backend_pid()
+ORDER BY xact_start;
+
+SELECT pid AS blocked_pid,
+       pg_blocking_pids(pid) AS blocking_pids,
+       now() - query_start AS waiting_for,
+       left(query, 160) AS waiting_query
+FROM pg_stat_activity
+WHERE cardinality(pg_blocking_pids(pid)) &gt; 0;</code></pre></section>
+        <section><h2>3. Check replication and alerts</h2><p>On a primary, review connected replicas and their write, flush, and replay positions. On a standby, check the receiver and replay timestamp. Interpret lag alongside workload and your recovery-point objective; a quiet system may not generate fresh WAL.</p><pre><code>-- Primary server
+SELECT application_name, state, sync_state,
+       write_lag, flush_lag, replay_lag
+FROM pg_stat_replication;
+
+-- Standby server
+SELECT status, receive_start_lsn, latest_end_lsn,
+       latest_end_time
+FROM pg_stat_wal_receiver;</code></pre><p>Record the run time, host/environment, metric, expected range, observed value, and ticket or alert ID. Escalate based on the service's agreed thresholds rather than a universal number.</p></section>
+        <section><h2>Daily operating sequence</h2><ol><li>Check monitoring alerts, disk headroom, service availability, and backup job outcome.</li><li>Run connection, transaction, blocking, database-size, and replication checks.</li><li>Compare results with the previous day and identify sudden changes.</li><li>Create or update an incident/ticket for anomalies; include evidence and a named owner.</li><li>Verify any approved intervention and leave a hand-off note for the next shift.</li></ol></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="postgres-dba-course-free-online.html">Previous: Foundations</a><a href="postgres-dba-course-03-incident-triage-free-online.html">Next: Incident triage</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/postgres-dba-course.js"></script>
+</body></html>

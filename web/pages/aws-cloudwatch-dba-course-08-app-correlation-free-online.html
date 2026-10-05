@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS CloudWatch Log Analysis Course | Lesson 8: Application Correlation</title>
+  <meta name="description" content="Correlate AWS application logs with database log events using trace IDs, timestamps, safe structured logging, and latency breakdowns.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/aws-cloudwatch-dba-course-08-app-correlation-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-aws-cloudwatch-course data-course-key="aws-cloudwatch-dba-course-completed" data-course-total="10" data-lesson-number="8">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">AWS CloudWatch Logs for DBAs and Developers / Lesson 8 of 10</p><h1>Trace Application Requests to Database Logs</h1><p>Use consistent request and trace identifiers, structured fields, and timing boundaries to follow one failure across application, database, and AWS service logs.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="AWS CloudWatch course lessons"><h2>Course lessons</h2><nav data-aws-cloudwatch-lessons aria-label="AWS CloudWatch lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Emit useful, safe application events</h2><p>For each database operation, capture a trace/request ID, timestamp in a consistent format, service/version, environment, operation name, target alias, outcome, and elapsed duration. Separate connection-pool wait, connection establishment, database execution, retry, and response serialization when possible.</p><pre><code>{
+  "timestamp": "2026-10-04T12:00:00.000Z",
+  "level": "ERROR",
+  "service": "orders-api",
+  "version": "2026.10.04.1",
+  "trace_id": "approved-example-id",
+  "db_target": "orders-primary",
+  "operation": "load_order",
+  "pool_wait_ms": 5,
+  "db_duration_ms": 1204,
+  "error_code": "statement_timeout"
+}</code></pre><p>Use an approved ID format and avoid logging credentials, full SQL parameters, payment data, or unredacted personal data. Keep structured fields stable so Insights can query them.</p></section>
+        <section><h2>2. Search by a trace identifier</h2><p>Select both application and database log groups in Logs Insights if access and cross-service search are configured. Replace the example identifier with the approved incident trace ID.</p><pre><code>fields @timestamp, @log, @logStream, @message
+| filter @message like /approved-example-id/
+| sort @timestamp asc
+| limit 100</code></pre><p>If the database engine log cannot emit the application trace ID, correlate by time range, database PID/session identifier when safely present, database/user, and a sanitized operation label. Do not assume two adjacent timestamps are the same request.</p></section>
+        <section><h2>3. Interpret the timing boundaries</h2><ul><li>High pool-wait duration with low SQL time: inspect pool size, connection leaks, and database connection headroom.</li><li>Low pool wait with high database time: inspect SQL duration logs, active sessions, waits, and query plans.</li><li>Low database time with high endpoint time: inspect retries, downstream services, application CPU, and result processing.</li><li>High connection establishment time: inspect network path, DNS, TLS, connection churn, and failover events.</li></ul></section>
+        <section><h2>Developer and DBA hand-off</h2><p>Include trace ID, exact UTC time range, service/version, database target, sanitized error, pool wait, SQL duration, database wait state, and the relevant log links in the issue. The developer confirms request and retry behavior; the DBA confirms engine, contention, and resource behavior. Agree one testable hypothesis before changing production.</p></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="aws-cloudwatch-dba-course-07-long-queries-free-online.html">Previous: Long queries</a><a href="aws-cloudwatch-dba-course-09-metrics-alarms-free-online.html">Next: Metrics and alarms</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/aws-cloudwatch-dba-course.js"></script>
+</body></html>

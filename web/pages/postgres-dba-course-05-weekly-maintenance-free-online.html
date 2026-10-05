@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostgreSQL DBA Course | Lesson 5: Weekly Maintenance</title>
+  <meta name="description" content="Perform weekly PostgreSQL maintenance by reviewing vacuum and analyze activity, dead tuples, table growth, and maintenance jobs.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/postgres-dba-course-05-weekly-maintenance-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-postgres-dba-course data-course-key="postgres-dba-course-completed" data-course-total="10" data-lesson-number="5">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Free PostgreSQL DBA Course / Lesson 5 of 10</p><h1>Weekly PostgreSQL Maintenance</h1><p>Review table health and routine jobs each week, investigate missed or lagging maintenance, and intervene only when measurements justify it.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="PostgreSQL DBA course lessons"><h2>Course lessons</h2><nav data-postgres-dba-lessons aria-label="PostgreSQL DBA lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Review vacuum and analyze history</h2><p>Autovacuum and autoanalyze should normally handle routine table maintenance. Check the latest run, live/dead tuple estimates, and table size. Estimates are approximate; inspect trends and workload context rather than treating a single dead-tuple count as an error.</p><pre><code>SELECT schemaname, relname, n_live_tup, n_dead_tup,
+       last_vacuum, last_autovacuum,
+       last_analyze, last_autoanalyze,
+       pg_size_pretty(pg_total_relation_size(relid)) AS total_size
+FROM pg_stat_user_tables
+ORDER BY n_dead_tup DESC NULLS LAST
+LIMIT 30;</code></pre></section>
+        <section><h2>2. Diagnose maintenance lag</h2><ol><li>Check table activity, write rate, oldest transaction, and replication slots retaining WAL.</li><li>Review PostgreSQL logs and autovacuum configuration for cancellations, long runtimes, or thresholds too high for hot tables.</li><li>Check disk headroom and I/O before starting manual work.</li><li>Coordinate with application owners if long transactions or idle-in-transaction sessions prevent cleanup.</li><li>After an approved change, verify statistics and database health again.</li></ol><p>Use a targeted command only when needed, during a suitable window:</p><pre><code>VACUUM (ANALYZE, VERBOSE) public.orders;</code></pre><p>Ordinary VACUUM does not return all table space to the operating system. Do not run VACUUM FULL as a routine fix: it rewrites and exclusively locks the table.</p></section>
+        <section><h2>3. Weekly checks for indexes and storage</h2><p>Review table and index size trends, unused-index candidates, failed jobs, backup verification, and storage utilization. Index statistics reset and workload coverage matters: a low scan count by itself is not proof that an index can be removed.</p><pre><code>SELECT schemaname, relname AS table_name,
+       indexrelname AS index_name, idx_scan,
+       pg_size_pretty(pg_relation_size(indexrelid)) AS index_size
+FROM pg_stat_user_indexes
+ORDER BY pg_relation_size(indexrelid) DESC
+LIMIT 30;</code></pre><p>Use weekly checks to open tracked work items with evidence and owners; do not drop indexes or alter autovacuum settings without a tested plan.</p></section>
+        <section><h2>Weekly checklist</h2><ul><li>Confirm backups completed and at least one recent restore validation is scheduled or recorded.</li><li>Review dead-tuple and analyze trends on high-write tables.</li><li>Review long-running transactions, replication slots, and WAL/disk growth.</li><li>Check scheduled maintenance, failed jobs, and index/table size outliers.</li><li>Update issue records, action owners, and next review dates.</li></ul></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="postgres-dba-course-04-backup-recovery-free-online.html">Previous: Recovery</a><a href="postgres-dba-course-06-monthly-operations-free-online.html">Next: Monthly operations</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/postgres-dba-course.js"></script>
+</body></html>

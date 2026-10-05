@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostgreSQL DBA Course | Lesson 3: Incident Triage</title>
+  <meta name="description" content="Track PostgreSQL incidents with useful evidence, identify locks and failing sessions, and resolve problems using a safe triage sequence.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/postgres-dba-course-03-incident-triage-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-postgres-dba-course data-course-key="postgres-dba-course-completed" data-course-total="10" data-lesson-number="3">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Free PostgreSQL DBA Course / Lesson 3 of 10</p><h1>Issue Tracking and PostgreSQL Incident Triage</h1><p>Turn an alert into a traceable incident: establish impact, gather database evidence, identify the likely cause, choose a proportionate action, and verify recovery.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="PostgreSQL DBA course lessons"><h2>Course lessons</h2><nav data-postgres-dba-lessons aria-label="PostgreSQL DBA lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Create a useful issue record</h2><p>Use your team's approved ticket or incident system. Each record should have an incident ID, start time and timezone, environment/cluster, symptom and customer impact, severity, alert links, suspected change, owner, current action, next update time, and resolution evidence. Keep secrets and unredacted customer data out of tickets.</p><p>A clear timeline separates observations from hypotheses. Attach query IDs, sanitized log excerpts, dashboards, and before/after measurements so another operator can continue without repeating risky experiments.</p></section>
+        <section><h2>2. Identify active work, waits, and failures</h2><pre><code>SELECT pid, backend_type, usename, application_name, client_addr,
+       state, wait_event_type, wait_event,
+       now() - query_start AS query_age,
+       now() - xact_start AS transaction_age,
+       left(query, 240) AS query_sample
+FROM pg_stat_activity
+WHERE pid &lt;&gt; pg_backend_pid()
+ORDER BY query_start NULLS LAST;
+
+SELECT pid, pg_blocking_pids(pid) AS blockers,
+       wait_event_type, wait_event, left(query, 180) AS query_sample
+FROM pg_stat_activity
+WHERE cardinality(pg_blocking_pids(pid)) &gt; 0;</code></pre><p>Correlate PostgreSQL logs (timestamp, SQLSTATE, database, user, application, and process ID) with application errors, deploys, resource graphs, and replication state. Check whether a problem affects one query, one client, one database, or the whole cluster.</p></section>
+        <section><h2>3. Resolve with the least disruptive action</h2><ol><li>Confirm current impact and capture a baseline.</li><li>Identify the exact process, query, owner, and transaction; ask the service owner where possible.</li><li>Prefer fixing the cause or allowing a short wait over interrupting work.</li><li>If approved, <code>pg_cancel_backend(pid)</code> requests cancellation of the current query. Re-check impact and logs.</li><li>Use <code>pg_terminate_backend(pid)</code> only as an explicitly approved last resort: it disconnects the session and rolls back its active transaction.</li><li>Verify service recovery, record the outcome, and assign a follow-up to prevent recurrence.</li></ol><pre><code>-- First inspect and verify the PID and owner; never paste an unverified PID.
+SELECT pid, usename, application_name, state, xact_start, query
+FROM pg_stat_activity
+WHERE pid = 12345;
+
+-- Only after approval and confirmation of the exact backend:
+SELECT pg_cancel_backend(12345);</code></pre><div class="excel-course-callout"><p>Do not use broad cancellation loops or terminate sessions based only on an age threshold. Avoid exposing query text that may contain sensitive values in incident records.</p></div></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="postgres-dba-course-02-daily-health-checks-free-online.html">Previous: Daily checks</a><a href="postgres-dba-course-04-backup-recovery-free-online.html">Next: Backup and recovery</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/postgres-dba-course.js"></script>
+</body></html>

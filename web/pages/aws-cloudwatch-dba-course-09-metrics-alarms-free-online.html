@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS CloudWatch Log Analysis Course | Lesson 9: Metrics and Alarms</title>
+  <meta name="description" content="Build useful CloudWatch dashboards and log metric filters, choose actionable thresholds, and route database alerts with runbook context.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/aws-cloudwatch-dba-course-09-metrics-alarms-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-aws-cloudwatch-course data-course-key="aws-cloudwatch-dba-course-completed" data-course-total="10" data-lesson-number="9">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">AWS CloudWatch Logs for DBAs and Developers / Lesson 9 of 10</p><h1>CloudWatch Dashboards, Metrics, and Actionable Alarms</h1><p>Turn recurring log patterns and database health signals into measured dashboards and alarms that include a response owner and clear next step.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="AWS CloudWatch course lessons"><h2>Course lessons</h2><nav data-aws-cloudwatch-lessons aria-label="AWS CloudWatch lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Choose a service-level dashboard</h2><p>Group related panels around the service and environment. Include request success/error rate and latency; database CPU, connections, storage and read/write latency; application pool wait; and replication/backup indicators relevant to the engine. Annotate deploys, failovers, and planned maintenance. Use metrics to see trends and logs to explain individual events.</p></section>
+        <section><h2>2. Turn a stable log pattern into a metric</h2><p>A CloudWatch Logs metric filter can count matching events for supported log formats. Define and test the filter against representative messages before publishing the metric. For structured logs, choose a stable field and exact value, such as a normalized severity or error category. Avoid one metric dimension per request ID, SQL string, user, or other high-cardinality value.</p><pre><code># Example JSON log filter pattern; adapt to actual structured events:
+{ $.level = "ERROR" }</code></pre><p>This is an illustrative CloudWatch Logs filter pattern, not a Logs Insights query. Confirm supported syntax and metric-filter behavior for the selected log format. Built-in service metrics may be better than deriving basic infrastructure health from text.</p></section>
+        <section><h2>3. Define an actionable alarm</h2><ol><li>State the user-visible symptom or risk the alarm detects.</li><li>Choose a metric, statistic, period, and threshold from a measured baseline.</li><li>Set evaluation periods and missing-data behavior intentionally.</li><li>Route the alarm to an owned on-call or incident workflow.</li><li>Include the account, Region, database/service, dashboard, log query, and runbook link.</li><li>Test notification delivery and tune repeated/noisy alarms.</li></ol><p>Do not use one universal connection or latency threshold for every database. Account for database size, traffic, failover design, and service objectives.</p></section>
+        <section><h2>Operational and cost review</h2><p>Review metric-filter match rates, log ingestion volume, query scan volume, retention, alarm noise, and dashboard ownership. Do not create dashboards that expose sensitive SQL or broad log access to an audience that should not see it.</p></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="aws-cloudwatch-dba-course-08-app-correlation-free-online.html">Previous: Application tracing</a><a href="aws-cloudwatch-dba-course-10-runbook-capstone-free-online.html">Next: Runbook capstone</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/aws-cloudwatch-dba-course.js"></script>
+</body></html>

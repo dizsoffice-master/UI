@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database Testing Course | Lesson 5: Constraints and Transactions</title>
+  <meta name="description" content="Test database constraints, transactional behavior, rollback, atomicity, and failure recovery using isolated database tests.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/database-testing-course-05-constraints-transactions-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-database-testing-course data-course-key="database-testing-course-completed" data-course-total="10" data-lesson-number="5">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Database Testing Course / Lesson 5 of 10</p><h1>Constraints, Transactions, and Rollback</h1><p>Prove invalid states are rejected and multi-step writes are atomic, repeatable, and recoverable when a step fails.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="Database testing course lessons"><h2>Course lessons</h2><nav data-database-testing-lessons aria-label="Database testing lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>Test schema invariants directly</h2><p>Test that <code>NOT NULL</code>, unique, check, and foreign-key constraints enforce the business invariants they are meant to protect. Assert the intended SQLSTATE or application error contract; avoid matching a localized or version-specific full error string.</p><pre><code>-- Example: a duplicate key must be rejected.
+INSERT INTO customers (customer_id, name)
+VALUES (9101, 'First');
+
+-- Test harness attempts a second row with customer_id=9101.
+-- Assert a unique-violation error (PostgreSQL SQLSTATE 23505).
+-- Then verify the original row remains unchanged.</code></pre><p>Test cascade/restrict behavior explicitly. A cascade is a data deletion contract and should never be assumed safe simply because a foreign key exists.</p></section>
+        <section><h2>Test atomic multi-step work</h2><p>A transaction should leave all related rows committed together or none of them committed when a step fails. Test both outcomes using the real engine and data-access code.</p><pre><code>BEGIN;
+UPDATE accounts SET balance = balance - 25 WHERE account_id = 1;
+UPDATE accounts SET balance = balance + 25 WHERE account_id = 2;
+-- Assert both balances, then COMMIT in the success case.
+-- In a separate failure-path test, force a known failure and ROLLBACK.
+ROLLBACK;</code></pre><p>This is only a simplified example. In an application, use parameterized statements and test the actual transaction boundary, including exception handling and connection reuse.</p></section>
+        <section><h2>Isolation and test cleanup</h2><ul><li>Use a per-test transaction and rollback when all operations remain on the same connection and the code supports it.</li><li>Do not assume rollback undoes external side effects, other connections, sequence increments, or operations prohibited in a transaction.</li><li>For tests that commit or use multiple connections, use unique fixture data and explicit cleanup in an isolated database.</li><li>Confirm a failed test does not return a connection with an open or aborted transaction to the pool.</li><li>Test timeout and cancellation paths without leaving long-running sessions behind.</li></ul></section>
+        <section><h2>Failure-path checklist</h2><p>Test constraint violations, deadlock/serialization retry handling when relevant, connection loss, statement timeout, partial application failure, and idempotent retries. Inject faults only in a controlled test environment and verify the final persisted state.</p></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="database-testing-course-04-sql-crud-free-online.html">Previous: SQL tests</a><a href="database-testing-course-06-integration-api-free-online.html">Next: Integration tests</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/database-testing-course.js"></script>
+</body></html>

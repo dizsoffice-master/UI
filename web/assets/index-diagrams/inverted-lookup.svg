@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="title desc">
+  <title id="title">Inverted index maps terms to documents</title>
+  <desc id="desc">A text field is split into terms; each term points to a posting list of document or row identifiers that contain it.</desc>
+  <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9z" fill="#176b4d"/></marker></defs>
+  <rect width="760" height="330" rx="18" fill="#f4f8f5"/>
+  <g font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">
+    <text x="380" y="32" font-size="19" font-weight="700" fill="#173d2e">Inverted index: value → the rows that contain it</text>
+    <rect x="35" y="82" width="205" height="58" rx="10" fill="#fff" stroke="#176b4d" stroke-width="2"/><text x="137" y="106" font-size="14" fill="#58695f">Row 1</text><text x="137" y="127" font-size="16" fill="#173d2e">"red apple"</text>
+    <rect x="35" y="158" width="205" height="58" rx="10" fill="#fff" stroke="#176b4d" stroke-width="2"/><text x="137" y="182" font-size="14" fill="#58695f">Row 2</text><text x="137" y="203" font-size="16" fill="#173d2e">"green apple"</text>
+    <rect x="35" y="234" width="205" height="58" rx="10" fill="#fff" stroke="#176b4d" stroke-width="2"/><text x="137" y="258" font-size="14" fill="#58695f">Row 3</text><text x="137" y="279" font-size="16" fill="#173d2e">"red pear"</text>
+    <rect x="360" y="93" width="150" height="52" rx="10" fill="#dceee3" stroke="#176b4d"/><text x="435" y="125" font-size="18" font-weight="700" fill="#173d2e">apple</text>
+    <rect x="360" y="228" width="150" height="52" rx="10" fill="#dceee3" stroke="#176b4d"/><text x="435" y="260" font-size="18" font-weight="700" fill="#173d2e">red</text>
+    <rect x="570" y="93" width="150" height="52" rx="10" fill="#176b4d"/><text x="645" y="125" font-size="17" fill="#fff">[row 1, row 2]</text>
+    <rect x="570" y="228" width="150" height="52" rx="10" fill="#176b4d"/><text x="645" y="260" font-size="17" fill="#fff">[row 1, row 3]</text>
+    <path d="M242 111C290 111 310 119 356 119M242 187C290 187 310 119 356 119M242 111C300 111 303 254 356 254M242 263C290 263 310 254 356 254" fill="none" stroke="#176b4d" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M512 119H566M512 254H566" stroke="#176b4d" stroke-width="3" marker-end="url(#arrow)"/>
+  </g>
+</svg>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS CloudWatch Log Analysis Course | Lesson 5: Logs Insights</title>
+  <meta name="description" content="Use CloudWatch Logs Insights queries to filter, sort, count, and analyze database and application logs efficiently.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/aws-cloudwatch-dba-course-05-insights-queries-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-aws-cloudwatch-course data-course-key="aws-cloudwatch-dba-course-completed" data-course-total="10" data-lesson-number="5">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">AWS CloudWatch Logs for DBAs and Developers / Lesson 5 of 10</p><h1>Search Logs with CloudWatch Logs Insights</h1><p>Use small, repeatable Logs Insights queries to find database errors, count event bursts, inspect messages, and narrow an incident efficiently.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="AWS CloudWatch course lessons"><h2>Course lessons</h2><nav data-aws-cloudwatch-lessons aria-label="AWS CloudWatch lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>Start with time, log groups, and a limit</h2><p>Choose the relevant log groups and a narrow absolute time range in the console before running queries. Logs Insights Query Language examples below can be pasted into the query editor and adapted to your actual messages.</p><pre><code>fields @timestamp, @logStream, @message
+| sort @timestamp desc
+| limit 50</code></pre></section>
+        <section><h2>Search error and lock events</h2><pre><code>fields @timestamp, @message
+| filter @message like /ERROR|FATAL|PANIC|deadlock|lock timeout/
+| sort @timestamp desc
+| limit 100</code></pre><p>Match actual engine severity text and message format. Review context around each event; a generic word search alone can return unrelated lines.</p></section>
+        <section><h2>Count event volume over time</h2><pre><code>filter @message like /ERROR|FATAL/
+| stats count(*) as error_count by bin(5m)
+| sort bin(5m) asc</code></pre><p>Use a time bin that fits the symptom and chosen time range. A count spike helps locate when event volume changed but does not identify root cause.</p></section>
+        <section><h2>Extract PostgreSQL statement durations</h2><p>When PostgreSQL log messages include duration lines, a regular expression can extract the duration. The exact pattern depends on server version and log prefix, so inspect raw messages and adapt it.</p><pre><code>fields @timestamp, @message
+| filter @message like /duration:/
+| parse @message /duration: (?&lt;duration_ms&gt;[0-9.]+) ms/
+| filter duration_ms &gt; 1000
+| sort duration_ms desc
+| limit 100</code></pre><p>This works only for duration events that were actually logged and whose message matches the pattern. It finds completed statements; it does not reveal every active query. Search data can include SQL text and must be handled as sensitive.</p></section>
+        <section><h2>Make query work repeatable</h2><ul><li>Name and document saved queries with engine, log group, and expected format.</li><li>Keep the time range narrow and limit output while exploring.</li><li>Refine and test patterns against raw messages before drawing conclusions.</li><li>Track scanned bytes, duration, and query purpose; avoid repeated broad scans.</li><li>Export only approved, redacted evidence to an incident.</li></ul></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="aws-cloudwatch-dba-course-04-time-correlation-free-online.html">Previous: Time correlation</a><a href="aws-cloudwatch-dba-course-06-errors-incidents-free-online.html">Next: Incident analysis</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/aws-cloudwatch-dba-course.js"></script>
+</body></html>

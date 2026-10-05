@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apache Cassandra Index Types: Algorithms, Examples, and Tuning</title>
+  <meta name="description" content="Free Cassandra indexing course for beginners: learn partition-key routing, clustering, 2i, SAI, SASI, collection indexes, and query-driven design.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/cassandra-index-course-free-online.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="OnlineDataTool.com">
+  <meta property="og:title" content="Apache Cassandra Index Types: Algorithms, Examples, and Tuning">
+  <meta property="og:description" content="Free Cassandra indexing course for beginners: learn partition-key routing, clustering, 2i, SAI, SASI, collection indexes, and query-driven design.">
+  <meta property="og:url" content="https://onlinedatatool.com/pages/cassandra-index-course-free-online.html">
+  <meta property="og:image" content="https://onlinedatatool.com/assets/index-diagrams/lsm-write-path.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Apache Cassandra Index Types: Algorithms, Examples, and Tuning">
+  <meta name="twitter:description" content="Free Cassandra indexing course for beginners: learn partition-key routing, clustering, 2i, SAI, SASI, collection indexes, and query-driven design.">
+  <meta name="twitter:image" content="https://onlinedatatool.com/assets/index-diagrams/lsm-write-path.svg">
+  <link rel="stylesheet" href="../assets/site-columns.css">
+  <link rel="stylesheet" href="../assets/master.css">
+  <link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script>
+  <script src="../assets/ad-settings.js"></script>
+  <script src="../assets/site-partials.js"></script>
+  <script src="../assets/adsense.js"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://onlinedatatool.com/"},{"@type":"ListItem","position":2,"name":"Database Indexing Course","item":"https://onlinedatatool.com/pages/database-index-course-free-online.html"},{"@type":"ListItem","position":3,"name":"Apache Cassandra Indexes","item":"https://onlinedatatool.com/pages/cassandra-index-course-free-online.html"}]}</script>
+</head><body>
+  <div class="tool-page-wrap">
+    <div id="siteHeader"></div>
+    <main class="excel-course-page">
+      <header class="excel-course-hero">
+        <nav aria-label="Breadcrumb"><ol class="course-breadcrumb">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="database-index-course-free-online.html">Database Indexing Course</a></li>
+          <li>Apache Cassandra Index Guide</li>
+        </ol></nav>
+        <p class="excel-course-eyebrow">Apache Cassandra Index Guide</p>
+        <h1>Apache Cassandra Indexes: Types, Algorithms, and Examples</h1>
+        <p>Design the primary key around known query patterns first. Use Cassandra 5 Storage-Attached Indexing for supported non-primary-key searches, and treat older secondary-index approaches and materialized views as version- and workload-dependent.</p>
+      </header>
+      <div class="excel-course-layout">
+        <aside class="excel-course-index" aria-label="Database index course navigation">
+          <h2>Database Systems</h2><nav><ol><li><a href="database-index-course-free-online.html">Index algorithm foundations</a></li>
+    <li><a href="cassandra-index-course-free-online.html">Apache Cassandra index guide</a></li>
+    <li><a href="postgresql-index-course-free-online.html">PostgreSQL</a></li>
+<li><a href="mongodb-index-course-free-online.html">MongoDB</a></li>
+<li><a href="mysql-index-course-free-online.html">MySQL</a></li>
+<li><a href="oracle-index-course-free-online.html">Oracle Database</a></li>
+<li><a href="sql-server-index-course-free-online.html">Microsoft SQL Server</a></li></ol></nav>
+        </aside>
+        <article class="excel-course-content">
+          <section><h2>What Is a Apache Cassandra Index?</h2><p>An index is a data structure that helps the database find candidate records without scanning every row. It can accelerate matching queries but requires storage and maintenance during writes.</p></section>
+          <section><h2>How Apache Cassandra Index Algorithms Work</h2><p>Cassandra is a distributed, partitioned LSM-tree database. Primary-key design routes queries to partitions; supported secondary indexes such as SAI add search structures. It does not use a relational B-tree index model.</p><figure><img src="../assets/index-diagrams/lsm-write-path.svg" alt="Apache Cassandra index lookup algorithm diagram"><figcaption>Conceptual algorithm illustration for Apache Cassandra; implementation details depend on index type and database version.</figcaption></figure></section>
+          <section><h2>Apache Cassandra Index Types and Individual Guides</h2><p>Each link opens its own guide with an algorithm image, create/query example, use cases, limitations, and tuning steps.</p><ol><li><a href="cassandra-index-course-allow-filtering-free-online.html">ALLOW FILTERING and Index Alternatives</a></li><li><a href="cassandra-index-course-clustering-columns-free-online.html">Clustering Columns and Order</a></li><li><a href="cassandra-index-course-collection-indexes-free-online.html">Indexes on Collections</a></li><li><a href="cassandra-index-course-custom-index-free-online.html">Custom Index Implementations</a></li><li><a href="cassandra-index-course-materialized-views-free-online.html">Materialized Views as a Query Alternative</a></li><li><a href="cassandra-index-course-partition-key-free-online.html">Partition Keys</a></li><li><a href="cassandra-index-course-primary-key-free-online.html">Primary-Key Indexing and Query Routing</a></li><li><a href="cassandra-index-course-sai-free-online.html">Storage-Attached Indexing (SAI)</a></li><li><a href="cassandra-index-course-sasi-free-online.html">SASI Indexes (Legacy)</a></li><li><a href="cassandra-index-course-secondary-2i-free-online.html">Traditional Secondary Indexes (2i)</a></li><li><a href="cassandra-index-course-vector-sai-free-online.html">Storage-Attached Vector Indexes</a></li></ol></section>
+          <section><h2>Which Apache Cassandra Index Should I Use?</h2><p>Design the primary key around known query patterns first. Use Cassandra 5 Storage-Attached Indexing for supported non-primary-key searches, and treat older secondary-index approaches and materialized views as version- and workload-dependent.</p><p>Start with the query workload, required consistency, ordering, data distribution, and write rate. Do not select a structure from its name alone.</p></section>
+          <section><h2>Match Indexes to Filters, Sorts, and Joins</h2><p>Write down the actual predicates, sort keys, joins, and returned columns. The order of keys and supported operators determine whether the engine can use an index.</p></section>
+          <section><h2>How to Read Apache Cassandra Query Plans</h2><p>Use the engine's explain or execution-plan tooling to compare estimated and actual rows, keys examined, pages read, sorting, filtering, and lookup operations.</p></section>
+          <section><h2>Index Storage and Write Performance</h2><p>Indexes use disk and cache and add work to inserts, updates, and deletes. Specialized indexes may emit multiple entries per row or maintain separate structures.</p></section>
+          <section><h2>Index Statistics and Maintenance</h2><p>Monitor size, usage, build state, selectivity, fragmentation or compaction where relevant, and write latency. Make maintenance changes using the engine's version-specific procedures.</p></section>
+          <section><h2>Common Apache Cassandra Indexing Mistakes</h2><ul><li>Adding indexes without checking real query plans.</li><li>Ignoring key order, operator compatibility, or data distribution.</li><li>Assuming an index removes all filtering or row-fetch work.</li><li>Forgetting write amplification, backups, and deployment impact.</li></ul></section>
+          <section><h2>Apache Cassandra Index Version and Feature Notes</h2><p>Available index types and behavior vary by engine release, storage engine, extension, edition, data type, and operator. Verify each feature against the database actually deployed.</p><p>Official reference: <a href="https://cassandra.apache.org/doc/latest/cassandra/developing/cql/indexing/indexing-concepts.html" rel="noopener">Apache Cassandra documentation: Indexing concepts</a>.</p></section>
+          <section><h2>Apache Cassandra Indexing Questions</h2><h3>Does adding an index guarantee a faster query?</h3><p>No. The optimizer may choose a table or partition scan when many rows match or index lookups would cost more.</p><h3>Should every searchable column have an index?</h3><p>No. Index only measured workloads and account for maintenance, storage, and data distribution.</p></section></article>
+      </div>
+    </main>
+    <div id="siteFooter"></div>
+  </div>
+</body>
+</html>

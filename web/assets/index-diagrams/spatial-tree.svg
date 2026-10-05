@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" role="img" aria-labelledby="title desc">
+  <title id="title">Spatial tree prunes regions outside a search area</title>
+  <desc id="desc">A spatial index groups nearby shapes in nested bounding regions. A query checks intersecting regions and skips disjoint regions.</desc>
+  <rect width="760" height="320" rx="18" fill="#f4f8f5"/>
+  <g font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">
+    <text x="380" y="32" font-size="19" font-weight="700" fill="#173d2e">Spatial index: skip regions that cannot match</text>
+    <rect x="95" y="66" width="300" height="214" fill="#fff" stroke="#176b4d" stroke-width="3"/>
+    <path d="M245 66V280M95 173H395" stroke="#8aa99a" stroke-width="2"/>
+    <rect x="95" y="66" width="150" height="107" fill="#e8f3eb" stroke="#176b4d"/>
+    <rect x="245" y="173" width="150" height="107" fill="#e8f3eb" stroke="#176b4d"/>
+    <circle cx="150" cy="110" r="10" fill="#176b4d"/><circle cx="195" cy="140" r="8" fill="#176b4d"/>
+    <circle cx="292" cy="212" r="10" fill="#176b4d"/><circle cx="345" cy="248" r="8" fill="#176b4d"/>
+    <rect x="267" y="194" width="93" height="72" fill="none" stroke="#c05a32" stroke-width="3" stroke-dasharray="7 5"/>
+    <rect x="470" y="100" width="225" height="115" rx="14" fill="#fff" stroke="#176b4d" stroke-width="2"/>
+    <text x="582" y="135" font-size="16" font-weight="700" fill="#173d2e">Query region</text>
+    <text x="582" y="162" font-size="14" fill="#58695f">Check overlapping bounds</text>
+    <text x="582" y="188" font-size="14" fill="#a14424">Skip non-overlapping regions</text>
+    <path d="M362 226C410 226 420 183 465 174" fill="none" stroke="#c05a32" stroke-width="3"/>
+    <text x="245" y="302" font-size="13" fill="#58695f">Tree structures vary by index type: R-tree, GiST, quadtree, or geospatial cells.</text>
+  </g>
+</svg>

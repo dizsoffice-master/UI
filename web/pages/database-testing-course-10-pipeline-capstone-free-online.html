@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database Testing Course | Lesson 10: Pipeline Capstone</title>
+  <meta name="description" content="Finish the database testing course with a safe CI pipeline, migration checks, automated database tests, cleanup, and a release-quality capstone.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/database-testing-course-10-pipeline-capstone-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-database-testing-course data-course-key="database-testing-course-completed" data-course-total="10" data-lesson-number="10">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Database Testing Course / Lesson 10 of 10</p><h1>Automate Database Tests: Pipeline Capstone</h1><p>Assemble a release gate that provisions a safe database, validates migrations and application behavior, publishes useful evidence, and always cleans up its test resources.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="Database testing course lessons"><h2>Course lessons</h2><nav data-database-testing-lessons aria-label="Database testing lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Arrange pipeline stages</h2><ol><li>Validate code and migration files with fast static checks.</li><li>Provision a disposable database matching the supported engine/version.</li><li>Apply all migrations from empty and from the prior supported revision.</li><li>Load deterministic fixtures and run SQL, constraint, and repository tests.</li><li>Run API/integration tests and targeted security assertions.</li><li>Run bounded performance checks in a separately controlled job if needed.</li><li>Publish sanitized results and logs, then destroy the database and verify cleanup.</li></ol></section>
+        <section><h2>2. Make the job fail safely</h2><pre><code># Pipeline pseudocode; replace with your CI system's supported syntax.
+set environment = "test"
+assert database host is an approved ephemeral test target
+provision pinned database engine and version
+apply migrations; stop immediately on error
+run tests with explicit timeouts
+save sanitized diagnostics when tests fail
+destroy only resources created by this pipeline run
+verify resource cleanup</code></pre><p>This is intentionally tool-neutral pseudocode, not a shell script. Implement cleanup in a guaranteed CI finalization step and scope cloud permissions to the specific test resources. Never pass production credentials into a test job.</p></section>
+        <section><h2>3. Add reliable assertions and artifacts</h2><p>Test results should identify the test, migration revision, engine version, environment, and failure point. Preserve sanitized logs, assertion diffs, and timing data with limited retention. Distinguish a product regression from an unavailable runner or database startup failure; neither should be reported as a passing test.</p></section>
+        <section><h2>4. Capstone: order checkout release gate</h2><ol><li>Create isolated customer, inventory, and order fixtures.</li><li>Assert checkout creates one order, reduces inventory once, and records expected totals.</li><li>Assert insufficient stock and invalid customer cases leave no partial writes.</li><li>Retry the same idempotency key and assert no duplicate order or inventory change.</li><li>Apply schema migrations from clean and previous-version states and verify existing data.</li><li>Run a coordinated two-connection test and assert inventory never becomes negative.</li><li>Check the query path under representative load in an approved performance environment.</li><li>Confirm cleanup, capture results, and block release for any failed required assertion.</li></ol></section>
+        <section><h2>Release checklist</h2><ul><li>Tests use the real target database engine for database-specific behavior.</li><li>Targets and credentials are explicit, isolated, and least-privilege.</li><li>Fixtures are deterministic, synthetic, and safely cleaned up.</li><li>Migrations are tested from every supported starting point.</li><li>Failure diagnostics are useful but contain no secrets or uncontrolled sensitive data.</li><li>Timeouts, retry behavior, cleanup, ownership, and pass/fail policy are documented.</li></ul></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="database-testing-course-09-performance-security-free-online.html">Previous: Performance and security</a><a href="database-testing-course-free-online.html">Return to course start</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/database-testing-course.js"></script>
+</body></html>

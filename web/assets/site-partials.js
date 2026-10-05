@@ -72,6 +72,13 @@ const serviceGroups = [
     ['Offer Letter Maker', 'offer-letter-maker-online-free-service-tool.html'],
     ['Fresher Resume Maker', 'fresher-resume-maker-online-free-service-tool.html'],
     ['Salary Increment Letter Maker', 'salary-increment-letter-maker-online-free-service-tool.html']
+  ] },
+  { title: 'Free Courses', items: [
+    ['Excel Formula Course', 'excel-formula-course.html'],
+    ['SQL Course', 'sql-course.html'],
+    ['PostgreSQL DBA Course', 'postgres-dba-course-free-online.html'],
+    ['AWS CloudWatch Log Analysis Course', 'aws-cloudwatch-dba-course-free-online.html'],
+    ['Database Testing Course', 'database-testing-course-free-online.html']
   ] }
 ];
 
@@ -87,7 +94,7 @@ function serviceNavigationMarkup() {
 }
 
 function homeToolDirectoryMarkup() {
-  return serviceGroups.map((group) => `<section class="home-tool-group">
+  return serviceGroups.filter((group) => group.title !== 'Free Courses').map((group) => `<section class="home-tool-group">
     <h3>${group.title}</h3>
     <ul>${group.items.map(([label, file]) => file
       ? `<li><a class="home-tool-link" href="${rootPath}pages/${file}"><span>${label}</span><span aria-hidden="true">→</span></a></li>`
@@ -107,6 +114,7 @@ function sharedHeaderMarkup() {
         <a href="${rootPath}index.html">Home</a>
         <a href="${rootPath}pages/about-us.html">About</a>
         <a href="${rootPath}pages/contact-us.html">Contact</a>
+        <a href="${rootPath}index.html#all-courses">Free Courses</a>
         <a href="${rootPath}index.html#privacy">Privacy</a>
         <a href="${rootPath}index.html#terms">Terms</a>
       </div>
@@ -222,7 +230,7 @@ function sharedFooterMarkup() {
         <li><a href="#siteFooter">Image Tools</a></li><li><a href="#siteFooter">Developer Tools</a></li>
       </ul></div>
       <div class="footer-col"><h4>Company</h4><ul><li><a href="${rootPath}pages/about-us.html">About Us</a></li><li><a href="${rootPath}pages/contact-us.html">Contact Us</a></li><li><a href="${rootPath}index.html#privacy">Privacy Policy</a></li><li><a href="${rootPath}index.html#terms">Terms &amp; Conditions</a></li><li><a href="${rootPath}index.html#disclaimer">Disclaimer</a></li></ul></div>
-      <div class="footer-col"><h4>Useful Links</h4><ul><li><a href="${rootPath}index.html">All Tools</a></li><li><a href="${rootPath}index.html">Latest Tools</a></li><li><a href="${rootPath}index.html">Popular Tools</a></li><li><a href="${rootPath}sitemap.xml">Sitemap</a></li></ul></div>
+      <div class="footer-col"><h4>Useful Links</h4><ul><li><a href="${rootPath}index.html">All Tools</a></li><li><a href="${rootPath}index.html#all-courses">All Free Courses</a></li><li><a href="${rootPath}pages/excel-formula-course.html">Excel Formula Course</a></li><li><a href="${rootPath}pages/sql-course.html">SQL Course</a></li><li><a href="${rootPath}sitemap.xml">Sitemap</a></li></ul></div>
       <div class="footer-col"><h4>OnlineDataTool.com</h4><p>Free online tools for data, documents, and everyday development tasks.</p></div>
     </div>
     <div class="footer-bottom">© 2026 OnlineDataTool.com. All Rights Reserved.</div>

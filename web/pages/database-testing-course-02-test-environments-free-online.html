@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database Testing Course | Lesson 2: Test Environments</title>
+  <meta name="description" content="Create isolated database test environments with safe credentials, reproducible setup, and safeguards against production data changes.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/database-testing-course-02-test-environments-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-database-testing-course data-course-key="database-testing-course-completed" data-course-total="10" data-lesson-number="2">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Database Testing Course / Lesson 2 of 10</p><h1>Safe Test Environments and Isolation</h1><p>Make tests repeatable and safe by giving each run an isolated database, least-privilege access, explicit configuration, and a dependable teardown process.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="Database testing course lessons"><h2>Course lessons</h2><nav data-database-testing-lessons aria-label="Database testing lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>Choose a disposable target</h2><p>Common choices include an ephemeral container, a per-job database/schema on a shared test server, or a managed non-production instance. Select the target engine and version that match the application's support matrix. Confirm network, extensions, collation, timezone, and configuration differences that can affect outcomes.</p><ul><li>Use a clearly named, isolated test database or schema.</li><li>Use separate credentials with only the permissions the tests need.</li><li>Never load production secrets into test jobs.</li><li>Use synthetic or approved masked data—not an uncontrolled production copy.</li><li>Set connection, statement, and job timeouts appropriate to the test.</li></ul></section>
+        <section><h2>Fail closed on the target</h2><p>Before destructive setup or cleanup, assert the target environment explicitly. Do not infer “test” from an optional default, a developer's laptop, or a database name alone.</p><pre><code>-- Example guard in test setup (adapt to your driver/config):
+if APP_ENV != "test":
+    stop_before_database_reset()
+if DATABASE_HOST not in approved_test_hosts:
+    stop_before_database_reset()
+if DATABASE_NAME not in approved_test_databases:
+    stop_before_database_reset()</code></pre><p>Application pseudocode above is intentionally not executable SQL. Put equivalent guards in the test runner/configuration, check errors visibly, and require a deliberate opt-in before creating or dropping a database.</p></section>
+        <section><h2>Make setup and teardown reliable</h2><ol><li>Provision the target from version-controlled infrastructure or a pinned image.</li><li>Apply schema migrations from a clean starting point.</li><li>Load deterministic fixtures and verify expected setup counts.</li><li>Run tests with a unique run ID where concurrent jobs share resources.</li><li>Clean up only objects owned by that run; preserve logs on failure.</li><li>Destroy ephemeral resources and confirm the teardown completed.</li></ol><div class="excel-course-callout"><p>Do not use <code>DROP DATABASE</code>, <code>TRUNCATE</code>, or blanket cleanup against an unknown connection. Verify host, database, role, environment, and resource ownership first.</p></div></section>
+        <section><h2>Environment parity checklist</h2><p>Record database engine/version, extensions, migration revision, relevant parameters, locale/collation, timezone, and connection mode. Differences should be intentional and documented. Tests on SQLite alone, for example, cannot prove PostgreSQL-specific query or locking behavior.</p></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="database-testing-course-free-online.html">Previous: Foundations</a><a href="database-testing-course-03-test-data-free-online.html">Next: Test data</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/database-testing-course.js"></script>
+</body></html>

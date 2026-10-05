@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostgreSQL DBA Course | Lesson 8: Query Performance</title>
+  <meta name="description" content="Identify slow PostgreSQL queries with workload evidence, pg_stat_statements, EXPLAIN plans, and measured index improvements.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/postgres-dba-course-08-query-performance-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-postgres-dba-course data-course-key="postgres-dba-course-completed" data-course-total="10" data-lesson-number="8">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Free PostgreSQL DBA Course / Lesson 8 of 10</p><h1>Identify PostgreSQL Query Performance Problems</h1><p>Find which work is expensive, inspect the execution plan, make one evidence-based change, and compare results under a representative workload.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="PostgreSQL DBA course lessons"><h2>Course lessons</h2><nav data-postgres-dba-lessons aria-label="PostgreSQL DBA lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Identify workload candidates</h2><p>Where approved and installed, <code>pg_stat_statements</code> groups normalized query activity. Enabling it may require a configuration change and restart; coordinate that change with the service owner. Statistics are cumulative since reset, so compare measurement windows and do not confuse total time with per-call latency.</p><pre><code>SELECT queryid, calls,
+       round(total_exec_time::numeric, 1) AS total_ms,
+       round(mean_exec_time::numeric, 2) AS mean_ms,
+       rows, shared_blks_read, shared_blks_hit,
+       left(query, 180) AS query_sample
+FROM pg_stat_statements
+ORDER BY total_exec_time DESC
+LIMIT 20;</code></pre><p>Also inspect application latency, error rate, CPU, I/O, memory pressure, lock waits, and recent deploys. Choose a query tied to a measured user impact rather than optimizing an arbitrary statement.</p></section>
+        <section><h2>2. Read a plan safely</h2><p>Start with a non-executing plan and representative parameter values. Look for sequential scans on large selective inputs, inaccurate row estimates, repeated loops, expensive sorts, spills, and join order. A sequential scan can be correct for a small table or when most rows are needed.</p><pre><code>EXPLAIN (COSTS, VERBOSE, BUFFERS)
+SELECT order_id, order_date, total
+FROM orders
+WHERE customer_id = 4201
+  AND order_date &gt;= DATE '2026-01-01'
+ORDER BY order_date DESC
+LIMIT 50;</code></pre><div class="excel-course-callout"><p><code>EXPLAIN ANALYZE</code> executes the statement. Use it only when execution is safe and approved. For write statements, side effects occur; isolate a test or use a transaction only when the operation and rollback are understood.</p></div></section>
+        <section><h2>3. Form and test a tuning hypothesis</h2><p>If a recurring query filters by customer and date, a composite B-tree index may help; column order depends on predicate and ordering patterns. Create candidate indexes in a test environment and compare the plan, elapsed time, rows, buffers, and write/storage costs.</p><pre><code>-- Example candidate: test the workload and index order first.
+CREATE INDEX CONCURRENTLY orders_customer_date_idx
+ON orders (customer_id, order_date DESC);</code></pre><p><code>CREATE INDEX CONCURRENTLY</code> cannot run inside a transaction block. Check for invalid indexes after an interrupted build, monitor I/O and disk space, and confirm the planner uses the index. Remove the index only through the approved change process if it does not help.</p></section>
+        <section><h2>Performance change record</h2><ol><li>Capture baseline plan and workload period.</li><li>Write the expected bottleneck and proposed change.</li><li>Test with representative data and parameters.</li><li>Deploy one change with a rollback path.</li><li>Compare latency, throughput, waits, buffers, and write cost after the change.</li></ol></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="postgres-dba-course-07-yearly-readiness-free-online.html">Previous: Yearly readiness</a><a href="postgres-dba-course-09-optimization-cleanup-free-online.html">Next: Optimization and cleanup</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/postgres-dba-course.js"></script>
+</body></html>

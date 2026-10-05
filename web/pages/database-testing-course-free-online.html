@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Database Testing Course | Lesson 1: Foundations</title>
+  <meta name="description" content="Start a practical database testing course: plan a test strategy, isolate environments, verify SQL and constraints, and automate safe database checks.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/database-testing-course-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-database-testing-course data-course-key="database-testing-course-completed" data-course-total="10" data-lesson-number="1">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">Database Testing Course / Lesson 1 of 10</p><h1>Database Testing Foundations and Strategy</h1><p>Build confidence that data, schema, queries, and application workflows behave correctly—without putting production data or availability at risk.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="Database testing course lessons"><h2>Course lessons</h2><nav data-database-testing-lessons aria-label="Database testing lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>What does database testing prove?</h2><p>Database tests validate the contract between stored data, SQL, schema rules, application code, and operational procedures. Use PostgreSQL-style examples in this course; adapt types, isolation behavior, and tooling to the database engine and version under test.</p><ul><li><strong>Schema:</strong> migrations create the intended tables, keys, indexes, and constraints.</li><li><strong>Data:</strong> valid writes persist, invalid writes are rejected, and relationships stay consistent.</li><li><strong>Queries:</strong> filters, joins, aggregates, and ordering return the expected rows.</li><li><strong>Application:</strong> code handles database results, errors, transactions, and retries correctly.</li><li><strong>Operations:</strong> backup restoration, performance limits, access controls, and deployment procedures are tested.</li></ul></section>
+        <section><h2>Choose tests at the right level</h2><ol><li><strong>Unit:</strong> fast tests for query-building or domain logic using a controlled substitute when appropriate.</li><li><strong>Database integration:</strong> execute real SQL and migrations against an isolated instance of the target engine.</li><li><strong>End-to-end:</strong> exercise a real application workflow through its normal interfaces.</li><li><strong>Operational:</strong> verify restore, failover, load, access, and deployment behavior using controlled environments.</li></ol><p>A mock cannot prove that a real engine parses a query, enforces a constraint, or applies a migration correctly. Keep the important integration checks against the actual supported database.</p></section>
+        <section><h2>Write an observable test</h2><p>Each test should state its setup, action, expected result, and cleanup. Assert business outcomes, not incidental row ordering or internal implementation details.</p><pre><code>-- Setup a known customer and order in a disposable test database.
+INSERT INTO customers (customer_id, name)
+VALUES (901, 'Test Customer');
+
+INSERT INTO orders (order_id, customer_id, status, total)
+VALUES (9901, 901, 'paid', 25.00);
+
+-- Exercise the same query shape used by the application.
+SELECT customer_id, COUNT(*) AS paid_orders, SUM(total) AS paid_total
+FROM orders
+WHERE customer_id = 901 AND status = 'paid'
+GROUP BY customer_id;
+-- Assert: customer_id=901, paid_orders=1, paid_total=25.00</code></pre></section>
+        <section><h2>Risk-first test planning</h2><p>Prioritize money movement, permissions, data loss, tenant isolation, migrations, concurrency, and recovery. Define acceptance criteria, supported engine/version, test data classification, environment owner, cleanup method, and required evidence before implementation.</p><div class="excel-course-callout"><p>Never point an unreviewed test suite at production. A test that inserts, updates, deletes, truncates, or resets data must use an explicitly isolated target and a verified cleanup plan.</p></div></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><span>Course start</span><a href="database-testing-course-02-test-environments-free-online.html">Next: Test environments</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/database-testing-course.js"></script>
+</body></html>

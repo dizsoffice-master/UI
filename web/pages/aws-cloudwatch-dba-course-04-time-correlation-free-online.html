@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS CloudWatch Log Analysis Course | Lesson 4: Time Correlation</title>
+  <meta name="description" content="Find when a database issue began in CloudWatch Logs and correlate database, application, deployment, and metric events on a shared timeline.">
+  <link rel="canonical" href="https://onlinedatatool.com/pages/aws-cloudwatch-dba-course-04-time-correlation-free-online.html">
+  <link rel="stylesheet" href="../assets/site-columns.css"><link rel="stylesheet" href="../assets/master.css"><link rel="stylesheet" href="../assets/excel-course.css">
+  <script src="../assets/page-settings.js"></script><script src="../assets/ad-settings.js"></script><script src="../assets/site-partials.js"></script><script src="../assets/adsense.js"></script>
+</head>
+<body><div class="tool-page-wrap"><div id="siteHeader"></div>
+  <main class="excel-course-page" data-sql-course data-aws-cloudwatch-course data-course-key="aws-cloudwatch-dba-course-completed" data-course-total="10" data-lesson-number="4">
+    <header class="excel-course-hero"><p class="excel-course-eyebrow">AWS CloudWatch Logs for DBAs and Developers / Lesson 4 of 10</p><h1>Find Issue Times and Correlate Events</h1><p>Establish the first known symptom, account for event and ingestion time, and compare database logs with application, deployment, and metric timelines.</p></header>
+    <div class="excel-course-layout">
+      <aside class="excel-course-index" aria-label="AWS CloudWatch course lessons"><h2>Course lessons</h2><nav data-aws-cloudwatch-lessons aria-label="AWS CloudWatch lessons"></nav><p class="excel-course-progress" data-course-progress aria-live="polite"></p></aside>
+      <article class="excel-course-content">
+        <section><h2>1. Establish a reliable incident window</h2><ol><li>Record when users first reported the symptom and the time zone.</li><li>Find the earliest matching error or latency change; note both event time and ingestion time.</li><li>Include a lead-up and recovery buffer so slow buildup and delayed delivery are visible.</li><li>Check clock synchronization and timestamp format for application hosts.</li><li>Record the exact CloudWatch absolute time range and account/Region in the incident.</li></ol><p>In Logs Insights, <code>@timestamp</code> is the event timestamp and <code>@ingestionTime</code> indicates when CloudWatch received it. A gap between them can indicate delayed delivery; it does not move the time the original event occurred.</p></section>
+        <section><h2>2. Build an event timeline</h2><pre><code>fields @timestamp, @ingestionTime, @logStream, @message
+| filter @message like /ERROR|FATAL|timeout|deadlock/
+| sort @timestamp asc
+| limit 200</code></pre><p>Export or record the small set of relevant events with timestamps, source, request or process identifiers, and sanitized message text. Add deploys, configuration changes, failovers, traffic spikes, and alarm transitions as separate timeline entries.</p></section>
+        <section><h2>3. Separate symptom onset from cause</h2><p>The first log error may be a consequence, not the initiating event. Compare database connection counts, CPU, storage, read/write latency, queue/pool wait, and application request duration. Look for a new deploy, scheduled job, connection-pool change, failover, or upstream dependency event before the first failure. Confirm the time zone and whether a plotted metric uses a period/aggregation that can hide a short spike.</p></section>
+        <section><h2>Example: database timeouts at 14:05 UTC</h2><ul><li>Search application logs for the first timeout and request IDs around 14:05.</li><li>Check whether pool-acquisition time grew before database execution time.</li><li>Inspect RDS/PostgreSQL events, database error logs, connections, and CPU for the same interval.</li><li>Compare recent deployment and scheduled-job timestamps.</li><li>Extend the window earlier if connection use or latency rose before the timeout burst.</li></ul><p>State the earliest proven symptom separately from the current cause hypothesis; keep both tied to evidence.</p></section>
+        <section class="excel-course-actions"><button type="button" data-course-complete aria-pressed="false">Mark lesson complete</button><p>Progress stays in this browser.</p></section>
+        <nav class="excel-course-footer-nav"><a href="aws-cloudwatch-dba-course-03-log-groups-streams-free-online.html">Previous: Log groups</a><a href="aws-cloudwatch-dba-course-05-insights-queries-free-online.html">Next: Logs Insights</a></nav>
+      </article>
+    </div>
+  </main><div id="siteFooter"></div></div>
+  <script src="../assets/excel-course.js"></script><script src="../assets/aws-cloudwatch-dba-course.js"></script>
+</body></html>
