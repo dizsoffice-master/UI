@@ -1,8 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter_ui_app/features/auth/signup_page.dart';
 import 'package:flutter_ui_app/features/dashboard/dashboard_page.dart';
+import 'package:flutter_ui_app/models/login_session.dart';
 import 'package:flutter_ui_app/services/access_service.dart';
 import 'package:flutter_ui_app/services/app_logger.dart';
+import 'package:flutter_ui_app/services/browser_details_stub.dart'
+    if (dart.library.js_interop) 'package:flutter_ui_app/services/browser_details_web.dart'
+    as browser_details;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,6 +30,17 @@ class _LoginPageState extends State<LoginPage> {
   String? _errorEmail;
   String? _errorPassword;
   String? _errorAccessNo;
+  Position? _loginPosition;
+  var _locationStatus = 'Not shared by user';
+  var _locationConsentResolved = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _collectLocationConsent();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 const SizedBox(height: 16),
                                 const Text(
-                                  'Welcome to the devotional platform',
+                                  'Business operations workspace',
                                   style: TextStyle(
                                     color: Colors.white70,
                                     fontSize: 16,
@@ -86,14 +103,15 @@ class _LoginPageState extends State<LoginPage> {
                                 Container(
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.08),
+                                    color: Colors.white.withValues(alpha: 0.08),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: const Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Pilgrimage Access',
+                                        'Business Workspace',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 22,
@@ -102,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                       SizedBox(height: 10),
                                       Text(
-                                        'Manage travel, darshan, services and visitors.',
+                                        'Manage accounts, gate entries, purchases, stores, and sales.',
                                         style: TextStyle(
                                           color: Colors.white70,
                                           fontSize: 14,
@@ -137,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 const SizedBox(height: 8),
                                 const Text(
-                                  'Sign in to continue',
+                                  'Demo sign-in: use access number 101, 202, 303, or 404 and enter any non-empty email and password.',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.black54,
@@ -149,7 +167,8 @@ class _LoginPageState extends State<LoginPage> {
                                   keyboardType: TextInputType.number,
                                   decoration: const InputDecoration(
                                     labelText: 'Access No',
-                                    prefixIcon: Icon(Icons.confirmation_number_outlined),
+                                    prefixIcon: Icon(
+                                        Icons.confirmation_number_outlined),
                                     border: OutlineInputBorder(),
                                   ),
                                   validator: (value) {
@@ -227,12 +246,15 @@ class _LoginPageState extends State<LoginPage> {
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xff1d3557),
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                   ),
-                                  onPressed: _handleLogin,
+                                  onPressed: _locationConsentResolved
+                                      ? _handleLogin
+                                      : null,
                                   child: const Text(
                                     'Login',
                                     style: TextStyle(fontSize: 16),
@@ -282,7 +304,48 @@ class _LoginPageState extends State<LoginPage> {
     return page;
   }
 
-  void _handleLogin() {
+  Future<void> _collectLocationConsent() async {
+    final shareLocation = await _askLocationPermission();
+    if (!mounted) return;
+
+    if (shareLocation) {
+      try {
+        if (!await Geolocator.isLocationServiceEnabled()) {
+          _locationStatus = 'Location services are disabled';
+        } else {
+          var permission = await Geolocator.checkPermission();
+          if (permission == LocationPermission.denied) {
+            permission = await Geolocator.requestPermission();
+          }
+          if (permission == LocationPermission.denied) {
+            _locationStatus = 'Location permission was denied';
+          } else if (permission == LocationPermission.deniedForever) {
+            _locationStatus =
+                'Location permission is blocked in device settings';
+          } else {
+            _loginPosition = await Geolocator.getCurrentPosition(
+              locationSettings: const LocationSettings(
+                accuracy: LocationAccuracy.low,
+                timeLimit: Duration(seconds: 10),
+              ),
+            );
+            _locationStatus = 'Shared for this sign-in session';
+          }
+        }
+      } on Exception catch (error) {
+        _locationStatus = 'Location could not be retrieved';
+        AppLogger.log('_LoginPageState.location', error.runtimeType.toString());
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        _locationConsentResolved = true;
+      });
+    }
+  }
+
+  Future<void> _handleLogin() async {
     setState(() {
       _errorEmail = null;
       _errorPassword = null;
@@ -322,13 +385,53 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
+      final screenSize = MediaQuery.sizeOf(context);
+      final session = LoginSession.forProfile(
+        profile: accessProfile,
+        browserDetails: browser_details.getBrowserDetails(),
+        deviceDetails: '${kIsWeb ? 'Web' : defaultTargetPlatform.name} · '
+            '${screenSize.width.round()}×${screenSize.height.round()} logical px',
+        locationStatus: _locationStatus,
+        latitude: _loginPosition?.latitude,
+        longitude: _loginPosition?.longitude,
+      );
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => DashboardPage(accessProfile: accessProfile),
+          builder: (_) => DashboardPage(
+            accessProfile: accessProfile,
+            loginSessionJson: session.toJsonString(),
+          ),
         ),
       );
     }
-    AppLogger.log('_LoginPageState._handleLogin', hasError ? 'validation failed' : 'logged in');
+    AppLogger.log('_LoginPageState._handleLogin',
+        hasError ? 'validation failed' : 'logged in');
+  }
+
+  Future<bool> _askLocationPermission() async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Optional sign-in location'),
+            content: const Text(
+              'Before showing the login form, DIZS can read your device '
+              'location for this sign-in session. '
+              'Your coordinates stay in memory only and are not sent to a server. '
+              'You can continue without sharing your location.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Continue without location'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Share location'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 
   @override

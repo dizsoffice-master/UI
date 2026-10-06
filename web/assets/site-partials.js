@@ -105,21 +105,18 @@ function homeToolDirectoryMarkup() {
 
 function sharedHeaderMarkup() {
   return `<header class="site-header">
-    <a class="site-logo" href="${rootPath}index.html" aria-label="OnlineDataTool.com home">
-      <span class="site-logo-mark" aria-hidden="true">OD</span>
-      <span class="site-logo-copy"><strong>OnlineDataTool.com</strong><span>Useful tools, right in your browser</span></span>
+    <a class="site-logo" href="${rootPath}index.html" aria-label="DIZS home">
+      <img class="site-logo-image" src="${rootPath}logo.png" alt="">
+      <span class="site-logo-copy"><strong>DIZS</strong><span>DIZS Software Services Pvt. Ltd.</span></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">
       <div class="site-nav-links">
         <a href="${rootPath}index.html">Home</a>
-        <a href="${rootPath}pages/about-us.html">About</a>
-        <a href="${rootPath}pages/contact-us.html">Contact</a>
         <a href="${rootPath}index.html#all-courses">Free Courses</a>
-        <a href="${rootPath}index.html#privacy">Privacy</a>
-        <a href="${rootPath}index.html#terms">Terms</a>
       </div>
       <label class="site-search"><span class="visually-hidden">Search tools</span><input type="search" placeholder="Search tools" autocomplete="off"></label>
       <button class="site-tools-toggle" type="button" aria-controls="siteServices" aria-expanded="false"><span aria-hidden="true">☰</span> All Tools</button>
+      <a class="login" href="${rootPath}app/#/login">Login</a>
     </nav>
   </header>`;
 }
@@ -159,7 +156,7 @@ function setToolMetadata(content) {
   const heading = content.querySelector('h1');
   const description = content.querySelector('[data-tool-description], .page-subtitle, .duplicate-subtitle, #json-diff-header p') || content.querySelector('p');
   const title = heading ? heading.textContent.trim() : currentPage.label;
-  const summary = description ? description.textContent.trim().replace(/\s+/g, ' ').slice(0, 155) : `${currentPage.label} online. Use this free browser-based tool on OnlineDataTool.com.`;
+  const summary = description ? description.textContent.trim().replace(/\s+/g, ' ').slice(0, 155) : `${currentPage.label} online. Use this free browser-based tool on DIZS.`;
   let descriptionMeta = document.querySelector('meta[name="description"]');
   if (!descriptionMeta) {
     descriptionMeta = document.createElement('meta');
@@ -229,26 +226,24 @@ function sharedFooterMarkup() {
         <li><a href="${rootPath}pages/excel-csv-difference-checker-sql-query-builder-free-online-tool.html">Excel Tools</a></li>
         <li><a href="#siteFooter">Image Tools</a></li><li><a href="#siteFooter">Developer Tools</a></li>
       </ul></div>
-      <div class="footer-col"><h4>Company</h4><ul><li><a href="${rootPath}pages/about-us.html">About Us</a></li><li><a href="${rootPath}pages/contact-us.html">Contact Us</a></li><li><a href="${rootPath}index.html#privacy">Privacy Policy</a></li><li><a href="${rootPath}index.html#terms">Terms &amp; Conditions</a></li><li><a href="${rootPath}index.html#disclaimer">Disclaimer</a></li></ul></div>
+      <div class="footer-col"><h4>Company</h4><ul><li><a href="${rootPath}pages/about-us.html">About Us</a></li><li><a href="${rootPath}pages/contact-us.html">Contact Us</a></li><li><a href="${rootPath}index.html#privacy">Privacy Policy</a></li><li><a href="${rootPath}index.html#terms">Terms &amp; Conditions</a></li>      <li><a href="${rootPath}index.html#terms">Disclaimer</a></li></ul></div>
       <div class="footer-col"><h4>Useful Links</h4><ul><li><a href="${rootPath}index.html">All Tools</a></li><li><a href="${rootPath}index.html#all-courses">All Free Courses</a></li><li><a href="${rootPath}pages/excel-formula-course.html">Excel Formula Course</a></li><li><a href="${rootPath}pages/sql-course.html">SQL Course</a></li><li><a href="${rootPath}sitemap.xml">Sitemap</a></li></ul></div>
-      <div class="footer-col"><h4>OnlineDataTool.com</h4><p>Free online tools for data, documents, and everyday development tasks.</p></div>
+      <div class="footer-col"><h4>DIZS Software Services Pvt. Ltd.</h4><p>Business software and digital services.</p></div>
     </div>
-    <div class="footer-bottom">© 2026 OnlineDataTool.com. All Rights Reserved.</div>
+    <div class="footer-bottom">© 2026 DIZS Software Services Pvt. Ltd. All Rights Reserved.</div>
   </footer>`;
 }
 
 function headerMarkupIndex() {
   return `<header class="site-header">
-    <div class="site-logo">
-      <div class="site-logo-mark">D</div>
+    <a class="site-logo" href="${rootPath}index.html" aria-label="DIZS home">
+      <img class="site-logo-image" src="${rootPath}logo.png" alt="">
       <div class="site-logo-copy">
         <strong>DIZS</strong>
       </div>
-    </div>
+    </a>
     <nav class="site-nav">
-   <!--   <a class="home-button" href="${rootPath}index.html">Login</a>
-      <a class="home-button" href="${rootPath}index.html">Sign Up</a> 
--->
+      <a class="login" href="${rootPath}app/#/login">Login</a>
     </nav>
   </header>`;
 }
@@ -385,8 +380,10 @@ function footerMarkup() {
         <h4>Useful Links</h4>
         <ul>
           <li><a href="${rootPath}index.html">Home</a></li>
-          <li><a href="#">Services</a></li>
-          <li><a href="#">Tools</a></li>
+          <li><a href="${rootPath}pages/about-us.html">About</a></li>
+          <li><a href="${rootPath}pages/contact-us.html">Contact</a></li>
+          <li><a href="${rootPath}index.html#privacy">Privacy</a></li>
+          <li><a href="${rootPath}index.html#terms">Terms</a></li>
           <li><a href="${rootPath}${currentPageFile}">Page</a></li>
         </ul>
       </div>

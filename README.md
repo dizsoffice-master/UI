@@ -48,6 +48,27 @@ To run the app, use the following command:
 flutter run
 ```
 
+### DIZS Workspace Web App
+
+The public website is served from `web/`. Build the Flutter sign-in and workspace
+under its `/app/` path with:
+
+```powershell
+.\tool\build_flutter_app.ps1
+```
+
+The generated `web/app/` directory is ignored by Git and should be regenerated
+as part of deployment. Web and native app launches open the login screen (the public website keeps its
+own homepage). The login screen asks for optional location consent before
+showing the form; declining continues without location. The current sign-in
+uses local demo access numbers (`101`, `202`, `303`, or `404`); it is not
+production authentication. Session details and any shared coordinates stay in
+memory for the sign-in session only.
+
+Native targets are scaffolded for Android, iOS, Linux, and Windows. Build with
+`flutter build apk`, `flutter build ios` (on macOS), `flutter build linux`, or
+`flutter build windows`.
+
 ### Testing
 
 To run the widget tests, use:

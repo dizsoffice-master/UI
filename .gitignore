@@ -6,6 +6,7 @@ __pycache__/
 .pub-cache/
 .pub/
 build/
+/web/app/
 .flutter-plugins
 .flutter-plugins-dependencies
 .metadata
